@@ -1,0 +1,63 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  font-family: Monaco;
+  font-weight: bold;
+}
+
+body{
+	padding:0;
+	margin:0;
+	display: flex;
+}
+
+.container,.container-3D{
+	height: 100vh;
+	width: 100%;
+}
+
+.container{
+	background-color: white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.container-3D{
+	background-color: black;
+	color: white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#btn-button-next{
+	width: 150px;
+	color: white;
+	background-color: black;
+	padding:10px;
+}
+
+#btn-button-submit{
+	float: right;
+	width: 100px;
+	color: white;
+	background-color: black;
+	padding:10px;
+}
+
+audio{
+	display: block;
+	margin-left: -20px;
+	width: 450px;
+	background-color: white;
+}
+
+audio::-webkit-media-controls-panel {
+	background-color: white;
+}
+
+audio::-webkit-media-controls-time-remaining-display,
+audio::-webkit-media-controls-current-time-display{
+	font-family: Monaco;
+	font-weight: bold;
+}
