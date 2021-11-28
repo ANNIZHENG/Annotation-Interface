@@ -4,12 +4,13 @@
 	<title></title>
 	<link rel="stylesheet" type="text/css" href="templates/assets/css/index.css">
 </head>
-<body>
+<body id = "body">
 	<div class="container-3D">
-		<iframe id="3d" src="https://app.vectary.com/viewer/v1/?model=9aee484b-8121-4049-a084-3e552e3bb162&env=studio3" frameborder="0" width="100%" height="700"></iframe>
+		<!-- <iframe src="https://app.vectary.com/p/4iLiFWzwpiClYYal6P8NmM/" frameborder="0" width="100%" height="480"></iframe> --> 
+		<div id="3d-head" width="400" height="400"></div>
 	</div>
-	<div class="container">
-		<form action="templates/finish.html">
+	<div class="container" id = "container">
+		<form action="templates/submit.html">
 			<h2>Listen to the audio [1 / 3]</h2>
 			<audio id="audio" controls>
 				<source id = "source" src="templates/assets/audio/test1.wav" type="audio/wav">
@@ -24,24 +25,22 @@
 				<option value=5>5</option> <option value=6>6</option>
 				<option value=7>7</option> <option value=8>8</option>
 				<option value=9>9</option> <option value=10>10</option>
-				<option value=11>11</option> <option value=12>12</option>
-				<option value=13>13</option> <option value=14>14</option>
-				<option value=15>15</option>
 			</select>
 			<br><br>
-			<label id="2d-question" for="2d"></label>
+			<label id="2d-question" for="2d"></label><br><br>
 			<div id="2d" style="display: none;">
 				<img id="head-img" style="display: none;" src="templates/img/head.png">
 				<img id="front-img" style="display: none;" src="templates/img/front.png">
 				<img id="side-img" style="display: none;" src="templates/img/side.png">
-				<canvas id="head" width="220" height="220" style="cursor: crosshair;"></canvas><br>
-				<canvas id="front" width="220" height="220" style="cursor: crosshair;"></canvas>
-				<canvas id="side" width="220" height="220" style="cursor: crosshair;"></canvas>
+				<canvas id="head" width="180" height="180" style="cursor: crosshair;"></canvas><br>
+				<canvas id="front" width="180" height="180" style="cursor: crosshair;"></canvas>
+				<canvas id="side" width="180" height="180" style="cursor: crosshair;"></canvas>
 			</div>
-			<input id="btn-button-submit" type="submit" name="btn-button-submit" value="SUBMIT" onclick="ajax_annotation()" style="display: none;">
+			<input id="btn-button-submit" type="submit" name="btn-button-submit" value="SUBMIT" onclick="ajax_next()" style="display: none;">
 			<input id="btn-button-next" type="button" name="btn-button-next" value="NEXT SOURCE" onclick="setNextQuestion()" style="display: none;">
 		</form>
 	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.js"></script>
 	<script type="text/javascript" src="templates/assets/js/index.js"></script>
 </body>
 </html>

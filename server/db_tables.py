@@ -9,13 +9,10 @@ from sqlalchemy.dialects import postgresql
 
 db_path = 'postgresql://anniezheng@localhost/test'
 
-# noinspection PyBroadException
 try:
     db_path = os.environ['postgresql://anniezheng@localhost/test']
 except:
     print("except db_tables.py")
-    #n f = open('secrets', 'r')
-    # db_path = f.read()
 
 eng = create_engine(db_path)
 Base = declarative_base()
@@ -25,6 +22,7 @@ class Survey(Base):
     id = Column(String, primary_key=True)
     def __init__(self,id):
         self.id = id
+
 
 class Annotation(Base):
     __tablename__ = "Annotation"
@@ -39,13 +37,14 @@ class Annotation(Base):
         self.recording_id = recording_id
         self.source_count = source_count
 
+
 class Interaction(Base):
     __tablename__ = "Interaction"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     annotation_id = Column(Integer)
     action_type = Column(String)
-    value = Column(Integer)
+    value = Column(String)
     timestamp = Column(TIMESTAMP)
 
     def __init__(self,annotation_id,action_type,value,timestamp):

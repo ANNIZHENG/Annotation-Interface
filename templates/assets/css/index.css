@@ -17,6 +17,7 @@ body{
 
 .container{
 	background-color: white;
+	color: black;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -24,13 +25,13 @@ body{
 
 .container-3D{
 	background-color: black;
-	color: white;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
 
 #btn-button-next{
+	float: right;
 	width: 150px;
 	color: white;
 	background-color: black;
