@@ -31,19 +31,21 @@ body{
 }
 
 #btn-button-next{
+	margin-top: 18px;
 	float: right;
-	width: 150px;
+	width: 200px;
 	color: white;
 	background-color: black;
 	padding:10px;
 }
 
 #btn-button-submit{
+	margin-top: 18px;
 	float: right;
-	width: 100px;
+	width: 200px;
 	color: white;
 	background-color: black;
-	padding:10px;
+	padding: 10px;
 }
 
 audio{
@@ -61,4 +63,54 @@ audio::-webkit-media-controls-time-remaining-display,
 audio::-webkit-media-controls-current-time-display{
 	font-family: Monaco;
 	font-weight: bold;
+}
+
+.item{
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	touch-action:none;
+	user-select: none;
+	position: absolute;
+	left: 82.5px;
+}
+
+#head, #front, #side{
+	height: 180px; 
+	width: 180px;
+	background-size: contain; 
+	position: relative; 
+	border-radius: 50%; 
+	cursor: pointer;
+}
+
+#head-item-1, #front-item-1, #side-item-1{
+	background-color: #ff4d4d;
+}
+#head-item-2, #front-item-2, #side-item-2{
+	background-color: #ffff00
+}
+#head-item-3, #front-item-3, #side-item-3{
+	background-color: #00ff00;
+}
+#head-item-4, #front-item-4, #side-item-4{
+	background-color: #00bfff; 
+}
+#head-item-5, #front-item-5, #side-item-5{
+	background-color: #cf9fff;
+}
+#head-item-6, #front-item-6, #side-item-6{
+	background-color: #ff00ff;
+}
+#head-item-7, #front-item-7, #side-item-7{
+	background-color: #ff8b01;
+}
+#head-item-8, #front-item-8, #side-item-8{
+	background-color: #abd5ab;
+}
+#head-item-9, #front-item-9, #side-item-9{
+	background-color: #ffc0cb; 
+}
+#head-item-10, #front-item-10, #side-item-10{
+	background-color: #ff69b4;
 }

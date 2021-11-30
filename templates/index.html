@@ -28,13 +28,43 @@
 			</select>
 			<br><br>
 			<label id="2d-question" for="2d"></label><br><br>
-			<div id="2d" style="display: none;">
-				<img id="head-img" style="display: none;" src="templates/img/head.png">
-				<img id="front-img" style="display: none;" src="templates/img/front.png">
-				<img id="side-img" style="display: none;" src="templates/img/side.png">
-				<canvas id="head" width="180" height="180" style="cursor: crosshair;"></canvas><br>
-				<canvas id="front" width="180" height="180" style="cursor: crosshair;"></canvas>
-				<canvas id="side" width="180" height="180" style="cursor: crosshair;"></canvas>
+			<div id="2d">
+				<div id="head" style="background-image: url('templates/img/head.png'); display: none;">
+					<div class="item" id="head-item-1" style="display: none;"></div>
+					<div class="item" id="head-item-2" style="display: none;"></div>
+					<div class="item" id="head-item-3" style="display: none;"></div>
+					<div class="item" id="head-item-4" style="display: none;"></div>
+					<div class="item" id="head-item-5" style="display: none;"></div>
+					<div class="item" id="head-item-6" style="display: none;"></div>
+					<div class="item" id="head-item-7" style="display: none;"></div>
+					<div class="item" id="head-item-8" style="display: none;"></div>
+					<div class="item" id="head-item-9" style="display: none;"></div>
+					<div class="item" id="head-item-10" style="display: none;"></div>
+				</div><br>
+				<div id="front" style="background-image: url('templates/img/front.png'); display: none;">
+					<div class="item" id="front-item-1" style="display: none;"></div>
+					<div class="item" id="front-item-2" style="display: none;"></div>
+					<div class="item" id="front-item-3" style="display: none;"></div>
+					<div class="item" id="front-item-4" style="display: none;"></div>
+					<div class="item" id="front-item-5" style="display: none;"></div>
+					<div class="item" id="front-item-6" style="display: none;"></div>
+					<div class="item" id="front-item-7" style="display: none;"></div>
+					<div class="item" id="front-item-8" style="display: none;"></div>
+					<div class="item" id="front-item-9" style="display: none;"></div>
+					<div class="item" id="front-item-10" style="display: none;"></div>
+				</div>
+				<div id="side" style="background-image: url('templates/img/side.png'); display: none;">
+					<div class="item" id="side-item-1" style="display: none;"></div>
+					<div class="item" id="side-item-2" style="display: none;"></div>
+					<div class="item" id="side-item-3" style="display: none;"></div>
+					<div class="item" id="side-item-4" style="display: none;"></div>
+					<div class="item" id="side-item-5" style="display: none;"></div>
+					<div class="item" id="side-item-6" style="display: none;"></div>
+					<div class="item" id="side-item-7" style="display: none;"></div>
+					<div class="item" id="side-item-8" style="display: none;"></div>
+					<div class="item" id="side-item-9" style="display: none;"></div>
+					<div class="item" id="side-item-10" style="display: none;"></div>
+				</div>
 			</div>
 			<input id="btn-button-submit" type="submit" name="btn-button-submit" value="SUBMIT" onclick="ajax_next()" style="display: none;">
 			<input id="btn-button-next" type="button" name="btn-button-next" value="NEXT SOURCE" onclick="setNextQuestion()" style="display: none;">

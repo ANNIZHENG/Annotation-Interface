@@ -35,7 +35,7 @@ def home():
 def interaction():
     if request.method == 'POST':
         data = request.json
-        annotaion_id = int(data['currentAnnotation'])
+        annotaion_id = int(data['annotation_id'])
         action_type = data['action_type']
         value = data['value']
         timestamp= datetime.fromtimestamp(data['timestamp']/1000)
@@ -48,13 +48,13 @@ def interaction():
 def next():
     if request.method == 'POST':
         data = request.json
-        annotaion_id = int(data['currentAnnotation'])
+        annotaion_id = int(data['annotation_id'])
         source_count = data['source_count']
         entry1 = Annotation(survey_id,annotaion_id,source_count)
         ses.add(entry1)
-        ses.commit()
+        # ses.commit()
 
-        annotaion_id = int(data['currentAnnotation'])
+        annotaion_id = int(data['annotation_id'])
         azimuth_list = data['azimuth']
         elevation_list = data['elevation']
         source_count = data['source_count']
