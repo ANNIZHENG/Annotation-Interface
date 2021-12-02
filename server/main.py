@@ -1,12 +1,10 @@
 from datetime import datetime
-from os import times
-import random, uuid, sys, json
+import uuid, sys, json
 from datetime import datetime
 from flask import *
 from sqlalchemy.sql import annotation
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 from db_tables import ses, Annotation,Survey,Location,Interaction
-from process_wins import bonus_type_one, bonus_type_two
 
 app = Flask(__name__,
             static_folder="../templates",
