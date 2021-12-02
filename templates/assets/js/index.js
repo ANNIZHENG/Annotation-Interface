@@ -287,6 +287,8 @@ let delete_side = false;
 
 function keyboardEvent(e){
 	if (e.ctrlKey && e.which == 72){ // Add Head
+		delete_head,delete_front,delete_side = false;
+
 		if (azimuth_count == source_count){
 			window.alert("You have already enter " + source_count + " azimuth elements")
 			return;
@@ -305,6 +307,8 @@ function keyboardEvent(e){
 		dragElement(temp_azimuth_index,0,temp_azimuth_index-1);
 	}
 	else if (e.ctrlKey && e.which == 70){ // Add Front
+		delete_head,delete_front,delete_side = false;
+
 		if (elevation_count == source_count){
 			window.alert("You have already enter " + source_count + " elevation elements")
 			return;
@@ -323,6 +327,8 @@ function keyboardEvent(e){
 		dragElement(temp_elevation_index,1,temp_elevation_index-1);
 	}
 	else if (e.ctrlKey && e.which == 83){ // Add Side
+		delete_head,delete_front,delete_side = false;
+		
 		if (elevation_count == source_count){
 			window.alert("You have already enter " + source_count + " elevation elements")
 			return;
