@@ -23,6 +23,7 @@ let value = undefined;
 let timestamp = undefined;
 
 /* container.2d.user interface */
+
 document.getElementById('audio').addEventListener("ended",displaySelection);
 document.getElementById('audio').addEventListener("playing",addPlaying);
 document.getElementById('count').addEventListener("change",addSourceCount);
@@ -54,7 +55,7 @@ function addSourceCount(){
 
 function addPlaying(){
 	// Interaction - Audio
-	action_type = "set audio play";
+	action_type = "play audio";
 	value = null;
 	timestamp = Date.now();
 	ajax_interaction();
@@ -183,72 +184,107 @@ animate();
 
 /* container.2d.location */
 
-function dragElement(item,azimuth_present,add_index) {
-	item.setAttribute('style',''); // present the item
+function dragElement(index,indicator,add_index) {
+	var item, inner_item, frame;
 
-	var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0
-	item.onmousedown = dragMouseDown;
-
-	function dragMouseDown(e) {
-		e = e || window.event;
-		e.preventDefault();
-		pos3 = e.clientX;
-  		pos4 = e.clientY;
-		document.onmousemove = elementDrag;
-		document.onmouseup = closeDragElement;
+	if (indicator == 0){
+		item = document.getElementById('circular'+index);
+		inner_item = document.getElementById('head-item-'+index);
+		frame = document.getElementById('head');
+		action_type = "azimuth";
+		azimuth[add_index] = curr_azimuth; // not formal
 	}
-  
-	function elementDrag(e) {
-		e = e || window.event;
-		e.preventDefault();
-		pos1 = pos3 - e.clientX;
-  		pos2 = pos4 - e.clientY;
-  		pos3 = e.clientX;
-  		pos4 = e.clientY;
-		var y = item.offsetTop - pos2;
-		var x = item.offsetLeft - pos1;
-
-		if ( Math.sqrt(Math.pow( 82.5 - x,2 ) + Math.pow( 82.5 - y,2 )) <= 82.5
-		&& Math.sqrt(Math.pow( 82.5 - x,2 ) + Math.pow( 82.5 - y,2 )) > 80 )
-		{
-			item.style.top = y + "px";
-			item.style.left = x + "px";
-		}
-
-		if (azimuth_present){
-			action_type = "azimuth"; // for ajax
-			timestamp = Date.now(); // for ajax
-			calculateAzimuth(x,y);
-			azimuth[add_index] = curr_azimuth;
-			value = curr_azimuth; // for ajax
-		}
-		else{
-			action_type = "elevation"; // for ajax
-			timestamp = Date.now(); // for ajax
-			curr_elevation = Math.abs(y - 165);
-			elevation[add_index] = curr_elevation;
-			value = curr_elevation; // for ajax
-		}
-		displayButton();
+	else if (indicator == 1){
+		item = document.getElementById('circularF'+index);
+		inner_item = document.getElementById('front-item-'+index);
+		frame = document.getElementById('front');
+		action_type = "elevation";
+		elevation[add_index] = curr_elevation; // not formal
+	}
+	else{
+		item = document.getElementById('circularS'+index);
+		inner_item = document.getElementById('side-item-'+index);
+		frame = document.getElementById('side');
+		action_type = "elevation";
+		elevation[add_index] = curr_elevation; // not formal
 	}
 
-	function closeDragElement(){
-		ajax_interaction();
-	  	document.onmouseup = null;
-	  	document.onmousemove = null;
+	item.setAttribute('style',''); // display item
+	inner_item.setAttribute('style',''); // display inner item
+
+	item.onmousedown = function (e) {
+   		document.onmousemove = mouse;
+		document.onmouseup = function (e) {
+			if(indicator == 0){
+				azimuth[add_index] = curr_azimuth;
+				value = curr_azimuth;
+				timestamp = Date.now();
+				ajax_interaction();
+			}
+			else{
+				elevation[add_index] = curr_elevation;
+				value = curr_elevation;
+				timestamp = Date.now();
+				ajax_interaction();
+			}
+			document.onmouseup = null;
+			document.onmousemove = null;
+		}
+	}
+
+	function mouse(e) {
+		var flocation = frame.getBoundingClientRect();
+		var innerlocation = inner_item.getBoundingClientRect();
+		var ilocation = item.getBoundingClientRect();
+		var cx = (ilocation.right + ilocation.left)/2;
+		var cy = (ilocation.top + ilocation.bottom)/2;
+		calculateAzimuth(e.pageX,e.pageY,cx,cy);
+		curr_elevation = parseInt(flocation.bottom - innerlocation.top);
+		item.style.transform = 'rotate('+curr_azimuth+'deg)';
+	}
+}
+
+function calculateAzimuth(x,y,cx,cy){
+	if ( x>cx && y<cy ){
+		var newx = x - cx;
+		var newy = cy - y;
+		arccosine = Math.acos(newy / (Math.sqrt(Math.pow(newx,2) + Math.pow(newy,2))));
+		curr_azimuth = Math.round(arccosine * (180/Math.PI));
+	}
+	else if ( x>cx && y>cy ){
+		var newx = x - cx;
+		var newy = y - cy;
+		arccosine = Math.acos(newx / (Math.sqrt(Math.pow(newx,2) + Math.pow(newy,2))));
+		curr_azimuth = Math.round(arccosine * (180/Math.PI))+90;
+	}
+	else if ( x < cx && y > cy ){
+		var newx = cx - x;
+		var newy = cy - y;
+		arccosine = Math.acos(newx / (Math.sqrt(Math.pow(newx,2) + Math.pow(newy,2))));
+		curr_azimuth = 270 - Math.round(arccosine * (180/Math.PI));
+	}
+	else{
+		var newx = cx - x;
+		var newy = y - cy;
+		arccosine = Math.acos(newx / (Math.sqrt(Math.pow(newx,2) + Math.pow(newy,2))));
+		curr_azimuth = Math.round(arccosine * (180/Math.PI))+270;
 	}
 }
 
 // adding dots
-document.addEventListener('keydown',keyboardEvent,true);
+document.addEventListener("keydown", keyboardEvent, false);
+
+let delete_head = false;
+let delete_front = false;
+let delete_side = false;
+
 function keyboardEvent(e){
 	if (e.ctrlKey && e.which == 72){ // Add Head
-		if (azimuth_count == source_count){ // if already annotated all azimuth
+		if (azimuth_count == source_count){
 			window.alert("You have already enter " + source_count + " azimuth elements")
 			return;
 		}
-
-		var temp_azimuth_index = 0; // this is for retrieving HTML element
+		var temp_azimuth_index = 0;
 		var index = 0;
 		while (index < source_count){
 			if (azimuth[index] == undefined){
@@ -257,18 +293,15 @@ function keyboardEvent(e){
 			}
 			index += 1;
 		}
-		var dragInput = "head-item-"+temp_azimuth_index;
-		var item = document.getElementById(dragInput);
+		curr_azimuth = 0;
 		azimuth_count += 1;
-
-		dragElement(item,true,temp_azimuth_index-1);
+		dragElement(temp_azimuth_index,0,temp_azimuth_index-1);
 	}
 	else if (e.ctrlKey && e.which == 70){ // Add Front
 		if (elevation_count == source_count){
 			window.alert("You have already enter " + source_count + " elevation elements")
 			return;
 		}
-
 		var temp_elevation_index = 0;
 		var index = 0;
 		while (index < source_count){
@@ -278,17 +311,15 @@ function keyboardEvent(e){
 			}
 			index += 1;
 		}
-		var dragInput = "front-item-"+temp_elevation_index;
-		var item = document.getElementById(dragInput);
+		curr_elevation = 180;
 		elevation_count += 1;
- 		dragElement(item,false,temp_elevation_index-1);
+		dragElement(temp_elevation_index,1,temp_elevation_index-1);
 	}
 	else if (e.ctrlKey && e.which == 83){ // Add Side
 		if (elevation_count == source_count){
 			window.alert("You have already enter " + source_count + " elevation elements")
 			return;
 		}
-
 		var temp_elevation_index = 0;
 		var index = 0;
 		while (index < source_count){
@@ -298,67 +329,16 @@ function keyboardEvent(e){
 			}
 			index += 1;
 		}
-		var dragInput = "side-item-"+temp_elevation_index;
-		var item = document.getElementById(dragInput);
+		curr_elevation = 180;
 		elevation_count += 1;
-		dragElement(item,false,temp_elevation_index-1);
+		dragElement(temp_elevation_index,2,temp_elevation_index-1);
 	}
 	else if (e.shiftKey && e.which == 72){ // Delete Head
 		if (azimuth_count == 0){ // if there is no azimuth entered
 			window.alert("There is no azimuth element");
 		}
 		else{
-			azimuth_count -= 1; // deleting one azimuth element
-			document.getElementById('head-item-1').addEventListener("click",function(){
-				document.getElementById('head-item-1').style.display = 'none';
-				azimuth[0] = undefined;
-				displayButton();
-			});
-			document.getElementById('head-item-2').addEventListener("click",function(){
-				document.getElementById('head-item-2').style.display = 'none';
-				azimuth[1] = undefined;
-				displayButton();
-			});
-			document.getElementById('head-item-3').addEventListener("click",function(){
-				document.getElementById('head-item-3').style.display = 'none';
-				azimuth[2] = undefined;
-				displayButton();
-			});
-			document.getElementById('head-item-4').addEventListener("click",function(){
-				document.getElementById('head-item-4').style.display = 'none';
-				azimuth[3] = undefined;
-				displayButton();
-			});
-			document.getElementById('head-item-5').addEventListener("click",function(){
-				document.getElementById('head-item-5').style.display = 'none';
-				azimuth[4] = undefined;
-				displayButton();
-			});
-			document.getElementById('head-item-6').addEventListener("click",function(){
-				document.getElementById('head-item-6').style.display = 'none';
-				azimuth[5] = undefined;
-				displayButton();
-			});
-			document.getElementById('head-item-7').addEventListener("click",function(){
-				document.getElementById('head-item-7').style.display = 'none';
-				azimuth[6] = undefined;
-				displayButton();
-			});
-			document.getElementById('head-item-8').addEventListener("click",function(){
-				document.getElementById('head-item-8').style.display = 'none';
-				azimuth[7] = undefined;
-				displayButton();
-			});
-			document.getElementById('head-item-9').addEventListener("click",function(){
-				document.getElementById('head-item-9').style.display = 'none';
-				azimuth[8] = undefined;
-				displayButton();
-			});
-			document.getElementById('head-item-10').addEventListener("click",function(){
-				document.getElementById('head-item-10').style.display = 'none';
-				azimuth[9] = undefined;
-				displayButton();
-			});
+			delete_head = true;
 		}
 	}
 	else if (e.shiftKey && e.which == 70){ // Delete Front
@@ -366,57 +346,7 @@ function keyboardEvent(e){
 			window.alert("There is no elevation element");
 		}
 		else{
-			elevation_count -= 1;	
-			document.getElementById('front-item-1').addEventListener("click",function(){
-				document.getElementById('front-item-1').style.display = 'none';
-				elevation[0] = undefined;
-				displayButton();
-			});
-			document.getElementById('front-item-2').addEventListener("click",function(){
-				document.getElementById('front-item-2').style.display = 'none';
-				elevation[1] = undefined;
-				displayButton();
-			});
-			document.getElementById('front-item-3').addEventListener("click",function(){
-				document.getElementById('front-item-3').style.display = 'none';
-				elevation[2] = undefined;
-				displayButton();
-			});
-			document.getElementById('front-item-4').addEventListener("click",function(){
-				document.getElementById('front-item-4').style.display = 'none';
-				elevation[3] = undefined;
-				displayButton();
-			});
-			document.getElementById('front-item-5').addEventListener("click",function(){
-				document.getElementById('front-item-5').style.display = 'none';
-				elevation[4] = undefined;
-				displayButton();
-			});
-			document.getElementById('front-item-6').addEventListener("click",function(){
-				document.getElementById('front-item-6').style.display = 'none';
-				elevation[5] = undefined;
-				displayButton();
-			});
-			document.getElementById('front-item-7').addEventListener("click",function(){
-				document.getElementById('front-item-7').style.display = 'none';
-				elevation[6] = undefined;
-				displayButton();
-			});
-			document.getElementById('front-item-8').addEventListener("click",function(){
-				document.getElementById('front-item-8').style.display = 'none';
-				elevation[7] = undefined;
-				displayButton();
-			});
-			document.getElementById('front-item-9').addEventListener("click",function(){
-				document.getElementById('front-item-9').style.display = 'none';
-				elevation[8] = undefined;
-				displayButton();
-			});
-			document.getElementById('front-item-10').addEventListener("click",function(){
-				document.getElementById('front-item-10').style.display = 'none';
-				elevation[9] = undefined;
-				displayButton();
-			});
+			delete_front = true;
 		}
 	}
 	else if (e.shiftKey && e.which == 83){ // Delete Side
@@ -424,88 +354,25 @@ function keyboardEvent(e){
 			window.alert("There is no elevation element");
 		}
 		else{
-			elevation_count -= 1;	
-			document.getElementById('side-item-1').addEventListener("click",function(){
-				document.getElementById('side-item-1').style.display = 'none';
-				elevation[0] = undefined;
-				displayButton();
-			});
-			document.getElementById('side-item-2').addEventListener("click",function(){
-				document.getElementById('side-item-2').style.display = 'none';
-				elevation[1] = undefined;
-				displayButton();
-			});
-			document.getElementById('side-item-3').addEventListener("click",function(){
-				document.getElementById('side-item-3').style.display = 'none';
-				elevation[2] = undefined;
-				displayButton();
-			});
-			document.getElementById('side-item-4').addEventListener("click",function(){
-				document.getElementById('side-item-4').style.display = 'none';
-				elevation[3] = undefined;
-				displayButton();
-			});
-			document.getElementById('side-item-5').addEventListener("click",function(){
-				document.getElementById('side-item-5').style.display = 'none';
-				elevation[4] = undefined;
-				displayButton();
-			});
-			document.getElementById('side-item-6').addEventListener("click",function(){
-				document.getElementById('side-item-6').style.display = 'none';
-				elevation[5] = undefined;
-			});
-			document.getElementById('side-item-7').addEventListener("click",function(){
-				document.getElementById('side-item-7').style.display = 'none';
-				elevation[6] = undefined;
-				displayButton();
-			});
-			document.getElementById('side-item-8').addEventListener("click",function(){
-				document.getElementById('side-item-8').style.display = 'none';
-				elevation[7] = undefined;
-				displayButton();
-			});
-			document.getElementById('side-item-9').addEventListener("click",function(){
-				document.getElementById('side-item-9').style.display = 'none';
-				elevation[8] = undefined;
-				displayButton();
-			});
-			document.getElementById('side-item-10').addEventListener("click",function(){
-				document.getElementById('side-item-10').style.display = 'none';
-				elevation[9] = undefined;
-				displayButton();
-			});
+			delete_side = true;
 		}
 	}
 }
 
-function calculateAzimuth(x,y){
-	if ( x>82.5 && y<82.5 ){ // Quadrant 1 // TODO: adjust
-		var newx = x - 82.5;
-		var newy = 82.5 - y;
-		arccosine = Math.acos(newy / (Math.sqrt(Math.pow(newx,2) + Math.pow(newy,2))));
-		curr_azimuth = Math.round(arccosine * (180/Math.PI));
-	}
-	else if ( x>82.5 && y>82.5 ){ // Quadrant 2
-		var newx = x - 82.5;
-		var newy = y - 82.5;
-		arccosine = Math.acos(newx / (Math.sqrt(Math.pow(newx,2) + Math.pow(newy,2))));
-		curr_azimuth = Math.round(arccosine * (180/Math.PI))+90;
-	}
-	else if ( x < 82.5 && y > 82.5 ){ // Quadrant 3
-		var newx = 82.5 - x;
-		var newy = 82.5 - y;
-		arccosine = Math.acos(newx / (Math.sqrt(Math.pow(newx,2) + Math.pow(newy,2))));
-		curr_azimuth = 270 - Math.round(arccosine * (180/Math.PI));
-	}
-	else{ // Quadrant 4
-		var newx = 82.5 - x;
-		var newy = y - 82.5;
-		arccosine = Math.acos(newx / (Math.sqrt(Math.pow(newx,2) + Math.pow(newy,2))));
-		curr_azimuth = Math.round(arccosine * (180/Math.PI))+270;
+function reloadAll(){
+	var index = 0;
+	while (index < 10){
+		document.getElementById('circular'+(index+1)).style.display = 'none';
+		document.getElementById('circularF'+(index+1)).style.display = 'none';
+		document.getElementById('circularS'+(index+1)).style.display = 'none';
+		document.getElementById('head-item-'+(index+1)).style.display = 'none';
+		document.getElementById('front-item-'+(index+1)).style.display = 'none';
+		document.getElementById('side-item-'+(index+1)).style.display = 'none';
+		index += 1;
 	}
 }
 
-function checkRepeatLocation(){ // THIS WILL BE AMELIORATED LATER
+function checkRepeatLocation(){ // THIS WILL BE AMELIORATED
 	var index = 0;
 	while (index < source_count){
 		if (azimuth[index] == undefined || elevation[index] == undefined){
@@ -520,12 +387,305 @@ function checkRepeatLocation(){ // THIS WILL BE AMELIORATED LATER
 	return true;
 }
 
-function reloadAll(){
-	var index = 0;
-	while (index < 10){
-		document.getElementById('head-item-'+(index+1)).style.display = 'none';
-		document.getElementById('front-item-'+(index+1)).style.display = 'none';
-		document.getElementById('side-item-'+(index+1)).style.display = 'none';
-		index += 1;
+document.getElementById('head-item-1').addEventListener("click",function(){
+	if (delete_head){
+		document.getElementById('circular1').style.display = 'none';
+		document.getElementById('head-item-1').style.display = 'none';
+		azimuth[0] = undefined;
+		azimuth_count -= 1;
+		delete_head = false;
+		displayButton();
 	}
-}
+});
+document.getElementById('head-item-2').addEventListener("click",function(){
+	if (delete_head){
+		document.getElementById('circular2').style.display = 'none';
+		document.getElementById('head-item-2').style.display = 'none';
+		azimuth[1] = undefined;
+		azimuth_count -= 1;
+		delete_head = false;
+		displayButton();
+	}
+});
+document.getElementById('head-item-3').addEventListener("click",function(){
+	if (delete_head){
+		document.getElementById('circular3').style.display = 'none';
+		document.getElementById('head-item-3').style.display = 'none';
+		azimuth[2] = undefined;
+		azimuth_count -= 1;
+		delete_head = false;
+		displayButton();
+	}
+});
+document.getElementById('head-item-4').addEventListener("click",function(){
+	if (delete_head){
+		document.getElementById('circular4').style.display = 'none';
+		document.getElementById('head-item-4').style.display = 'none';
+		azimuth[3] = undefined;
+		azimuth_count -= 1;
+		delete_head = false;
+		displayButton();
+	}
+});
+document.getElementById('head-item-5').addEventListener("click",function(){
+	if (delete_head){
+		document.getElementById('circular5').style.display = 'none';
+		document.getElementById('head-item-5').style.display = 'none';
+		azimuth[4] = undefined;
+		azimuth_count -= 1;
+		delete_head = false;
+		displayButton();
+	}
+});
+document.getElementById('head-item-6').addEventListener("click",function(){
+	if (delete_head){
+		document.getElementById('circular6').style.display = 'none';
+		document.getElementById('head-item-6').style.display = 'none';
+		azimuth[5] = undefined;
+		azimuth_count -= 1;
+		delete_head = false;
+		displayButton();
+	}
+});
+document.getElementById('head-item-7').addEventListener("click",function(){
+	if (delete_head){
+		document.getElementById('circular7').style.display = 'none';
+		document.getElementById('head-item-7').style.display = 'none';
+		azimuth[6] = undefined;
+		azimuth_count -= 1;
+		delete_head = false;
+		displayButton();
+	}
+});
+document.getElementById('head-item-8').addEventListener("click",function(){
+	if (delete_head){
+		document.getElementById('circular8').style.display = 'none';
+		document.getElementById('head-item-8').style.display = 'none';
+		azimuth[7] = undefined;
+		azimuth_count -= 1;
+		delete_head = false;
+		displayButton();
+	}
+});
+document.getElementById('head-item-9').addEventListener("click",function(){
+	if (delete_head){
+		document.getElementById('circular9').style.display = 'none';
+		document.getElementById('head-item-9').style.display = 'none';
+		azimuth[8] = undefined;
+		azimuth_count -= 1;
+		delete_head = false;
+		displayButton();
+	}
+});
+document.getElementById('head-item-10').addEventListener("click",function(){
+	if (delete_head){
+		document.getElementById('circular10').style.display = 'none';
+		document.getElementById('head-item-10').style.display = 'none';
+		azimuth[9] = undefined;
+		azimuth_count -= 1;
+		delete_head = false;
+		displayButton();
+	}
+});
+
+document.getElementById('front-item-1').addEventListener("click",function(){
+	if (delete_front){
+		document.getElementById('circularF1').style.cursor = "url(templates/img/delete.png)";
+		document.getElementById('front-item-1').style.display = 'none';
+		elevation[0] = undefined;
+		elevation_count -= 1;
+		delete_front = false;
+		displayButton();
+	}
+});
+document.getElementById('front-item-2').addEventListener("click",function(){
+	if (delete_front){
+		document.getElementById('circularF2').style.display = 'none';
+		document.getElementById('front-item-2').style.display = 'none';
+		elevation[1] = undefined;
+		elevation_count -= 1;
+		delete_front = false;
+		displayButton();
+	}
+});
+document.getElementById('front-item-3').addEventListener("click",function(){
+	if (delete_front){
+		document.getElementById('circularF3').style.display = 'none';
+		document.getElementById('front-item-3').style.display = 'none';
+		elevation[2] = undefined;
+		elevation_count -= 1;
+		delete_front = false;
+		displayButton();
+	}
+});
+document.getElementById('front-item-4').addEventListener("click",function(){
+	if (delete_front){
+		document.getElementById('circularF4').style.display = 'none';
+		document.getElementById('front-item-4').style.display = 'none';
+		elevation[3] = undefined;
+		elevation_count -= 1;
+		delete_front = false;
+		displayButton();
+	}
+});
+document.getElementById('front-item-5').addEventListener("click",function(){
+	if (delete_front){
+		document.getElementById('circularF5').style.display = 'none';
+		document.getElementById('front-item-5').style.display = 'none';
+		elevation[4] = undefined;
+		elevation_count -= 1;
+		delete_front = false;
+		displayButton();
+	}
+});
+document.getElementById('front-item-6').addEventListener("click",function(){
+	if (delete_front){
+		document.getElementById('circularF6').style.display = 'none';
+		document.getElementById('front-item-6').style.display = 'none';
+		elevation[5] = undefined;
+		elevation_count -= 1;
+		delete_front = false;
+		displayButton();
+	}
+});
+document.getElementById('front-item-7').addEventListener("click",function(){
+	if (delete_front){
+		document.getElementById('circularF7').style.display = 'none';
+		document.getElementById('front-item-7').style.display = 'none';
+		elevation[6] = undefined;
+		elevation_count -= 1;
+		delete_front = false;
+		displayButton();
+	}
+});
+document.getElementById('front-item-8').addEventListener("click",function(){
+	if (delete_front){
+		document.getElementById('circularF8').style.display = 'none';
+		document.getElementById('front-item-8').style.display = 'none';
+		elevation[7] = undefined;
+		elevation_count -= 1;
+		delete_front = false;
+		displayButton();
+	}
+});
+document.getElementById('front-item-9').addEventListener("click",function(){
+	if (delete_front){
+		document.getElementById('circularF9').style.display = 'none';
+		document.getElementById('front-item-9').style.display = 'none';
+		elevation[8] = undefined;
+		elevation_count -= 1;
+		delete_front = false;
+		displayButton();
+	}
+});
+document.getElementById('front-item-10').addEventListener("click",function(){
+	if (delete_front){
+		document.getElementById('circularF10').style.display = 'none';
+		document.getElementById('front-item-10').style.display = 'none';
+		elevation[9] = undefined;
+		elevation_count -= 1;
+		delete_front = false;
+		displayButton();
+	}
+});
+
+document.getElementById('side-item-1').addEventListener("click",function(){
+	if (delete_side){
+		document.getElementById('circularS1').style.display = 'none';
+		document.getElementById('side-item-1').style.display = 'none';
+		elevation[0] = undefined;
+		elevation_count -= 1;
+		delete_side = false;
+		displayButton();
+	}
+});
+document.getElementById('side-item-2').addEventListener("click",function(){
+	if (delete_side){
+		document.getElementById('circularS2').style.display = 'none';
+		document.getElementById('side-item-2').style.display = 'none';
+		elevation[1] = undefined;
+		elevation_count -= 1;
+		delete_side = false;
+		displayButton();
+	}
+});
+document.getElementById('side-item-3').addEventListener("click",function(){
+	if (delete_side){
+		document.getElementById('circularS3').style.display = 'none';
+		document.getElementById('side-item-3').style.display = 'none';
+		elevation[2] = undefined;
+		elevation_count -= 1;
+		delete_side = false;
+		displayButton();
+	}
+});
+document.getElementById('side-item-4').addEventListener("click",function(){
+	if (delete_side){
+		document.getElementById('circularS4').style.display = 'none';
+		document.getElementById('side-item-4').style.display = 'none';
+		elevation[3] = undefined;
+		elevation_count -= 1;
+		delete_side = false;
+		displayButton();
+	}
+});
+document.getElementById('side-item-5').addEventListener("click",function(){
+	if (delete_side){
+		document.getElementById('circularS5').style.display = 'none';
+		document.getElementById('side-item-5').style.display = 'none';
+		elevation[4] = undefined;
+		elevation_count -= 1;
+		delete_side = false;
+		displayButton();
+	}
+});
+document.getElementById('side-item-6').addEventListener("click",function(){
+	if (delete_side){
+		document.getElementById('circularS6').style.display = 'none';
+		document.getElementById('side-item-6').style.display = 'none';
+		elevation[5] = undefined;
+		elevation_count -= 1;
+		delete_side = false;
+		displayButton();
+	}
+});
+document.getElementById('side-item-7').addEventListener("click",function(){
+	if (delete_side){
+		document.getElementById('circularS7').style.display = 'none';
+		document.getElementById('side-item-7').style.display = 'none';
+		elevation[6] = undefined;
+		elevation_count -= 1;
+		delete_side = false;
+		displayButton();
+	}
+});
+document.getElementById('side-item-8').addEventListener("click",function(){
+	if (delete_side){
+		document.getElementById('circularS8').style.display = 'none';
+		document.getElementById('side-item-8').style.display = 'none';
+		elevation[7] = undefined;
+		elevation_count -= 1;
+		delete_side = false;
+		displayButton();
+	}
+});
+document.getElementById('side-item-9').addEventListener("click",function(){
+	if (delete_side){
+		document.getElementById('circularS9').style.display = 'none';
+		document.getElementById('side-item-9').style.display = 'none';
+		elevation[8] = undefined;
+		elevation_count -= 1;
+		delete_side = false;
+		displayButton();
+	}
+});
+document.getElementById('side-item-10').addEventListener("click",function(){
+	if (delete_side){
+		document.getElementById('circularS10').style.display = 'none';
+		document.getElementById('side-item-10').style.display = 'none';
+		elevation[9] = undefined;
+		elevation_count -= 1;
+		delete_side = false;
+		displayButton();
+	}
+});
