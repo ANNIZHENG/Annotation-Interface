@@ -71,7 +71,7 @@ function displaySelection(){
 	document.getElementById('count').setAttribute('style','');
 }
 
-function displayButton(){ // NEXT or SUBMIT
+function displayButton(){ // TODO do not put restriction
 	var index = 0;
 	while (index < source_count){
 		if (azimuth[index] == undefined || elevation[index] == undefined){ // do not display btn if source count not completed
@@ -224,17 +224,18 @@ function dragElement(index,indicator,add_index) {
 				azimuth[add_index] = curr_azimuth;
 				value = curr_azimuth;
 				timestamp = Date.now();
-				ajax_interaction();
 			}
 			else{
 				elevation[add_index] = curr_elevation;
 				value = curr_elevation;
 				timestamp = Date.now();
+			}
+			let determine = checkRepeatLocation();
+			if (determine){
 				ajax_interaction();
 			}
 			document.onmouseup = null;
 			document.onmousemove = null;
-			// displayButton();
 		}
 	}
 
@@ -379,15 +380,12 @@ function reloadAll(){
 	}
 }
 
-function checkRepeatLocation(){ // THIS WILL BE AMELIORATED
+function checkRepeatLocation(){
 	var index = 0;
 	while (index < source_count){
-		if (azimuth[index] == undefined || elevation[index] == undefined){
-			return true; // cannot be determined yet
-		}
-		else if (azimuth[index] == curr_azimuth && elevation[index] == curr_elevation){
+		if (azimuth[index] == curr_azimuth && elevation[index] == curr_elevation){
 			window.alert("You have entered the same azimuth and elevation");
-			return false; // if false then repeats
+			return false;
 		}
 		index += 1;
 	}
