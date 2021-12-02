@@ -34,13 +34,15 @@ function popRules(){
 }
 
 function addSourceCount(){
-	document.getElementById('btn-button-next').style.display='none';
 	document.getElementById('2d-question').innerHTML="Please identify the location of each source:";
 
 	// this is for the first enter
 	document.getElementById('head').setAttribute('style',"background-image: url('templates/img/head.png');");
 	document.getElementById('front').setAttribute('style',"background-image: url('templates/img/front.png'); display: inline-block;");
 	document.getElementById('side').setAttribute('style',"background-image: url('templates/img/side.png'); display: inline-block;");
+
+	// display button after showing the image;
+	displayButton();
 
 	source_count = document.getElementById('count').value;
 
@@ -71,25 +73,21 @@ function displaySelection(){
 	document.getElementById('count').setAttribute('style','');
 }
 
-function displayButton(){ // TODO do not put restriction
-	var index = 0;
-	while (index < source_count){
-		if (azimuth[index] == undefined || elevation[index] == undefined){ // do not display btn if source count not completed
-			document.getElementById('btn-button-next').style.display = 'none';
-			document.getElementById('btn-button-submit').style.display = 'none';
-			return;
-		}
-		index += 1;
-	}
+function displayButton(){
 	if (!last_question) document.getElementById('btn-button-next').setAttribute('style','');
 	else document.getElementById('btn-button-submit').setAttribute('style','');
 }
 
 function setNextQuestion(){
-	if (document.getElementById('count').value == undefined){ // do not go to the next qst if source count not completed
+	// do not go to the next qst if source count not completed
+	if (document.getElementById('count').value == undefined){
 		window.alert("You must select a response");
 		return;
 	}
+
+	// if user not enter enough annotation -> ask whether or not to proceed
+	var proceed = askProceed();
+	if (!proceed) {return;}
 
 	ajax_next(); // update locations and source count to database
 
@@ -117,10 +115,23 @@ function setNextQuestion(){
 	document.getElementById("side").style.display='none';
 	reloadAll();
 
+	// load new audio
 	var audio = document.getElementById('audio');
 	var source = document.getElementById('source');
-	source.src = audio_source; // load new audio
+	source.src = audio_source;
 	audio.load();
+}
+
+function askProceed(){
+	var index = 0;
+	while (index < source_count){
+		if (azimuth[index] == undefined || elevation[index] == undefined){
+			if (confirm('You have not annotate all sources. Do you still want to proceed?')) return true;
+			else return false;
+		}
+		index += 1;
+	}
+	return true;
 }
 
 function ajax_interaction(){
@@ -328,7 +339,7 @@ function keyboardEvent(e){
 	}
 	else if (e.ctrlKey && e.which == 83){ // Add Side
 		delete_head,delete_front,delete_side = false;
-		
+
 		if (elevation_count == source_count){
 			window.alert("You have already enter " + source_count + " elevation elements")
 			return;
@@ -370,7 +381,6 @@ function keyboardEvent(e){
 			delete_side = true;
 		}
 	}
-	displayButton();
 }
 
 function reloadAll(){
@@ -415,7 +425,6 @@ document.getElementById('head-item-1').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_head = false;
-		displayButton();
 	}
 });
 document.getElementById('head-item-2').addEventListener("click",function(){
@@ -433,7 +442,6 @@ document.getElementById('head-item-2').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_head = false;
-		displayButton();
 	}
 });
 document.getElementById('head-item-3').addEventListener("click",function(){
@@ -451,7 +459,6 @@ document.getElementById('head-item-3').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_head = false;
-		displayButton();
 	}
 });
 document.getElementById('head-item-4').addEventListener("click",function(){
@@ -469,7 +476,6 @@ document.getElementById('head-item-4').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_head = false;
-		displayButton();
 	}
 });
 document.getElementById('head-item-5').addEventListener("click",function(){
@@ -487,7 +493,6 @@ document.getElementById('head-item-5').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_head = false;
-		displayButton();
 	}
 });
 document.getElementById('head-item-6').addEventListener("click",function(){
@@ -505,7 +510,6 @@ document.getElementById('head-item-6').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_head = false;
-		displayButton();
 	}
 });
 document.getElementById('head-item-7').addEventListener("click",function(){
@@ -523,7 +527,6 @@ document.getElementById('head-item-7').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_head = false;
-		displayButton();
 	}
 });
 document.getElementById('head-item-8').addEventListener("click",function(){
@@ -541,7 +544,6 @@ document.getElementById('head-item-8').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_head = false;
-		displayButton();
 	}
 });
 document.getElementById('head-item-9').addEventListener("click",function(){
@@ -559,7 +561,6 @@ document.getElementById('head-item-9').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_head = false;
-		displayButton();
 	}
 });
 document.getElementById('head-item-10').addEventListener("click",function(){
@@ -577,7 +578,6 @@ document.getElementById('head-item-10').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_head = false;
-		displayButton();
 	}
 });
 
@@ -596,7 +596,6 @@ document.getElementById('front-item-1').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_front = false;
-		displayButton();
 	}
 });
 document.getElementById('front-item-2').addEventListener("click",function(){
@@ -614,7 +613,6 @@ document.getElementById('front-item-2').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_front = false;
-		displayButton();
 	}
 });
 document.getElementById('front-item-3').addEventListener("click",function(){
@@ -632,7 +630,6 @@ document.getElementById('front-item-3').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_front = false;
-		displayButton();
 	}
 });
 document.getElementById('front-item-4').addEventListener("click",function(){
@@ -650,7 +647,6 @@ document.getElementById('front-item-4').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_front = false;
-		displayButton();
 	}
 });
 document.getElementById('front-item-5').addEventListener("click",function(){
@@ -668,7 +664,6 @@ document.getElementById('front-item-5').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_front = false;
-		displayButton();
 	}
 });
 document.getElementById('front-item-6').addEventListener("click",function(){
@@ -686,7 +681,6 @@ document.getElementById('front-item-6').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_front = false;
-		displayButton();
 	}
 });
 document.getElementById('front-item-7').addEventListener("click",function(){
@@ -704,7 +698,6 @@ document.getElementById('front-item-7').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_front = false;
-		displayButton();
 	}
 });
 document.getElementById('front-item-8').addEventListener("click",function(){
@@ -722,7 +715,6 @@ document.getElementById('front-item-8').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_front = false;
-		displayButton();
 	}
 });
 document.getElementById('front-item-9').addEventListener("click",function(){
@@ -740,7 +732,6 @@ document.getElementById('front-item-9').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_front = false;
-		displayButton();
 	}
 });
 document.getElementById('front-item-10').addEventListener("click",function(){
@@ -758,7 +749,6 @@ document.getElementById('front-item-10').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_front = false;
-		displayButton();
 	}
 });
 
@@ -777,7 +767,6 @@ document.getElementById('side-item-1').addEventListener("click",function(){
 		elevation_count -= 1;
 		
 		delete_front = false;
-		displayButton();
 	}
 });
 document.getElementById('side-item-2').addEventListener("click",function(){
@@ -795,7 +784,6 @@ document.getElementById('side-item-2').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_side = false;
-		displayButton();
 	}
 });
 document.getElementById('side-item-3').addEventListener("click",function(){
@@ -813,7 +801,6 @@ document.getElementById('side-item-3').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_side = false;
-		displayButton();
 	}
 });
 document.getElementById('side-item-4').addEventListener("click",function(){
@@ -831,7 +818,6 @@ document.getElementById('side-item-4').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_side = false;
-		displayButton();
 	}
 });
 document.getElementById('side-item-5').addEventListener("click",function(){
@@ -849,7 +835,6 @@ document.getElementById('side-item-5').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_side = false;
-		displayButton();
 	}
 });
 document.getElementById('side-item-6').addEventListener("click",function(){
@@ -867,7 +852,6 @@ document.getElementById('side-item-6').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_side = false;
-		displayButton();
 	}
 });
 document.getElementById('side-item-7').addEventListener("click",function(){
@@ -885,7 +869,6 @@ document.getElementById('side-item-7').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_side = false;
-		displayButton();
 	}
 });
 document.getElementById('side-item-8').addEventListener("click",function(){
@@ -903,7 +886,6 @@ document.getElementById('side-item-8').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_side = false;
-		displayButton();
 	}
 });
 document.getElementById('side-item-9').addEventListener("click",function(){
@@ -921,7 +903,6 @@ document.getElementById('side-item-9').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_side = false;
-		displayButton();
 	}
 });
 document.getElementById('side-item-10').addEventListener("click",function(){
@@ -939,6 +920,5 @@ document.getElementById('side-item-10').addEventListener("click",function(){
 		elevation_count -= 1;
 
 		delete_side = false;
-		displayButton();
 	}
 });
