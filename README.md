@@ -1,6 +1,6 @@
 # Annotation Interface
 
-Set UP
+Set up the virtual environment
 -------
 virtualenv env
 
