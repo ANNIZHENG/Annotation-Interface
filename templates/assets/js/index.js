@@ -27,6 +27,11 @@ let timestamp = undefined;
 document.getElementById('audio').addEventListener("ended",displaySelection);
 document.getElementById('audio').addEventListener("playing",addPlaying);
 document.getElementById('count').addEventListener("change",addSourceCount);
+document.getElementById('message').addEventListener("click",popRules);
+
+function popRules(){
+	window.alert("ctrl+H for adding head location(azimuth)\nctrl+F for adding front location (elevation)\nctrl+S for adding side location (elevation)\n\nshift+H for deleting head location (azimuth)\nshift+F for deleting front location (elevation)\nshift+S for deleting side location (elevation)");
+}
 
 function addSourceCount(){
 	document.getElementById('btn-button-next').style.display='none';
@@ -229,6 +234,7 @@ function dragElement(index,indicator,add_index) {
 			}
 			document.onmouseup = null;
 			document.onmousemove = null;
+			// displayButton();
 		}
 	}
 
@@ -357,6 +363,7 @@ function keyboardEvent(e){
 			delete_side = true;
 		}
 	}
+	displayButton();
 }
 
 function reloadAll(){
