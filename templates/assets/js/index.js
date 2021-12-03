@@ -241,10 +241,12 @@ function dragElement(index,indicator,add_index) {
 				value = curr_elevation;
 				timestamp = Date.now();
 			}
-			let determine = checkRepeatLocation();
+			/*
+			let determine = checkRepeatLocation(); // TODO DEBUG
 			if (determine){
 				ajax_interaction();
 			}
+			*/
 			document.onmouseup = null;
 			document.onmousemove = null;
 		}
@@ -396,6 +398,7 @@ function reloadAll(){
 	}
 }
 
+/*
 function checkRepeatLocation(){
 	var index = 0;
 	while (index < source_count){
@@ -407,6 +410,7 @@ function checkRepeatLocation(){
 	}
 	return true;
 }
+*/
 
 document.getElementById('head-item-1').addEventListener("click",function(){
 	if (delete_head){
