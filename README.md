@@ -2,6 +2,8 @@
 
 ### Set up the virtual environment
 
+#### Please create the database beforehand and change the database path in server/db_tables.py line 11 and 14 to accommodate your environment.
+
 virtualenv env
 
 source env/bin/activate
