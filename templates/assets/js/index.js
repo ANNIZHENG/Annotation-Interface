@@ -253,6 +253,7 @@ function dragElement(index,indicator,add_index) {
 				ajax_interaction();
 			}
 			*/
+			document.getElementById('body').style.cursor = 'default';
 			document.onmouseup = null;
 			document.onmousemove = null;
 		}
@@ -312,6 +313,10 @@ function keyboardEvent(e){
 			window.alert("You have already enter " + source_count + " azimuth elements")
 			return;
 		}
+
+		// change cursor shape
+		document.getElementById('body').style.cursor = 'cell';
+
 		var temp_azimuth_index = 0;
 		var index = 0;
 		while (index < source_count){
@@ -332,6 +337,10 @@ function keyboardEvent(e){
 			window.alert("You have already enter " + source_count + " elevation elements")
 			return;
 		}
+
+		// change cursor shape
+		document.getElementById('body').style.cursor = 'cell';
+
 		var temp_elevation_index = 0;
 		var index = 0;
 		while (index < source_count){
@@ -352,6 +361,10 @@ function keyboardEvent(e){
 			window.alert("You have already enter " + source_count + " elevation elements")
 			return;
 		}
+
+		// change cursor shape
+		document.getElementById('body').style.cursor = 'cell';
+
 		var temp_elevation_index = 0;
 		var index = 0;
 		while (index < source_count){
@@ -370,6 +383,8 @@ function keyboardEvent(e){
 			window.alert("There is no azimuth element");
 		}
 		else{
+			// change cursor shape
+			document.getElementById('body').style.cursor = "url('templates/img/delete.png')";
 			delete_head = true;
 		}
 	}
@@ -378,6 +393,8 @@ function keyboardEvent(e){
 			window.alert("There is no elevation element");
 		}
 		else{
+			// change cursor shape
+			document.getElementById('body').setAttribute('cursor',"url('templates/img/delete.png')");
 			delete_front = true;
 		}
 	}
@@ -386,6 +403,8 @@ function keyboardEvent(e){
 			window.alert("There is no elevation element");
 		}
 		else{
+			// change cursor shape
+			document.getElementById('body').style.cursor = "url('templates/img/delete.png')";
 			delete_side = true;
 		}
 	}
