@@ -124,14 +124,20 @@ function setNextQuestion(){
 
 function askProceed(){
 	var index = 0;
+	var count_enter = 0;
 	while (index < source_count){
-		if (azimuth[index] == undefined || elevation[index] == undefined){
-			if (confirm("You haven't annotated all sources. Do you still want to proceed?")) return true;
-			else return false;
-		}
+		if (azimuth[index] != undefined && elevation[index] != undefined) count_enter += 1;
 		index += 1;
 	}
-	return true;
+	if (count_enter == 0){
+		window.alert("You have to annotate at least one location");
+		return false;
+	}
+	if (count_enter < source_count){
+		if (confirm("You haven't annotated all sources. Do you still want to proceed?")){return true;}
+		else {return false;}
+	}
+	else return true;
 }
 
 function ajax_interaction(){
