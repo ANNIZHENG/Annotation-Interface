@@ -1,7 +1,7 @@
 # Annotation Interface
 
-Set up the virtual environment
--------
+### Set up the virtual environment
+
 virtualenv env
 
 source env/bin/activate
