@@ -126,7 +126,7 @@ function askProceed(){
 	var index = 0;
 	while (index < source_count){
 		if (azimuth[index] == undefined || elevation[index] == undefined){
-			if (confirm('You have not annotate all sources. Do you still want to proceed?')) return true;
+			if (confirm("You haven't annotated all sources. Do you still want to proceed?")) return true;
 			else return false;
 		}
 		index += 1;
