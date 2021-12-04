@@ -329,12 +329,14 @@ function keyboardEvent(e){
 
 		frame = document.getElementById('head');
 		item = document.getElementById('circular'+temp_azimuth_index);
+		console.log(temp_azimuth_index);
 		inner_item = document.getElementById('head-item-'+temp_azimuth_index);
 		ilocation = item.getBoundingClientRect();
 		cx = (ilocation.right + ilocation.left)/2;
 		cy = (ilocation.top + ilocation.bottom)/2;
 
-		frame.addEventListener("click",function (e){ // display items on click
+		frame.addEventListener("mousedown",function (e){ // display items on click
+			// calculate azimuth
 			calculateAzimuth(e.pageX,e.pageY,cx,cy);
 			azimuth[temp_azimuth_index-1] = curr_azimuth;
 			inner_item.setAttribute('style','');
@@ -345,10 +347,9 @@ function keyboardEvent(e){
 			value = curr_azimuth;
 			timestamp = Date.now();
 			ajax_interaction();
+			azimuth_count += 1;
 			document.getElementById('body').style.cursor = 'default';
-		},  {once: true});
-
-		azimuth_count += 1;
+		}, {once: true});
 	}
 	else if (e.ctrlKey && e.which == 70){ // Add Front
 		delete_head,delete_front,delete_side = false;
@@ -394,10 +395,9 @@ function keyboardEvent(e){
 			value = curr_elevation;
 			timestamp = Date.now();
 			ajax_interaction();
+			elevation_count += 1;
 			document.getElementById('body').style.cursor = 'default';
 		},  {once: true});
-
-		elevation_count += 1;
 	}
 	else if (e.ctrlKey && e.which == 83){ // Add Side
 		delete_head,delete_front,delete_side = false;
@@ -444,10 +444,9 @@ function keyboardEvent(e){
 			value = curr_elevation;
 			timestamp = Date.now();
 			ajax_interaction();
+			elevation_count += 1;
 			document.getElementById('body').style.cursor = 'default';
 		},  {once: true});
-
-		elevation_count += 1;
 	}
 	else if (e.shiftKey && e.which == 72){ // Delete Head
 		if (azimuth_count == 0){ // if there is no azimuth entered
@@ -479,6 +478,8 @@ function keyboardEvent(e){
 			delete_side = true;
 		}
 	}
+	console.log("azimuth: "+azimuth.toString());
+	console.log("elevation: "+elevation.toString());
 }
 
 function reloadAll(){
