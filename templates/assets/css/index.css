@@ -85,10 +85,10 @@ audio::-webkit-media-controls-current-time-display{
 
 .circular{
 	position: absolute;
-	width: 19.5px; 
+	width: 17px; 
 	height: 180px; 
-	left: 83px;
-	/*border: 2px solid white;*/
+	left: 82.5px;
+	/* border: 1px solid white; */
 }
 
 #head, #front, #side{

@@ -213,26 +213,17 @@ function dragElement(index,indicator,add_index) {
 		item = document.getElementById('circular'+index);
 		inner_item = document.getElementById('head-item-'+index);
 		frame = document.getElementById('head');
-		action_type = "azimuth";
-		azimuth[add_index] = curr_azimuth; // not formal
 	}
 	else if (indicator == 1){
 		item = document.getElementById('circularF'+index);
 		inner_item = document.getElementById('front-item-'+index);
 		frame = document.getElementById('front');
-		action_type = "elevation";
-		elevation[add_index] = curr_elevation; // not formal
 	}
 	else{
 		item = document.getElementById('circularS'+index);
 		inner_item = document.getElementById('side-item-'+index);
 		frame = document.getElementById('side');
-		action_type = "elevation";
-		elevation[add_index] = curr_elevation; // not formal
 	}
-
-	item.setAttribute('style',''); // display item
-	inner_item.setAttribute('style',''); // display inner item
 
 	item.onmousedown = function (e) {
    		document.onmousemove = mouse;
@@ -247,12 +238,8 @@ function dragElement(index,indicator,add_index) {
 				value = curr_elevation;
 				timestamp = Date.now();
 			}
-			/*
-			let determine = checkRepeatLocation(); // TODO DEBUG
-			if (determine){
-				ajax_interaction();
-			}
-			*/
+			// TODO checkRepeat
+			ajax_interaction();
 			document.getElementById('body').style.cursor = 'default';
 			document.onmouseup = null;
 			document.onmousemove = null;
@@ -270,6 +257,20 @@ function dragElement(index,indicator,add_index) {
 		item.style.transform = 'rotate('+curr_azimuth+'deg)';
 	}
 }
+
+/*
+function checkRepeatLocation(){
+	var index = 0;
+	while (index < source_count){
+		if (azimuth[index] == curr_azimuth && elevation[index] == curr_elevation){
+			window.alert("You have entered the same azimuth and elevation");
+			return false;
+		}
+		index += 1;
+	}
+	return true;
+}
+*/
 
 function calculateAzimuth(x,y,cx,cy){
 	if ( x>cx && y<cy ){
@@ -314,8 +315,7 @@ function keyboardEvent(e){
 			return;
 		}
 
-		// change cursor shape
-		document.getElementById('body').style.cursor = 'cell';
+		document.getElementById('body').style.cursor = 'cell'; // change cursor shape
 
 		var temp_azimuth_index = 0;
 		var index = 0;
@@ -326,9 +326,29 @@ function keyboardEvent(e){
 			}
 			index += 1;
 		}
-		curr_azimuth = 0;
+
+		frame = document.getElementById('head');
+		item = document.getElementById('circular'+temp_azimuth_index);
+		inner_item = document.getElementById('head-item-'+temp_azimuth_index);
+		ilocation = item.getBoundingClientRect();
+		cx = (ilocation.right + ilocation.left)/2;
+		cy = (ilocation.top + ilocation.bottom)/2;
+
+		frame.addEventListener("click",function (e){ // display items on click
+			calculateAzimuth(e.pageX,e.pageY,cx,cy);
+			azimuth[temp_azimuth_index-1] = curr_azimuth;
+			inner_item.setAttribute('style','');
+			item.style.transform = 'rotate('+curr_azimuth+'deg)';
+
+			// ajax_interaction()
+			action_type = "azimuth";
+			value = curr_azimuth;
+			timestamp = Date.now();
+			ajax_interaction();
+			document.getElementById('body').style.cursor = 'default';
+		},  {once: true});
+
 		azimuth_count += 1;
-		dragElement(temp_azimuth_index,0,temp_azimuth_index-1);
 	}
 	else if (e.ctrlKey && e.which == 70){ // Add Front
 		delete_head,delete_front,delete_side = false;
@@ -338,8 +358,7 @@ function keyboardEvent(e){
 			return;
 		}
 
-		// change cursor shape
-		document.getElementById('body').style.cursor = 'cell';
+		document.getElementById('body').style.cursor = 'cell'; // change cursor shape
 
 		var temp_elevation_index = 0;
 		var index = 0;
@@ -350,9 +369,35 @@ function keyboardEvent(e){
 			}
 			index += 1;
 		}
-		curr_elevation = 180;
+
+		frame = document.getElementById('front');
+		item = document.getElementById('circularF'+temp_elevation_index);
+		inner_item = document.getElementById('front-item-'+temp_elevation_index);
+		ilocation = item.getBoundingClientRect();
+		cx = (ilocation.right + ilocation.left)/2;
+		cy = (ilocation.top + ilocation.bottom)/2;
+
+		frame.addEventListener("click",function (e){ // display items on click
+			// locate the element first
+			calculateAzimuth(e.pageX,e.pageY,cx,cy);
+			inner_item.setAttribute('style','');
+			item.style.transform = 'rotate('+curr_azimuth+'deg)';
+
+			// calculate current elevation
+			flocation = frame.getBoundingClientRect();
+			innerlocation = inner_item.getBoundingClientRect();
+			curr_elevation = parseInt(flocation.bottom - innerlocation.top);
+			elevation[temp_elevation_index-1] = curr_elevation;
+
+			// ajax_interaction()
+			action_type = "elevation";
+			value = curr_elevation;
+			timestamp = Date.now();
+			ajax_interaction();
+			document.getElementById('body').style.cursor = 'default';
+		},  {once: true});
+
 		elevation_count += 1;
-		dragElement(temp_elevation_index,1,temp_elevation_index-1);
 	}
 	else if (e.ctrlKey && e.which == 83){ // Add Side
 		delete_head,delete_front,delete_side = false;
@@ -374,9 +419,35 @@ function keyboardEvent(e){
 			}
 			index += 1;
 		}
-		curr_elevation = 180;
+
+		frame = document.getElementById('side');
+		item = document.getElementById('circularS'+temp_elevation_index);
+		inner_item = document.getElementById('side-item-'+temp_elevation_index);
+		ilocation = item.getBoundingClientRect();
+		cx = (ilocation.right + ilocation.left)/2;
+		cy = (ilocation.top + ilocation.bottom)/2;
+
+		frame.addEventListener("click",function (e){ // display items on click
+			// locate the element first
+			calculateAzimuth(e.pageX,e.pageY,cx,cy);
+			inner_item.setAttribute('style','');
+			item.style.transform = 'rotate('+curr_azimuth+'deg)';
+
+			// calculate current elevation
+			flocation = frame.getBoundingClientRect();
+			innerlocation = inner_item.getBoundingClientRect();
+			curr_elevation = parseInt(flocation.bottom - innerlocation.top);
+			elevation[temp_elevation_index-1] = curr_elevation;
+
+			// ajax_interaction()
+			action_type = "elevation";
+			value = curr_elevation;
+			timestamp = Date.now();
+			ajax_interaction();
+			document.getElementById('body').style.cursor = 'default';
+		},  {once: true});
+
 		elevation_count += 1;
-		dragElement(temp_elevation_index,2,temp_elevation_index-1);
 	}
 	else if (e.shiftKey && e.which == 72){ // Delete Head
 		if (azimuth_count == 0){ // if there is no azimuth entered
@@ -413,9 +484,6 @@ function keyboardEvent(e){
 function reloadAll(){
 	var index = 0;
 	while (index < 10){
-		document.getElementById('circular'+(index+1)).style.display = 'none';
-		document.getElementById('circularF'+(index+1)).style.display = 'none';
-		document.getElementById('circularS'+(index+1)).style.display = 'none';
 		document.getElementById('head-item-'+(index+1)).style.display = 'none';
 		document.getElementById('front-item-'+(index+1)).style.display = 'none';
 		document.getElementById('side-item-'+(index+1)).style.display = 'none';
@@ -423,28 +491,11 @@ function reloadAll(){
 	}
 }
 
-/*
-function checkRepeatLocation(){
-	var index = 0;
-	while (index < source_count){
-		if (azimuth[index] == curr_azimuth && elevation[index] == curr_elevation){
-			window.alert("You have entered the same azimuth and elevation");
-			return false;
-		}
-		index += 1;
-	}
-	return true;
-}
-*/
-
-document.getElementById('head-item-1').addEventListener("click",function(){
+document.getElementById('head-item-1').addEventListener("mousedown",function(){
 	if (delete_head){
 		// do not display dots
-		document.getElementById('circular1').style.display = 'none';
 		document.getElementById('head-item-1').style.display = 'none';
-		document.getElementById('circularF1').style.display = 'none';
 		document.getElementById('front-item-1').style.display = 'none';
-		document.getElementById('circularS1').style.display = 'none';
 		document.getElementById('side-item-1').style.display = 'none';
 
 		// -1 elevation and azimuth count
@@ -455,14 +506,12 @@ document.getElementById('head-item-1').addEventListener("click",function(){
 
 		delete_head = false;
 	}
+	else dragElement(1,0,0);
 });
-document.getElementById('head-item-2').addEventListener("click",function(){
+document.getElementById('head-item-2').addEventListener("mousedown",function(){
 	if (delete_head){
-		document.getElementById('circular2').style.display = 'none';
 		document.getElementById('head-item-2').style.display = 'none';
-		document.getElementById('circularF2').style.display = 'none';
 		document.getElementById('front-item-2').style.display = 'none';
-		document.getElementById('circularS2').style.display = 'none';
 		document.getElementById('side-item-2').style.display = 'none';
 
 		azimuth[1] = undefined;
@@ -472,14 +521,12 @@ document.getElementById('head-item-2').addEventListener("click",function(){
 
 		delete_head = false;
 	}
+	else dragElement(2,0,1);
 });
-document.getElementById('head-item-3').addEventListener("click",function(){
+document.getElementById('head-item-3').addEventListener("mousedown",function(){
 	if (delete_head){
-		document.getElementById('circular3').style.display = 'none';
 		document.getElementById('head-item-3').style.display = 'none';
-		document.getElementById('circularF3').style.display = 'none';
 		document.getElementById('front-item-3').style.display = 'none';
-		document.getElementById('circularS3').style.display = 'none';
 		document.getElementById('side-item-3').style.display = 'none';
 
 		azimuth[2] = undefined;
@@ -489,14 +536,12 @@ document.getElementById('head-item-3').addEventListener("click",function(){
 
 		delete_head = false;
 	}
+	else dragElement(3,0,2);
 });
-document.getElementById('head-item-4').addEventListener("click",function(){
+document.getElementById('head-item-4').addEventListener("mousedown",function(){
 	if (delete_head){
-		document.getElementById('circular4').style.display = 'none';
 		document.getElementById('head-item-4').style.display = 'none';
-		document.getElementById('circularF4').style.display = 'none';
 		document.getElementById('front-item-4').style.display = 'none';
-		document.getElementById('circularS4').style.display = 'none';
 		document.getElementById('side-item-4').style.display = 'none';
 
 		azimuth[3] = undefined;
@@ -506,14 +551,12 @@ document.getElementById('head-item-4').addEventListener("click",function(){
 
 		delete_head = false;
 	}
+	else dragElement(4,0,3);
 });
-document.getElementById('head-item-5').addEventListener("click",function(){
+document.getElementById('head-item-5').addEventListener("mousedown",function(){
 	if (delete_head){
-		document.getElementById('circular5').style.display = 'none';
 		document.getElementById('head-item-5').style.display = 'none';
-		document.getElementById('circularF5').style.display = 'none';
 		document.getElementById('front-item-5').style.display = 'none';
-		document.getElementById('circularS5').style.display = 'none';
 		document.getElementById('side-item-5').style.display = 'none';
 
 		azimuth[4] = undefined;
@@ -523,14 +566,12 @@ document.getElementById('head-item-5').addEventListener("click",function(){
 
 		delete_head = false;
 	}
+	else dragElement(5,0,4);
 });
-document.getElementById('head-item-6').addEventListener("click",function(){
+document.getElementById('head-item-6').addEventListener("mousedown",function(){
 	if (delete_head){
-		document.getElementById('circular6').style.display = 'none';
 		document.getElementById('head-item-6').style.display = 'none';
-		document.getElementById('circularF6').style.display = 'none';
 		document.getElementById('front-item-6').style.display = 'none';
-		document.getElementById('circularS6').style.display = 'none';
 		document.getElementById('side-item-6').style.display = 'none';
 
 		azimuth[5] = undefined;
@@ -540,14 +581,12 @@ document.getElementById('head-item-6').addEventListener("click",function(){
 
 		delete_head = false;
 	}
+	else dragElement(6,0,5);
 });
-document.getElementById('head-item-7').addEventListener("click",function(){
+document.getElementById('head-item-7').addEventListener("mousedown",function(){
 	if (delete_head){
-		document.getElementById('circular7').style.display = 'none';
 		document.getElementById('head-item-7').style.display = 'none';
-		document.getElementById('circularF7').style.display = 'none';
 		document.getElementById('front-item-7').style.display = 'none';
-		document.getElementById('circularS7').style.display = 'none';
 		document.getElementById('side-item-7').style.display = 'none';
 
 		azimuth[6] = undefined;
@@ -557,14 +596,12 @@ document.getElementById('head-item-7').addEventListener("click",function(){
 
 		delete_head = false;
 	}
+	else dragElement(7,0,6);
 });
-document.getElementById('head-item-8').addEventListener("click",function(){
+document.getElementById('head-item-8').addEventListener("mousedown",function(){
 	if (delete_head){
-		document.getElementById('circular8').style.display = 'none';
 		document.getElementById('head-item-8').style.display = 'none';
-		document.getElementById('circularF8').style.display = 'none';
 		document.getElementById('front-item-8').style.display = 'none';
-		document.getElementById('circularS8').style.display = 'none';
 		document.getElementById('side-item-8').style.display = 'none';
 
 		azimuth[7] = undefined;
@@ -574,14 +611,12 @@ document.getElementById('head-item-8').addEventListener("click",function(){
 
 		delete_head = false;
 	}
+	else dragElement(8,0,7);
 });
-document.getElementById('head-item-9').addEventListener("click",function(){
+document.getElementById('head-item-9').addEventListener("mousedown",function(){
 	if (delete_head){
-		document.getElementById('circular9').style.display = 'none';
 		document.getElementById('head-item-9').style.display = 'none';
-		document.getElementById('circularF9').style.display = 'none';
 		document.getElementById('front-item-9').style.display = 'none';
-		document.getElementById('circularS9').style.display = 'none';
 		document.getElementById('side-item-9').style.display = 'none';
 
 		azimuth[8] = undefined;
@@ -591,14 +626,12 @@ document.getElementById('head-item-9').addEventListener("click",function(){
 
 		delete_head = false;
 	}
+	else dragElement(9,0,8);
 });
-document.getElementById('head-item-10').addEventListener("click",function(){
+document.getElementById('head-item-10').addEventListener("mousedown",function(){
 	if (delete_head){
-		document.getElementById('circular10').style.display = 'none';
 		document.getElementById('head-item-10').style.display = 'none';
-		document.getElementById('circularF10').style.display = 'none';
 		document.getElementById('front-item-10').style.display = 'none';
-		document.getElementById('circularS10').style.display = 'none';
 		document.getElementById('side-item-10').style.display = 'none';
 
 		azimuth[9] = undefined;
@@ -608,15 +641,13 @@ document.getElementById('head-item-10').addEventListener("click",function(){
 
 		delete_head = false;
 	}
+	else dragElement(10,0,9);
 });
 
-document.getElementById('front-item-1').addEventListener("click",function(){
+document.getElementById('front-item-1').addEventListener("mousedown",function(){
 	if (delete_front){
-		document.getElementById('circular1').style.display = 'none';
 		document.getElementById('head-item-1').style.display = 'none';
-		document.getElementById('circularF1').style.display = 'none';
 		document.getElementById('front-item-1').style.display = 'none';
-		document.getElementById('circularS1').style.display = 'none';
 		document.getElementById('side-item-1').style.display = 'none';
 
 		azimuth[0] = undefined;
@@ -626,14 +657,12 @@ document.getElementById('front-item-1').addEventListener("click",function(){
 
 		delete_front = false;
 	}
+	else dragElement(1,1,0);
 });
-document.getElementById('front-item-2').addEventListener("click",function(){
+document.getElementById('front-item-2').addEventListener("mousedown",function(){
 	if (delete_front){
-		document.getElementById('circular2').style.display = 'none';
 		document.getElementById('head-item-2').style.display = 'none';
-		document.getElementById('circularF2').style.display = 'none';
 		document.getElementById('front-item-2').style.display = 'none';
-		document.getElementById('circularS2').style.display = 'none';
 		document.getElementById('side-item-2').style.display = 'none';
 
 		azimuth[1] = undefined;
@@ -643,14 +672,12 @@ document.getElementById('front-item-2').addEventListener("click",function(){
 
 		delete_front = false;
 	}
+	else dragElement(2,1,1);
 });
-document.getElementById('front-item-3').addEventListener("click",function(){
+document.getElementById('front-item-3').addEventListener("mousedown",function(){
 	if (delete_front){
-		document.getElementById('circular3').style.display = 'none';
 		document.getElementById('head-item-3').style.display = 'none';
-		document.getElementById('circularF3').style.display = 'none';
 		document.getElementById('front-item-3').style.display = 'none';
-		document.getElementById('circularS3').style.display = 'none';
 		document.getElementById('side-item-3').style.display = 'none';
 
 		azimuth[2] = undefined;
@@ -660,14 +687,12 @@ document.getElementById('front-item-3').addEventListener("click",function(){
 
 		delete_front = false;
 	}
+	else dragElement(3,1,2);
 });
-document.getElementById('front-item-4').addEventListener("click",function(){
+document.getElementById('front-item-4').addEventListener("mousedown",function(){
 	if (delete_front){
-		document.getElementById('circular4').style.display = 'none';
 		document.getElementById('head-item-4').style.display = 'none';
-		document.getElementById('circularF4').style.display = 'none';
 		document.getElementById('front-item-4').style.display = 'none';
-		document.getElementById('circularS4').style.display = 'none';
 		document.getElementById('side-item-4').style.display = 'none';
 
 		azimuth[3] = undefined;
@@ -677,14 +702,12 @@ document.getElementById('front-item-4').addEventListener("click",function(){
 
 		delete_front = false;
 	}
+	else dragElement(4,1,3);
 });
-document.getElementById('front-item-5').addEventListener("click",function(){
+document.getElementById('front-item-5').addEventListener("mousedown",function(){
 	if (delete_front){
-		document.getElementById('circular5').style.display = 'none';
 		document.getElementById('head-item-5').style.display = 'none';
-		document.getElementById('circularF5').style.display = 'none';
 		document.getElementById('front-item-5').style.display = 'none';
-		document.getElementById('circularS5').style.display = 'none';
 		document.getElementById('side-item-5').style.display = 'none';
 
 		azimuth[4] = undefined;
@@ -694,14 +717,12 @@ document.getElementById('front-item-5').addEventListener("click",function(){
 
 		delete_front = false;
 	}
+	else dragElement(5,1,4);
 });
-document.getElementById('front-item-6').addEventListener("click",function(){
+document.getElementById('front-item-6').addEventListener("mousedown",function(){
 	if (delete_front){
-		document.getElementById('circular6').style.display = 'none';
 		document.getElementById('head-item-6').style.display = 'none';
-		document.getElementById('circularF6').style.display = 'none';
 		document.getElementById('front-item-6').style.display = 'none';
-		document.getElementById('circularS6').style.display = 'none';
 		document.getElementById('side-item-6').style.display = 'none';
 
 		azimuth[5] = undefined;
@@ -711,14 +732,12 @@ document.getElementById('front-item-6').addEventListener("click",function(){
 
 		delete_front = false;
 	}
+	else dragElement(6,1,5);
 });
-document.getElementById('front-item-7').addEventListener("click",function(){
+document.getElementById('front-item-7').addEventListener("mousedown",function(){
 	if (delete_front){
-		document.getElementById('circular7').style.display = 'none';
 		document.getElementById('head-item-7').style.display = 'none';
-		document.getElementById('circularF7').style.display = 'none';
 		document.getElementById('front-item-7').style.display = 'none';
-		document.getElementById('circularS7').style.display = 'none';
 		document.getElementById('side-item-7').style.display = 'none';
 
 		azimuth[6] = undefined;
@@ -728,14 +747,12 @@ document.getElementById('front-item-7').addEventListener("click",function(){
 
 		delete_front = false;
 	}
+	else dragElement(7,1,6);
 });
-document.getElementById('front-item-8').addEventListener("click",function(){
+document.getElementById('front-item-8').addEventListener("mousedown",function(){
 	if (delete_front){
-		document.getElementById('circular8').style.display = 'none';
 		document.getElementById('head-item-8').style.display = 'none';
-		document.getElementById('circularF8').style.display = 'none';
 		document.getElementById('front-item-8').style.display = 'none';
-		document.getElementById('circularS8').style.display = 'none';
 		document.getElementById('side-item-8').style.display = 'none';
 
 		azimuth[7] = undefined;
@@ -745,14 +762,12 @@ document.getElementById('front-item-8').addEventListener("click",function(){
 
 		delete_front = false;
 	}
+	else dragElement(8,1,7);
 });
-document.getElementById('front-item-9').addEventListener("click",function(){
+document.getElementById('front-item-9').addEventListener("mousedown",function(){
 	if (delete_front){
-		document.getElementById('circular9').style.display = 'none';
 		document.getElementById('head-item-9').style.display = 'none';
-		document.getElementById('circularF9').style.display = 'none';
 		document.getElementById('front-item-9').style.display = 'none';
-		document.getElementById('circularS9').style.display = 'none';
 		document.getElementById('side-item-9').style.display = 'none';
 
 		azimuth[8] = undefined;
@@ -762,14 +777,12 @@ document.getElementById('front-item-9').addEventListener("click",function(){
 
 		delete_front = false;
 	}
+	else dragElement(9,1,8);
 });
-document.getElementById('front-item-10').addEventListener("click",function(){
+document.getElementById('front-item-10').addEventListener("mousedown",function(){
 	if (delete_front){
-		document.getElementById('circular10').style.display = 'none';
 		document.getElementById('head-item-10').style.display = 'none';
-		document.getElementById('circularF10').style.display = 'none';
 		document.getElementById('front-item-10').style.display = 'none';
-		document.getElementById('circularS10').style.display = 'none';
 		document.getElementById('side-item-10').style.display = 'none';
 
 		azimuth[9] = undefined;
@@ -779,15 +792,13 @@ document.getElementById('front-item-10').addEventListener("click",function(){
 
 		delete_front = false;
 	}
+	else dragElement(10,1,9);
 });
 
-document.getElementById('side-item-1').addEventListener("click",function(){
+document.getElementById('side-item-1').addEventListener("mousedown",function(){
 	if (delete_side){
-		document.getElementById('circular1').style.display = 'none';
 		document.getElementById('head-item-1').style.display = 'none';
-		document.getElementById('circularF1').style.display = 'none';
 		document.getElementById('front-item-1').style.display = 'none';
-		document.getElementById('circularS1').style.display = 'none';
 		document.getElementById('side-item-1').style.display = 'none';
 
 		azimuth[0] = undefined;
@@ -797,14 +808,12 @@ document.getElementById('side-item-1').addEventListener("click",function(){
 		
 		delete_front = false;
 	}
+	else dragElement(1,2,0);
 });
-document.getElementById('side-item-2').addEventListener("click",function(){
+document.getElementById('side-item-2').addEventListener("mousedown",function(){
 	if (delete_side){
-		document.getElementById('circular2').style.display = 'none';
 		document.getElementById('head-item-2').style.display = 'none';
-		document.getElementById('circularF2').style.display = 'none';
 		document.getElementById('front-item-2').style.display = 'none';
-		document.getElementById('circularS2').style.display = 'none';
 		document.getElementById('side-item-2').style.display = 'none';
 
 		azimuth[1] = undefined;
@@ -814,14 +823,12 @@ document.getElementById('side-item-2').addEventListener("click",function(){
 
 		delete_side = false;
 	}
+	else dragElement(2,2,1);
 });
-document.getElementById('side-item-3').addEventListener("click",function(){
+document.getElementById('side-item-3').addEventListener("mousedown",function(){
 	if (delete_side){
-		document.getElementById('circular3').style.display = 'none';
 		document.getElementById('head-item-3').style.display = 'none';
-		document.getElementById('circularF3').style.display = 'none';
 		document.getElementById('front-item-3').style.display = 'none';
-		document.getElementById('circularS3').style.display = 'none';
 		document.getElementById('side-item-3').style.display = 'none';
 
 		azimuth[2] = undefined;
@@ -831,14 +838,12 @@ document.getElementById('side-item-3').addEventListener("click",function(){
 
 		delete_side = false;
 	}
+	else dragElement(3,2,2);
 });
-document.getElementById('side-item-4').addEventListener("click",function(){
+document.getElementById('side-item-4').addEventListener("mousedown",function(){
 	if (delete_side){
-		document.getElementById('circular4').style.display = 'none';
 		document.getElementById('head-item-4').style.display = 'none';
-		document.getElementById('circularF4').style.display = 'none';
 		document.getElementById('front-item-4').style.display = 'none';
-		document.getElementById('circularS4').style.display = 'none';
 		document.getElementById('side-item-4').style.display = 'none';
 
 		azimuth[3] = undefined;
@@ -848,14 +853,12 @@ document.getElementById('side-item-4').addEventListener("click",function(){
 
 		delete_side = false;
 	}
+	else dragElement(4,2,3);
 });
-document.getElementById('side-item-5').addEventListener("click",function(){
+document.getElementById('side-item-5').addEventListener("mousedown",function(){
 	if (delete_side){
-		document.getElementById('circular5').style.display = 'none';
 		document.getElementById('head-item-5').style.display = 'none';
-		document.getElementById('circularF5').style.display = 'none';
 		document.getElementById('front-item-5').style.display = 'none';
-		document.getElementById('circularS5').style.display = 'none';
 		document.getElementById('side-item-5').style.display = 'none';
 
 		azimuth[4] = undefined;
@@ -865,14 +868,12 @@ document.getElementById('side-item-5').addEventListener("click",function(){
 
 		delete_side = false;
 	}
+	else dragElement(5,2,4);
 });
-document.getElementById('side-item-6').addEventListener("click",function(){
+document.getElementById('side-item-6').addEventListener("mousedown",function(){
 	if (delete_side){
-		document.getElementById('circular6').style.display = 'none';
 		document.getElementById('head-item-6').style.display = 'none';
-		document.getElementById('circularF6').style.display = 'none';
 		document.getElementById('front-item-6').style.display = 'none';
-		document.getElementById('circularS6').style.display = 'none';
 		document.getElementById('side-item-6').style.display = 'none';
 
 		azimuth[5] = undefined;
@@ -882,14 +883,12 @@ document.getElementById('side-item-6').addEventListener("click",function(){
 
 		delete_side = false;
 	}
+	else dragElement(6,2,5);
 });
-document.getElementById('side-item-7').addEventListener("click",function(){
+document.getElementById('side-item-7').addEventListener("mousedown",function(){
 	if (delete_side){
-		document.getElementById('circular7').style.display = 'none';
 		document.getElementById('head-item-7').style.display = 'none';
-		document.getElementById('circularF7').style.display = 'none';
 		document.getElementById('front-item-7').style.display = 'none';
-		document.getElementById('circularS7').style.display = 'none';
 		document.getElementById('side-item-7').style.display = 'none';
 
 		azimuth[6] = undefined;
@@ -899,14 +898,12 @@ document.getElementById('side-item-7').addEventListener("click",function(){
 
 		delete_side = false;
 	}
+	else dragElement(7,2,6);
 });
-document.getElementById('side-item-8').addEventListener("click",function(){
+document.getElementById('side-item-8').addEventListener("mousedown",function(){
 	if (delete_side){
-		document.getElementById('circular8').style.display = 'none';
 		document.getElementById('head-item-8').style.display = 'none';
-		document.getElementById('circularF8').style.display = 'none';
 		document.getElementById('front-item-8').style.display = 'none';
-		document.getElementById('circularS8').style.display = 'none';
 		document.getElementById('side-item-8').style.display = 'none';
 
 		azimuth[7] = undefined;
@@ -916,14 +913,12 @@ document.getElementById('side-item-8').addEventListener("click",function(){
 
 		delete_side = false;
 	}
+	else dragElement(8,2,7);
 });
-document.getElementById('side-item-9').addEventListener("click",function(){
+document.getElementById('side-item-9').addEventListener("mousedown",function(){
 	if (delete_side){
-		document.getElementById('circular9').style.display = 'none';
 		document.getElementById('head-item-9').style.display = 'none';
-		document.getElementById('circularF9').style.display = 'none';
 		document.getElementById('front-item-9').style.display = 'none';
-		document.getElementById('circularS9').style.display = 'none';
 		document.getElementById('side-item-9').style.display = 'none';
 
 		azimuth[8] = undefined;
@@ -933,14 +928,12 @@ document.getElementById('side-item-9').addEventListener("click",function(){
 
 		delete_side = false;
 	}
+	else dragElement(9,2,8);
 });
-document.getElementById('side-item-10').addEventListener("click",function(){
+document.getElementById('side-item-10').addEventListener("mousedown",function(){
 	if (delete_side){
-		document.getElementById('circular10').style.display = 'none';
 		document.getElementById('head-item-10').style.display = 'none';
-		document.getElementById('circularF10').style.display = 'none';
 		document.getElementById('front-item-10').style.display = 'none';
-		document.getElementById('circularS10').style.display = 'none';
 		document.getElementById('side-item-10').style.display = 'none';
 
 		azimuth[9] = undefined;
@@ -950,4 +943,5 @@ document.getElementById('side-item-10').addEventListener("click",function(){
 
 		delete_side = false;
 	}
+	else dragElement(10,2,9);
 });
