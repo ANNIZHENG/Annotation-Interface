@@ -1,4 +1,4 @@
-# Annotation Interface (still having bugs)
+# Annotation Interface (still fixing and adding more functions)
 
 ### Set up the virtual environment
 
