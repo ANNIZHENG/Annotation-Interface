@@ -133,6 +133,10 @@ function askProceed(){
 		window.alert("You have to annotate at least one location");
 		return false;
 	}
+	if (azimuth_count != elevation_count){
+		window.alert("You must annotate equal number of azimuth and elevation");
+		return false;
+	}
 	if (count_enter < source_count){
 		if (confirm("You haven't annotated all sources. Do you still want to proceed?")){return true;}
 		else {return false;}
@@ -249,7 +253,6 @@ function dragElement(index,indicator,add_index) {
 			del = false;
 		}
 	}
-
 	function mouse(e) {
 		var flocation = frame.getBoundingClientRect();
 		var innerlocation = inner_item.getBoundingClientRect();
@@ -318,6 +321,7 @@ function keyboardEvent(e){
 
 		frame = document.getElementById('head');
 		item = document.getElementById('circular'+temp_azimuth_index);
+		item.setAttribute('style',''); // display item
 		inner_item = document.getElementById('head-item-'+temp_azimuth_index);
 		ilocation = item.getBoundingClientRect();
 		cx = (ilocation.right + ilocation.left)/2;
@@ -366,6 +370,7 @@ function keyboardEvent(e){
 
 		frame = document.getElementById('front');
 		item = document.getElementById('circularF'+temp_elevation_index);
+		item.setAttribute('style',''); // display item
 		inner_item = document.getElementById('front-item-'+temp_elevation_index);
 		ilocation = item.getBoundingClientRect();
 		cx = (ilocation.right + ilocation.left)/2;
@@ -421,17 +426,18 @@ function keyboardEvent(e){
 
 		frame = document.getElementById('side');
 		item = document.getElementById('circularS'+temp_elevation_index);
+		item.setAttribute('style',''); // display item
 		inner_item = document.getElementById('side-item-'+temp_elevation_index);
 		ilocation = item.getBoundingClientRect();
 		cx = (ilocation.right + ilocation.left)/2;
 		cy = (ilocation.top + ilocation.bottom)/2;
 
 		document.addEventListener("click",function (e){
+
 			xdistance = Math.abs(e.pageX-cx);
 			ydistance = Math.abs(e.pageY-cy);
 
 			if (xdistance < 83 && ydistance < 83){
-			
 				// locate the element first
 				calculateAzimuth(e.pageX,e.pageY,cx,cy);
 				inner_item.setAttribute('style','');
@@ -483,6 +489,8 @@ function keyboardEvent(e){
 			del = true;
 		}
 	}
+	console.log("azimuth: "+azimuth.toString()+"\nsazimuth_count: "+azimuth_count);
+	console.log("elevation: "+elevation.toString()+"\nelevation_count: "+elevation_count);
 }
 
 function reloadAll(){
@@ -504,9 +512,9 @@ document.getElementById('head-item-1').addEventListener("mousedown",function(){
 
 		// -1 elevation and azimuth count
 		azimuth[0] = undefined;
-		azimuth_count -= 1;
 		elevation[0] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_head = false;
 	}
@@ -519,9 +527,9 @@ document.getElementById('head-item-2').addEventListener("mousedown",function(){
 		document.getElementById('side-item-2').style.display = 'none';
 
 		azimuth[1] = undefined;
-		azimuth_count -= 1;
 		elevation[1] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_head = false;
 	}
@@ -534,9 +542,9 @@ document.getElementById('head-item-3').addEventListener("mousedown",function(){
 		document.getElementById('side-item-3').style.display = 'none';
 
 		azimuth[2] = undefined;
-		azimuth_count -= 1;
 		elevation[2] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_head = false;
 	}
@@ -549,9 +557,9 @@ document.getElementById('head-item-4').addEventListener("mousedown",function(){
 		document.getElementById('side-item-4').style.display = 'none';
 
 		azimuth[3] = undefined;
-		azimuth_count -= 1;
 		elevation[3] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_head = false;
 	}
@@ -564,9 +572,9 @@ document.getElementById('head-item-5').addEventListener("mousedown",function(){
 		document.getElementById('side-item-5').style.display = 'none';
 
 		azimuth[4] = undefined;
-		azimuth_count -= 1;
 		elevation[4] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_head = false;
 	}
@@ -579,9 +587,9 @@ document.getElementById('head-item-6').addEventListener("mousedown",function(){
 		document.getElementById('side-item-6').style.display = 'none';
 
 		azimuth[5] = undefined;
-		azimuth_count -= 1;
 		elevation[5] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_head = false;
 	}
@@ -594,9 +602,9 @@ document.getElementById('head-item-7').addEventListener("mousedown",function(){
 		document.getElementById('side-item-7').style.display = 'none';
 
 		azimuth[6] = undefined;
-		azimuth_count -= 1;
 		elevation[6] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_head = false;
 	}
@@ -609,9 +617,9 @@ document.getElementById('head-item-8').addEventListener("mousedown",function(){
 		document.getElementById('side-item-8').style.display = 'none';
 
 		azimuth[7] = undefined;
-		azimuth_count -= 1;
 		elevation[7] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_head = false;
 	}
@@ -624,9 +632,9 @@ document.getElementById('head-item-9').addEventListener("mousedown",function(){
 		document.getElementById('side-item-9').style.display = 'none';
 
 		azimuth[8] = undefined;
-		azimuth_count -= 1;
 		elevation[8] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_head = false;
 	}
@@ -639,9 +647,9 @@ document.getElementById('head-item-10').addEventListener("mousedown",function(){
 		document.getElementById('side-item-10').style.display = 'none';
 
 		azimuth[9] = undefined;
-		azimuth_count -= 1;
 		elevation[9] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_head = false;
 	}
@@ -655,9 +663,9 @@ document.getElementById('front-item-1').addEventListener("mousedown",function(){
 		document.getElementById('side-item-1').style.display = 'none';
 
 		azimuth[0] = undefined;
-		azimuth_count -= 1;
 		elevation[0] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_front = false;
 	}
@@ -670,9 +678,9 @@ document.getElementById('front-item-2').addEventListener("mousedown",function(){
 		document.getElementById('side-item-2').style.display = 'none';
 
 		azimuth[1] = undefined;
-		azimuth_count -= 1;
 		elevation[1] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_front = false;
 	}
@@ -685,9 +693,9 @@ document.getElementById('front-item-3').addEventListener("mousedown",function(){
 		document.getElementById('side-item-3').style.display = 'none';
 
 		azimuth[2] = undefined;
-		azimuth_count -= 1;
 		elevation[2] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_front = false;
 	}
@@ -700,9 +708,9 @@ document.getElementById('front-item-4').addEventListener("mousedown",function(){
 		document.getElementById('side-item-4').style.display = 'none';
 
 		azimuth[3] = undefined;
-		azimuth_count -= 1;
 		elevation[3] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_front = false;
 	}
@@ -715,9 +723,9 @@ document.getElementById('front-item-5').addEventListener("mousedown",function(){
 		document.getElementById('side-item-5').style.display = 'none';
 
 		azimuth[4] = undefined;
-		azimuth_count -= 1;
 		elevation[4] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_front = false;
 	}
@@ -730,9 +738,9 @@ document.getElementById('front-item-6').addEventListener("mousedown",function(){
 		document.getElementById('side-item-6').style.display = 'none';
 
 		azimuth[5] = undefined;
-		azimuth_count -= 1;
 		elevation[5] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_front = false;
 	}
@@ -745,9 +753,9 @@ document.getElementById('front-item-7').addEventListener("mousedown",function(){
 		document.getElementById('side-item-7').style.display = 'none';
 
 		azimuth[6] = undefined;
-		azimuth_count -= 1;
 		elevation[6] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_front = false;
 	}
@@ -760,9 +768,9 @@ document.getElementById('front-item-8').addEventListener("mousedown",function(){
 		document.getElementById('side-item-8').style.display = 'none';
 
 		azimuth[7] = undefined;
-		azimuth_count -= 1;
 		elevation[7] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_front = false;
 	}
@@ -775,9 +783,9 @@ document.getElementById('front-item-9').addEventListener("mousedown",function(){
 		document.getElementById('side-item-9').style.display = 'none';
 
 		azimuth[8] = undefined;
-		azimuth_count -= 1;
 		elevation[8] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_front = false;
 	}
@@ -790,9 +798,9 @@ document.getElementById('front-item-10').addEventListener("mousedown",function()
 		document.getElementById('side-item-10').style.display = 'none';
 
 		azimuth[9] = undefined;
-		azimuth_count -= 1;
 		elevation[9] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_front = false;
 	}
@@ -806,9 +814,9 @@ document.getElementById('side-item-1').addEventListener("mousedown",function(){
 		document.getElementById('side-item-1').style.display = 'none';
 
 		azimuth[0] = undefined;
-		azimuth_count -= 1;
 		elevation[0] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 		
 		delete_front = false;
 	}
@@ -821,9 +829,9 @@ document.getElementById('side-item-2').addEventListener("mousedown",function(){
 		document.getElementById('side-item-2').style.display = 'none';
 
 		azimuth[1] = undefined;
-		azimuth_count -= 1;
 		elevation[1] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_side = false;
 	}
@@ -836,9 +844,9 @@ document.getElementById('side-item-3').addEventListener("mousedown",function(){
 		document.getElementById('side-item-3').style.display = 'none';
 
 		azimuth[2] = undefined;
-		azimuth_count -= 1;
 		elevation[2] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_side = false;
 	}
@@ -851,9 +859,9 @@ document.getElementById('side-item-4').addEventListener("mousedown",function(){
 		document.getElementById('side-item-4').style.display = 'none';
 
 		azimuth[3] = undefined;
-		azimuth_count -= 1;
 		elevation[3] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_side = false;
 	}
@@ -866,9 +874,9 @@ document.getElementById('side-item-5').addEventListener("mousedown",function(){
 		document.getElementById('side-item-5').style.display = 'none';
 
 		azimuth[4] = undefined;
-		azimuth_count -= 1;
 		elevation[4] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_side = false;
 	}
@@ -881,9 +889,9 @@ document.getElementById('side-item-6').addEventListener("mousedown",function(){
 		document.getElementById('side-item-6').style.display = 'none';
 
 		azimuth[5] = undefined;
-		azimuth_count -= 1;
 		elevation[5] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_side = false;
 	}
@@ -896,9 +904,9 @@ document.getElementById('side-item-7').addEventListener("mousedown",function(){
 		document.getElementById('side-item-7').style.display = 'none';
 
 		azimuth[6] = undefined;
-		azimuth_count -= 1;
 		elevation[6] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_side = false;
 	}
@@ -911,9 +919,9 @@ document.getElementById('side-item-8').addEventListener("mousedown",function(){
 		document.getElementById('side-item-8').style.display = 'none';
 
 		azimuth[7] = undefined;
-		azimuth_count -= 1;
 		elevation[7] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_side = false;
 	}
@@ -926,9 +934,9 @@ document.getElementById('side-item-9').addEventListener("mousedown",function(){
 		document.getElementById('side-item-9').style.display = 'none';
 
 		azimuth[8] = undefined;
-		azimuth_count -= 1;
 		elevation[8] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_side = false;
 	}
@@ -941,9 +949,9 @@ document.getElementById('side-item-10').addEventListener("mousedown",function(){
 		document.getElementById('side-item-10').style.display = 'none';
 
 		azimuth[9] = undefined;
-		azimuth_count -= 1;
 		elevation[9] = undefined;
-		elevation_count -= 1;
+		if (azimuth_count > 0) azimuth_count -= 1;
+		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_side = false;
 	}
