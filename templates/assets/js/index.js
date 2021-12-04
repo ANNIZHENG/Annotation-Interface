@@ -464,7 +464,7 @@ function keyboardEvent(e){
 			window.alert("There is no azimuth element");
 		}
 		else{
-			document.getElementById('body').style.cursor = "url('templates/img/delete.png')";
+			document.getElementById('body').style.cursor = "url('templates/img/minus.svg'),auto";
 			delete_head = true;
 			del = true;
 		}
@@ -474,7 +474,7 @@ function keyboardEvent(e){
 			window.alert("There is no elevation element");
 		}
 		else{
-			document.getElementById('body').setAttribute('cursor',"url('templates/img/delete.png')");
+			document.getElementById('body').style.cursor = "url('templates/img/minus.svg'),auto";
 			delete_front = true;
 			del = true;
 		}
@@ -484,7 +484,7 @@ function keyboardEvent(e){
 			window.alert("There is no elevation element");
 		}
 		else{
-			document.getElementById('body').style.cursor = "url('templates/img/delete.png')";
+			document.getElementById('body').style.cursor = "url('templates/img/minus.svg'),auto";
 			delete_side = true;
 			del = true;
 		}
