@@ -227,7 +227,6 @@ function dragElement(index,indicator,add_index) {
 	}
 
 	item.onmousedown = function (e) {
-		console.log(del);
    		document.onmousemove = mouse;
 		document.onmouseup = function (e) {
 			if (!del){
@@ -264,27 +263,28 @@ function dragElement(index,indicator,add_index) {
 }
 
 function calculateAzimuth(x,y,cx,cy){
+	var newx, newy;
 	if ( x>cx && y<cy ){
-		var newx = x - cx;
-		var newy = cy - y;
+		newx = x - cx;
+		newy = cy - y;
 		arccosine = Math.acos(newy / (Math.sqrt(Math.pow(newx,2) + Math.pow(newy,2))));
 		curr_azimuth = Math.round(arccosine * (180/Math.PI));
 	}
 	else if ( x>cx && y>cy ){
-		var newx = x - cx;
-		var newy = y - cy;
+		newx = x - cx;
+		newy = y - cy;
 		arccosine = Math.acos(newx / (Math.sqrt(Math.pow(newx,2) + Math.pow(newy,2))));
 		curr_azimuth = Math.round(arccosine * (180/Math.PI))+90;
 	}
 	else if ( x < cx && y > cy ){
-		var newx = cx - x;
-		var newy = cy - y;
+		newx = cx - x;
+		newy = cy - y;
 		arccosine = Math.acos(newx / (Math.sqrt(Math.pow(newx,2) + Math.pow(newy,2))));
 		curr_azimuth = 270 - Math.round(arccosine * (180/Math.PI));
 	}
 	else{
-		var newx = cx - x;
-		var newy = y - cy;
+		newx = cx - x;
+		newy = y - cy;
 		arccosine = Math.acos(newx / (Math.sqrt(Math.pow(newx,2) + Math.pow(newy,2))));
 		curr_azimuth = Math.round(arccosine * (180/Math.PI))+270;
 	}
@@ -297,7 +297,7 @@ let delete_head,delete_front,delete_side = false;
 
 function keyboardEvent(e){
 	if (e.ctrlKey && e.which == 72){ // Add Head
-		delete_head,delete_front,delete_side,del = false;
+		delete_head,delete_front,delete_side = false;
 
 		if (azimuth_count == source_count){
 			window.alert("You have already enter " + source_count + " azimuth elements")
@@ -323,26 +323,29 @@ function keyboardEvent(e){
 		cx = (ilocation.right + ilocation.left)/2;
 		cy = (ilocation.top + ilocation.bottom)/2;
 
-		frame.addEventListener("click",function (e){
+		document.addEventListener("click",function (e){
 
-			// calculate azimuth
-			calculateAzimuth(e.pageX,e.pageY,cx,cy);
-			azimuth[temp_azimuth_index-1] = curr_azimuth;
-			inner_item.setAttribute('style','');
-			item.style.transform = 'rotate('+curr_azimuth+'deg)';
+			xdistance = Math.abs(e.pageX-cx);
+			ydistance = Math.abs(e.pageY-cy);
 
-			// ajax_interaction()
-			action_type = "azimuth";
-			value = curr_azimuth;
-			timestamp = Date.now();
-			ajax_interaction();
-			azimuth_count += 1;
+			if (xdistance < 83 && ydistance < 83){
+				calculateAzimuth(e.pageX,e.pageY,cx,cy);
+				azimuth[temp_azimuth_index-1] = curr_azimuth;
+				inner_item.setAttribute('style','');
+				item.style.transform = 'rotate('+curr_azimuth+'deg)';
 
+				// ajax_interaction()
+				action_type = "azimuth";
+				value = curr_azimuth;
+				timestamp = Date.now();
+				ajax_interaction();
+				azimuth_count += 1;
+			}
 			document.getElementById('body').style.cursor = 'default';
 		}, {once: true});
 	}
 	else if (e.ctrlKey && e.which == 70){ // Add Front
-		delete_head,delete_front,delete_side,del = false;
+		delete_head,delete_front,delete_side = false;
 
 		if (elevation_count == source_count){
 			window.alert("You have already enter " + source_count + " elevation elements")
@@ -368,30 +371,35 @@ function keyboardEvent(e){
 		cx = (ilocation.right + ilocation.left)/2;
 		cy = (ilocation.top + ilocation.bottom)/2;
 
-		frame.addEventListener("click",function (e){
-			// locate the element first
-			calculateAzimuth(e.pageX,e.pageY,cx,cy);
-			inner_item.setAttribute('style','');
-			item.style.transform = 'rotate('+curr_azimuth+'deg)';
+		document.addEventListener("click",function (e){
 
-			// calculate current elevation
-			flocation = frame.getBoundingClientRect();
-			innerlocation = inner_item.getBoundingClientRect();
-			curr_elevation = parseInt(flocation.bottom - innerlocation.top);
-			elevation[temp_elevation_index-1] = curr_elevation;
+			xdistance = Math.abs(e.pageX-cx);
+			ydistance = Math.abs(e.pageY-cy);
 
-			// ajax_interaction()
-			action_type = "elevation";
-			value = curr_elevation;
-			timestamp = Date.now();
-			ajax_interaction();
-			elevation_count += 1;
+			if (xdistance < 83 && ydistance < 83){
+				// locate the element first
+				calculateAzimuth(e.pageX,e.pageY,cx,cy);
+				inner_item.setAttribute('style','');
+				item.style.transform = 'rotate('+curr_azimuth+'deg)';
 
+				// calculate current elevation
+				flocation = frame.getBoundingClientRect();
+				innerlocation = inner_item.getBoundingClientRect();
+				curr_elevation = parseInt(flocation.bottom - innerlocation.top);
+				elevation[temp_elevation_index-1] = curr_elevation;
+
+				// ajax_interaction()
+				action_type = "elevation";
+				value = curr_elevation;
+				timestamp = Date.now();
+				ajax_interaction();
+				elevation_count += 1;
+			}
 			document.getElementById('body').style.cursor = 'default';
 		},  {once: true});
 	}
 	else if (e.ctrlKey && e.which == 83){ // Add Side
-		delete_head,delete_front,delete_side,del = false;
+		delete_head,delete_front,delete_side = false;
 
 		if (elevation_count == source_count){
 			window.alert("You have already enter " + source_count + " elevation elements")
@@ -418,25 +426,30 @@ function keyboardEvent(e){
 		cx = (ilocation.right + ilocation.left)/2;
 		cy = (ilocation.top + ilocation.bottom)/2;
 
-		frame.addEventListener("click",function (e){
-			// locate the element first
-			calculateAzimuth(e.pageX,e.pageY,cx,cy);
-			inner_item.setAttribute('style','');
-			item.style.transform = 'rotate('+curr_azimuth+'deg)';
+		document.addEventListener("click",function (e){
+			xdistance = Math.abs(e.pageX-cx);
+			ydistance = Math.abs(e.pageY-cy);
 
-			// calculate current elevation
-			flocation = frame.getBoundingClientRect();
-			innerlocation = inner_item.getBoundingClientRect();
-			curr_elevation = parseInt(flocation.bottom - innerlocation.top);
-			elevation[temp_elevation_index-1] = curr_elevation;
+			if (xdistance < 83 && ydistance < 83){
+			
+				// locate the element first
+				calculateAzimuth(e.pageX,e.pageY,cx,cy);
+				inner_item.setAttribute('style','');
+				item.style.transform = 'rotate('+curr_azimuth+'deg)';
 
-			// ajax_interaction()
-			action_type = "elevation";
-			value = curr_elevation;
-			timestamp = Date.now();
-			ajax_interaction();
-			elevation_count += 1;
+				// calculate current elevation
+				flocation = frame.getBoundingClientRect();
+				innerlocation = inner_item.getBoundingClientRect();
+				curr_elevation = parseInt(flocation.bottom - innerlocation.top);
+				elevation[temp_elevation_index-1] = curr_elevation;
 
+				// ajax_interaction()
+				action_type = "elevation";
+				value = curr_elevation;
+				timestamp = Date.now();
+				ajax_interaction();
+				elevation_count += 1;
+			}
 			document.getElementById('body').style.cursor = 'default';
 		},  {once: true});
 	}
@@ -446,7 +459,8 @@ function keyboardEvent(e){
 		}
 		else{
 			document.getElementById('body').style.cursor = "url('templates/img/delete.png')";
-			delete_head,del = true;
+			delete_head = true;
+			del = true;
 		}
 	}
 	else if (e.shiftKey && e.which == 70){ // Delete Front
@@ -455,7 +469,8 @@ function keyboardEvent(e){
 		}
 		else{
 			document.getElementById('body').setAttribute('cursor',"url('templates/img/delete.png')");
-			delete_front,del = true;
+			delete_front = true;
+			del = true;
 		}
 	}
 	else if (e.shiftKey && e.which == 83){ // Delete Side
@@ -464,7 +479,8 @@ function keyboardEvent(e){
 		}
 		else{
 			document.getElementById('body').style.cursor = "url('templates/img/delete.png')";
-			delete_side,del = true;
+			delete_side = true;
+			del = true;
 		}
 	}
 }
