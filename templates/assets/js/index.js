@@ -205,6 +205,7 @@ animate();
 
 
 /* container.2d.location */
+let del = false; // used to suppress item.onmousedown event listener while deleting
 
 function dragElement(index,indicator,add_index) {
 	var item, inner_item, frame;
@@ -226,23 +227,27 @@ function dragElement(index,indicator,add_index) {
 	}
 
 	item.onmousedown = function (e) {
+		console.log(del);
    		document.onmousemove = mouse;
 		document.onmouseup = function (e) {
-			if(indicator == 0){
-				azimuth[add_index] = curr_azimuth;
-				value = curr_azimuth;
-				timestamp = Date.now();
+			if (!del){
+				if(indicator == 0){
+					azimuth[add_index] = curr_azimuth;
+					value = curr_azimuth;
+					timestamp = Date.now(); // TODO checkRepeat
+					ajax_interaction();
+				}
+				else{
+					elevation[add_index] = curr_elevation;
+					value = curr_elevation;
+					timestamp = Date.now(); // TODO checkRepeat
+					ajax_interaction();
+				}
 			}
-			else{
-				elevation[add_index] = curr_elevation;
-				value = curr_elevation;
-				timestamp = Date.now();
-			}
-			// TODO checkRepeat
-			ajax_interaction();
 			document.getElementById('body').style.cursor = 'default';
 			document.onmouseup = null;
 			document.onmousemove = null;
+			del = false;
 		}
 	}
 
@@ -257,20 +262,6 @@ function dragElement(index,indicator,add_index) {
 		item.style.transform = 'rotate('+curr_azimuth+'deg)';
 	}
 }
-
-/*
-function checkRepeatLocation(){
-	var index = 0;
-	while (index < source_count){
-		if (azimuth[index] == curr_azimuth && elevation[index] == curr_elevation){
-			window.alert("You have entered the same azimuth and elevation");
-			return false;
-		}
-		index += 1;
-	}
-	return true;
-}
-*/
 
 function calculateAzimuth(x,y,cx,cy){
 	if ( x>cx && y<cy ){
@@ -302,13 +293,11 @@ function calculateAzimuth(x,y,cx,cy){
 // adding dots
 document.addEventListener("keydown", keyboardEvent, false);
 
-let delete_head = false;
-let delete_front = false;
-let delete_side = false;
+let delete_head,delete_front,delete_side = false;
 
 function keyboardEvent(e){
 	if (e.ctrlKey && e.which == 72){ // Add Head
-		delete_head,delete_front,delete_side = false;
+		delete_head,delete_front,delete_side,del = false;
 
 		if (azimuth_count == source_count){
 			window.alert("You have already enter " + source_count + " azimuth elements")
@@ -329,13 +318,13 @@ function keyboardEvent(e){
 
 		frame = document.getElementById('head');
 		item = document.getElementById('circular'+temp_azimuth_index);
-		console.log(temp_azimuth_index);
 		inner_item = document.getElementById('head-item-'+temp_azimuth_index);
 		ilocation = item.getBoundingClientRect();
 		cx = (ilocation.right + ilocation.left)/2;
 		cy = (ilocation.top + ilocation.bottom)/2;
 
-		frame.addEventListener("mousedown",function (e){ // display items on click
+		frame.addEventListener("click",function (e){
+
 			// calculate azimuth
 			calculateAzimuth(e.pageX,e.pageY,cx,cy);
 			azimuth[temp_azimuth_index-1] = curr_azimuth;
@@ -348,11 +337,12 @@ function keyboardEvent(e){
 			timestamp = Date.now();
 			ajax_interaction();
 			azimuth_count += 1;
+
 			document.getElementById('body').style.cursor = 'default';
 		}, {once: true});
 	}
 	else if (e.ctrlKey && e.which == 70){ // Add Front
-		delete_head,delete_front,delete_side = false;
+		delete_head,delete_front,delete_side,del = false;
 
 		if (elevation_count == source_count){
 			window.alert("You have already enter " + source_count + " elevation elements")
@@ -378,7 +368,7 @@ function keyboardEvent(e){
 		cx = (ilocation.right + ilocation.left)/2;
 		cy = (ilocation.top + ilocation.bottom)/2;
 
-		frame.addEventListener("click",function (e){ // display items on click
+		frame.addEventListener("click",function (e){
 			// locate the element first
 			calculateAzimuth(e.pageX,e.pageY,cx,cy);
 			inner_item.setAttribute('style','');
@@ -396,11 +386,12 @@ function keyboardEvent(e){
 			timestamp = Date.now();
 			ajax_interaction();
 			elevation_count += 1;
+
 			document.getElementById('body').style.cursor = 'default';
 		},  {once: true});
 	}
 	else if (e.ctrlKey && e.which == 83){ // Add Side
-		delete_head,delete_front,delete_side = false;
+		delete_head,delete_front,delete_side,del = false;
 
 		if (elevation_count == source_count){
 			window.alert("You have already enter " + source_count + " elevation elements")
@@ -427,7 +418,7 @@ function keyboardEvent(e){
 		cx = (ilocation.right + ilocation.left)/2;
 		cy = (ilocation.top + ilocation.bottom)/2;
 
-		frame.addEventListener("click",function (e){ // display items on click
+		frame.addEventListener("click",function (e){
 			// locate the element first
 			calculateAzimuth(e.pageX,e.pageY,cx,cy);
 			inner_item.setAttribute('style','');
@@ -445,17 +436,17 @@ function keyboardEvent(e){
 			timestamp = Date.now();
 			ajax_interaction();
 			elevation_count += 1;
+
 			document.getElementById('body').style.cursor = 'default';
 		},  {once: true});
 	}
 	else if (e.shiftKey && e.which == 72){ // Delete Head
-		if (azimuth_count == 0){ // if there is no azimuth entered
+		if (azimuth_count == 0){
 			window.alert("There is no azimuth element");
 		}
 		else{
-			// change cursor shape
 			document.getElementById('body').style.cursor = "url('templates/img/delete.png')";
-			delete_head = true;
+			delete_head,del = true;
 		}
 	}
 	else if (e.shiftKey && e.which == 70){ // Delete Front
@@ -463,9 +454,8 @@ function keyboardEvent(e){
 			window.alert("There is no elevation element");
 		}
 		else{
-			// change cursor shape
 			document.getElementById('body').setAttribute('cursor',"url('templates/img/delete.png')");
-			delete_front = true;
+			delete_front,del = true;
 		}
 	}
 	else if (e.shiftKey && e.which == 83){ // Delete Side
@@ -473,13 +463,10 @@ function keyboardEvent(e){
 			window.alert("There is no elevation element");
 		}
 		else{
-			// change cursor shape
 			document.getElementById('body').style.cursor = "url('templates/img/delete.png')";
-			delete_side = true;
+			delete_side,del = true;
 		}
 	}
-	console.log("azimuth: "+azimuth.toString());
-	console.log("elevation: "+elevation.toString());
 }
 
 function reloadAll(){
