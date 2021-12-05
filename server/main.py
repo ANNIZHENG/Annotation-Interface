@@ -39,7 +39,7 @@ def interaction():
         timestamp= datetime.fromtimestamp(data['timestamp']/1000)
         entry = Interaction(annotaion_id,action_type,value,timestamp)
         ses.add(entry)
-        print("-------------------------",annotaion_id, action_type, value)
+        print("------------------- SUBMIT",annotaion_id, action_type, value)
         ses.commit()
     return "success"
 

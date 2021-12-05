@@ -1,25 +1,27 @@
-let annotation_id = 1;
+// used to determine which question user is at
+var annotation_id = 1;
 const totalAnnotation = 3;
 
 // used to retrieve item elements
-let azimuth_count = 0;
-let elevation_count = 0;
+var azimuth_count = 0;
+var elevation_count = 0;
 
 // Location
-let curr_azimuth = 0;
-let curr_elevation = 0;
-let azimuth = new Array();
-let elevation = new Array();
-// Reach to the last question?
-let last_question = false;
+var curr_azimuth = 0;
+var curr_elevation = 0;
+var azimuth = new Array();
+var elevation = new Array();
+
+// reach to the last question?
+var last_question = false;
 
 // Annotation
-let source_count = 0;
+var source_count = 0;
 
 // Interaction
-let action_type = undefined;
-let value = undefined;
-let timestamp = undefined;
+var action_type = undefined;
+var value = undefined;
+var timestamp = undefined;
 
 /* container.2d.user interface */
 
@@ -78,17 +80,10 @@ function displayButton(){
 }
 
 function setNextQuestion(){
-	// do not go to the next qst if source count not completed
-	if (document.getElementById('count').value == undefined){
-		window.alert("You must select a response");
-		return;
-	}
-
 	// if user not enter enough annotation -> ask whether or not to proceed 
 	let proceed = askProceed(); 
-	if (!proceed) {return;}
-
-	ajax_next(); // update locations and source count to database
+	if (!proceed) return false;
+	if (!ajax_next()) return false; // update locations and source count to database
 
 	annotation_id += 1; // increment current question number
 
@@ -115,15 +110,21 @@ function setNextQuestion(){
 	reloadAll();
 
 	// load new audio
-	var audio = document.getElementById('audio');
-	var source = document.getElementById('source');
+	let audio = document.getElementById('audio');
+	let source = document.getElementById('source');
 	source.src = audio_source;
 	audio.load();
+	
+	return true;
 }
 
 function askProceed(){
-	var index = 0;
-	var count_enter = 0;
+	if (document.getElementById('count').value == undefined){
+		window.alert("You must select a response");
+		return false;
+	}
+	let index = 0;
+	let count_enter = 0;
 	while (index < source_count){
 		if (azimuth[index] != undefined && elevation[index] != undefined) count_enter += 1;
 		index += 1;
@@ -137,31 +138,36 @@ function askProceed(){
 		return false;
 	}
 	if (count_enter < source_count){
-		if (confirm("You haven't annotated all sources. Do you still want to proceed?")){return true;}
-		else {return false;}
+		if (confirm("You haven't annotated all sources. Do you still want to proceed?")) return true;
+		else return false;
 	}
 	else return true;
 }
 
 function ajax_interaction(){
-	console.log("-----"+action_type+"------");
-	var req = new XMLHttpRequest(); 
+	console.log("---- ACTION TYPE: "+action_type);
+	let req = new XMLHttpRequest(); 
 	req.open('POST', '/interaction', true);
 	req.setRequestHeader('content-type', 'application/json;charset=UTF-8');
-	var data = JSON.stringify({annotation_id,action_type,value,timestamp});
+	let data = JSON.stringify({annotation_id,action_type,value,timestamp});
 	req.send(data);
 }
 
 function ajax_next(){
-	if (last_question) if (!askProceed()) {return;}
-
-	var req = new XMLHttpRequest(); 
+	if (last_question){
+		if (!askProceed()){
+			event.preventDefault();
+			return false;
+		}
+	}
+	let req = new XMLHttpRequest(); 
 	req.open('POST', '/next', true);
 	req.setRequestHeader('content-type', 'application/json;charset=UTF-8');
-	var data = JSON.stringify({annotation_id,azimuth,elevation,source_count});
+	let data = JSON.stringify({annotation_id,azimuth,elevation,source_count});
 	req.send(data);
 	azimuth = new Array();
 	elevation = new Array();
+	return true;
 }
 
 /* container.3d */
@@ -211,7 +217,7 @@ animate();
 
 
 /* container.2d.location */
-let del = false; // used to suppress item.onmousedown event listener while deleting
+var del = false; // used to suppress item.onmousedown event listener while deleting
 
 function dragElement(index,indicator,add_index) {
 	var item, inner_item, frame;
@@ -267,7 +273,7 @@ function dragElement(index,indicator,add_index) {
 }
 
 function calculateAzimuth(x,y,cx,cy){
-	var newx, newy;
+	let newx, newy;
 	if ( x>cx && y<cy ){
 		newx = x - cx;
 		newy = cy - y;
@@ -297,7 +303,7 @@ function calculateAzimuth(x,y,cx,cy){
 // adding dots
 document.addEventListener("keydown", keyboardEvent, false);
 
-let delete_head,delete_front,delete_side = false;
+var delete_head,delete_front,delete_side = false;
 
 function keyboardEvent(e){
 	if (e.ctrlKey && e.which == 72){ // Add Head
@@ -310,8 +316,8 @@ function keyboardEvent(e){
 
 		document.getElementById('body').style.cursor = 'cell'; // change cursor shape
 
-		var temp_azimuth_index = 0;
-		var index = 0;
+		let temp_azimuth_index = 0;
+		let index = 0;
 		while (index < source_count){
 			if (azimuth[index] == undefined){
 				temp_azimuth_index = index+1;
@@ -359,8 +365,8 @@ function keyboardEvent(e){
 
 		document.getElementById('body').style.cursor = 'cell'; // change cursor shape
 
-		var temp_elevation_index = 0;
-		var index = 0;
+		let temp_elevation_index = 0;
+		let index = 0;
 		while (index < source_count){
 			if (elevation[index] == undefined){
 				temp_elevation_index = index+1;
@@ -415,8 +421,8 @@ function keyboardEvent(e){
 		// change cursor shape
 		document.getElementById('body').style.cursor = 'cell';
 
-		var temp_elevation_index = 0;
-		var index = 0;
+		let temp_elevation_index = 0;
+		let index = 0;
 		while (index < source_count){
 			if (elevation[index] == undefined){
 				temp_elevation_index = index+1;
@@ -495,7 +501,7 @@ function keyboardEvent(e){
 }
 
 function reloadAll(){
-	var index = 0;
+	let index = 0;
 	while (index < 10){
 		document.getElementById('head-item-'+(index+1)).style.display = 'none';
 		document.getElementById('front-item-'+(index+1)).style.display = 'none';
