@@ -490,7 +490,7 @@ function keyboardEvent(e){
 			del = true;
 		}
 	}
-	console.log("azimuth: "+azimuth.toString()+"\nsazimuth_count: "+azimuth_count);
+	console.log("azimuth: "+azimuth.toString()+"\nazimuth_count: "+azimuth_count);
 	console.log("elevation: "+elevation.toString()+"\nelevation_count: "+elevation_count);
 }
 
@@ -506,395 +506,421 @@ function reloadAll(){
 
 document.getElementById('head-item-1').addEventListener("mousedown",function(){
 	if (delete_head){
-		// do not display dots
+		// -1 elevation and azimuth count
+		azimuth[0] = undefined;
+		elevation[0] = undefined;
+		azimuth_count -= 1;
+		if ( document.getElementById('front-item-1').style.display != 'none' || document.getElementById('side-item-1').style.display != 'none' ) elevation_count -= 1;
+
 		document.getElementById('head-item-1').style.display = 'none';
 		document.getElementById('front-item-1').style.display = 'none';
 		document.getElementById('side-item-1').style.display = 'none';
 
-		// -1 elevation and azimuth count
-		azimuth[0] = undefined;
-		elevation[0] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_head = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(1,0,0);
 });
 document.getElementById('head-item-2').addEventListener("mousedown",function(){
 	if (delete_head){
+		azimuth[1] = undefined;
+		elevation[1] = undefined;
+		azimuth_count -= 1;
+		if ( document.getElementById('front-item-2').style.display != 'none' || document.getElementById('side-item-2').style.display != 'none' ) elevation_count -= 1;
+
 		document.getElementById('head-item-2').style.display = 'none';
 		document.getElementById('front-item-2').style.display = 'none';
 		document.getElementById('side-item-2').style.display = 'none';
 
-		azimuth[1] = undefined;
-		elevation[1] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_head = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(2,0,1);
 });
 document.getElementById('head-item-3').addEventListener("mousedown",function(){
 	if (delete_head){
+		azimuth[2] = undefined;
+		elevation[2] = undefined;
+		azimuth_count -= 1;
+		if ( document.getElementById('front-item-3').style.display != 'none' || document.getElementById('side-item-3').style.display != 'none' ) elevation_count -= 1;
+
 		document.getElementById('head-item-3').style.display = 'none';
 		document.getElementById('front-item-3').style.display = 'none';
 		document.getElementById('side-item-3').style.display = 'none';
 
-		azimuth[2] = undefined;
-		elevation[2] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_head = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(3,0,2);
 });
 document.getElementById('head-item-4').addEventListener("mousedown",function(){
 	if (delete_head){
+		azimuth[3] = undefined;
+		elevation[3] = undefined;
+		azimuth_count -= 1;
+		if ( document.getElementById('front-item-4').style.display != 'none' || document.getElementById('side-item-4').style.display != 'none' ) elevation_count -= 1;
+
 		document.getElementById('head-item-4').style.display = 'none';
 		document.getElementById('front-item-4').style.display = 'none';
 		document.getElementById('side-item-4').style.display = 'none';
 
-		azimuth[3] = undefined;
-		elevation[3] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_head = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(4,0,3);
 });
 document.getElementById('head-item-5').addEventListener("mousedown",function(){
 	if (delete_head){
+		azimuth[4] = undefined;
+		elevation[4] = undefined;
+		azimuth_count -= 1;
+		if ( document.getElementById('front-item-5').style.display != 'none' || document.getElementById('side-item-5').style.display != 'none' ) elevation_count -= 1;
+
 		document.getElementById('head-item-5').style.display = 'none';
 		document.getElementById('front-item-5').style.display = 'none';
 		document.getElementById('side-item-5').style.display = 'none';
 
-		azimuth[4] = undefined;
-		elevation[4] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_head = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(5,0,4);
 });
 document.getElementById('head-item-6').addEventListener("mousedown",function(){
 	if (delete_head){
+		azimuth[5] = undefined;
+		elevation[5] = undefined;
+		azimuth_count -= 1;
+		if ( document.getElementById('front-item-6').style.display != 'none' || document.getElementById('side-item-5').style.display != 'none' ) elevation_count -= 1;
+
 		document.getElementById('head-item-6').style.display = 'none';
 		document.getElementById('front-item-6').style.display = 'none';
 		document.getElementById('side-item-6').style.display = 'none';
 
-		azimuth[5] = undefined;
-		elevation[5] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_head = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(6,0,5);
 });
 document.getElementById('head-item-7').addEventListener("mousedown",function(){
 	if (delete_head){
+		azimuth[6] = undefined;
+		elevation[6] = undefined;
+		azimuth_count -= 1;
+		if ( document.getElementById('front-item-7').style.display != 'none' || document.getElementById('side-item-7').style.display != 'none' ) elevation_count -= 1;
+
 		document.getElementById('head-item-7').style.display = 'none';
 		document.getElementById('front-item-7').style.display = 'none';
 		document.getElementById('side-item-7').style.display = 'none';
 
-		azimuth[6] = undefined;
-		elevation[6] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_head = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(7,0,6);
 });
 document.getElementById('head-item-8').addEventListener("mousedown",function(){
 	if (delete_head){
+		azimuth[7] = undefined;
+		elevation[7] = undefined;
+		azimuth_count -= 1;
+		if ( document.getElementById('front-item-8').style.display != 'none' || document.getElementById('side-item-8').style.display != 'none' ) elevation_count -= 1;
+
+
 		document.getElementById('head-item-8').style.display = 'none';
 		document.getElementById('front-item-8').style.display = 'none';
 		document.getElementById('side-item-8').style.display = 'none';
 
-		azimuth[7] = undefined;
-		elevation[7] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_head = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(8,0,7);
 });
 document.getElementById('head-item-9').addEventListener("mousedown",function(){
 	if (delete_head){
+		azimuth[8] = undefined;
+		elevation[8] = undefined;
+		azimuth_count -= 1;
+		if ( document.getElementById('front-item-9').style.display != 'none' || document.getElementById('side-item-9').style.display != 'none' ) elevation_count -= 1;
+
 		document.getElementById('head-item-9').style.display = 'none';
 		document.getElementById('front-item-9').style.display = 'none';
 		document.getElementById('side-item-9').style.display = 'none';
 
-		azimuth[8] = undefined;
-		elevation[8] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_head = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(9,0,8);
 });
 document.getElementById('head-item-10').addEventListener("mousedown",function(){
 	if (delete_head){
+		azimuth[9] = undefined;
+		elevation[9] = undefined;
+		azimuth_count -= 1;
+		if ( document.getElementById('front-item-10').style.display != 'none' || document.getElementById('side-item-10').style.display != 'none' ) elevation_count -= 1;
+
 		document.getElementById('head-item-10').style.display = 'none';
 		document.getElementById('front-item-10').style.display = 'none';
 		document.getElementById('side-item-10').style.display = 'none';
 
-		azimuth[9] = undefined;
-		elevation[9] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_head = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(10,0,9);
 });
 
 document.getElementById('front-item-1').addEventListener("mousedown",function(){
 	if (delete_front){
+		azimuth[0] = undefined;
+		elevation[0] = undefined;
+		if (document.getElementById('head-item-1').style.display != 'none') azimuth_count -= 1;
+		elevation_count -= 1;
+
 		document.getElementById('head-item-1').style.display = 'none';
 		document.getElementById('front-item-1').style.display = 'none';
 		document.getElementById('side-item-1').style.display = 'none';
 
-		azimuth[0] = undefined;
-		elevation[0] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_front = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(1,1,0);
 });
 document.getElementById('front-item-2').addEventListener("mousedown",function(){
 	if (delete_front){
+		azimuth[1] = undefined;
+		elevation[1] = undefined;
+		if (document.getElementById('head-item-2').style.display != 'none') azimuth_count -= 1;
+		elevation_count -= 1;
+
 		document.getElementById('head-item-2').style.display = 'none';
 		document.getElementById('front-item-2').style.display = 'none';
 		document.getElementById('side-item-2').style.display = 'none';
 
-		azimuth[1] = undefined;
-		elevation[1] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_front = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(2,1,1);
 });
 document.getElementById('front-item-3').addEventListener("mousedown",function(){
 	if (delete_front){
+		azimuth[2] = undefined;
+		elevation[2] = undefined;
+		if (document.getElementById('head-item-3').style.display != 'none') azimuth_count -= 1;
+		elevation_count -= 1;
+
 		document.getElementById('head-item-3').style.display = 'none';
 		document.getElementById('front-item-3').style.display = 'none';
 		document.getElementById('side-item-3').style.display = 'none';
 
-		azimuth[2] = undefined;
-		elevation[2] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_front = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(3,1,2);
 });
 document.getElementById('front-item-4').addEventListener("mousedown",function(){
 	if (delete_front){
+		azimuth[3] = undefined;
+		elevation[3] = undefined;
+		if (document.getElementById('head-item-4').style.display != 'none') azimuth_count -= 1;
+		elevation_count -= 1;
+
 		document.getElementById('head-item-4').style.display = 'none';
 		document.getElementById('front-item-4').style.display = 'none';
 		document.getElementById('side-item-4').style.display = 'none';
 
-		azimuth[3] = undefined;
-		elevation[3] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_front = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(4,1,3);
 });
 document.getElementById('front-item-5').addEventListener("mousedown",function(){
 	if (delete_front){
+		azimuth[4] = undefined;
+		elevation[4] = undefined;
+		if (document.getElementById('head-item-5').style.display != 'none') azimuth_count -= 1;
+		elevation_count -= 1;
+
 		document.getElementById('head-item-5').style.display = 'none';
 		document.getElementById('front-item-5').style.display = 'none';
 		document.getElementById('side-item-5').style.display = 'none';
 
-		azimuth[4] = undefined;
-		elevation[4] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_front = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(5,1,4);
 });
 document.getElementById('front-item-6').addEventListener("mousedown",function(){
 	if (delete_front){
+		azimuth[5] = undefined;
+		elevation[5] = undefined;
+		if (document.getElementById('head-item-6').style.display != 'none') azimuth_count -= 1;
+		elevation_count -= 1;
+
 		document.getElementById('head-item-6').style.display = 'none';
 		document.getElementById('front-item-6').style.display = 'none';
 		document.getElementById('side-item-6').style.display = 'none';
 
-		azimuth[5] = undefined;
-		elevation[5] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_front = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(6,1,5);
 });
 document.getElementById('front-item-7').addEventListener("mousedown",function(){
 	if (delete_front){
+		azimuth[6] = undefined;
+		elevation[6] = undefined;
+		if (document.getElementById('head-item-7').style.display != 'none') azimuth_count -= 1;
+		elevation_count -= 1;
+
 		document.getElementById('head-item-7').style.display = 'none';
 		document.getElementById('front-item-7').style.display = 'none';
 		document.getElementById('side-item-7').style.display = 'none';
 
-		azimuth[6] = undefined;
-		elevation[6] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_front = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(7,1,6);
 });
 document.getElementById('front-item-8').addEventListener("mousedown",function(){
 	if (delete_front){
+		azimuth[7] = undefined;
+		elevation[7] = undefined;
+		if (document.getElementById('head-item-8').style.display != 'none') azimuth_count -= 1;
+		elevation_count -= 1;
+
 		document.getElementById('head-item-8').style.display = 'none';
 		document.getElementById('front-item-8').style.display = 'none';
 		document.getElementById('side-item-8').style.display = 'none';
 
-		azimuth[7] = undefined;
-		elevation[7] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_front = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(8,1,7);
 });
 document.getElementById('front-item-9').addEventListener("mousedown",function(){
 	if (delete_front){
+		azimuth[8] = undefined;
+		elevation[8] = undefined;
+		if (document.getElementById('head-item-9').style.display != 'none') azimuth_count -= 1;
+		elevation_count -= 1;
+
 		document.getElementById('head-item-9').style.display = 'none';
 		document.getElementById('front-item-9').style.display = 'none';
 		document.getElementById('side-item-9').style.display = 'none';
 
-		azimuth[8] = undefined;
-		elevation[8] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_front = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(9,1,8);
 });
 document.getElementById('front-item-10').addEventListener("mousedown",function(){
 	if (delete_front){
+		azimuth[9] = undefined;
+		elevation[9] = undefined;
+		if (document.getElementById('head-item-10').style.display != 'none') azimuth_count -= 1;
+		elevation_count -= 1;
+
 		document.getElementById('head-item-10').style.display = 'none';
 		document.getElementById('front-item-10').style.display = 'none';
 		document.getElementById('side-item-10').style.display = 'none';
 
-		azimuth[9] = undefined;
-		elevation[9] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_front = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(10,1,9);
 });
 
 document.getElementById('side-item-1').addEventListener("mousedown",function(){
 	if (delete_side){
+		azimuth[0] = undefined;
+		elevation[0] = undefined;
+		if (document.getElementById('head-item-1').style.display != 'none') azimuth_count -= 1;
+		elevation_count -= 1;
+
 		document.getElementById('head-item-1').style.display = 'none';
 		document.getElementById('front-item-1').style.display = 'none';
 		document.getElementById('side-item-1').style.display = 'none';
-
-		azimuth[0] = undefined;
-		elevation[0] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
 		
 		delete_front = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(1,2,0);
 });
 document.getElementById('side-item-2').addEventListener("mousedown",function(){
 	if (delete_side){
+		azimuth[1] = undefined;
+		elevation[1] = undefined;
+		if (document.getElementById('head-item-2').style.display != 'none') azimuth_count -= 1;
+		elevation_count -= 1;
+
 		document.getElementById('head-item-2').style.display = 'none';
 		document.getElementById('front-item-2').style.display = 'none';
 		document.getElementById('side-item-2').style.display = 'none';
 
-		azimuth[1] = undefined;
-		elevation[1] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_side = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(2,2,1);
 });
 document.getElementById('side-item-3').addEventListener("mousedown",function(){
 	if (delete_side){
+		azimuth[2] = undefined;
+		elevation[2] = undefined;
+		if (document.getElementById('head-item-3').style.display != 'none') azimuth_count -= 1;
+		elevation_count -= 1;
+
 		document.getElementById('head-item-3').style.display = 'none';
 		document.getElementById('front-item-3').style.display = 'none';
 		document.getElementById('side-item-3').style.display = 'none';
 
-		azimuth[2] = undefined;
-		elevation[2] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_side = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(3,2,2);
 });
 document.getElementById('side-item-4').addEventListener("mousedown",function(){
 	if (delete_side){
+		azimuth[3] = undefined;
+		elevation[3] = undefined;
+		if (document.getElementById('head-item-4').style.display != 'none') azimuth_count -= 1;
+		elevation_count -= 1;
+
 		document.getElementById('head-item-4').style.display = 'none';
 		document.getElementById('front-item-4').style.display = 'none';
 		document.getElementById('side-item-4').style.display = 'none';
 
-		azimuth[3] = undefined;
-		elevation[3] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_side = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(4,2,3);
 });
 document.getElementById('side-item-5').addEventListener("mousedown",function(){
 	if (delete_side){
+		azimuth[4] = undefined;
+		elevation[4] = undefined;
+		if (document.getElementById('head-item-5').style.display != 'none') azimuth_count -= 1;
+		elevation_count -= 1;
+
 		document.getElementById('head-item-5').style.display = 'none';
 		document.getElementById('front-item-5').style.display = 'none';
 		document.getElementById('side-item-5').style.display = 'none';
 
-		azimuth[4] = undefined;
-		elevation[4] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_side = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(5,2,4);
 });
 document.getElementById('side-item-6').addEventListener("mousedown",function(){
 	if (delete_side){
+		azimuth[5] = undefined;
+		elevation[5] = undefined;
+		if (document.getElementById('head-item-6').style.display != 'none') azimuth_count -= 1;
+		elevation_count -= 1;
+
 		document.getElementById('head-item-6').style.display = 'none';
 		document.getElementById('front-item-6').style.display = 'none';
 		document.getElementById('side-item-6').style.display = 'none';
 
-		azimuth[5] = undefined;
-		elevation[5] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_side = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(6,2,5);
 });
@@ -910,51 +936,55 @@ document.getElementById('side-item-7').addEventListener("mousedown",function(){
 		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_side = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(7,2,6);
 });
 document.getElementById('side-item-8').addEventListener("mousedown",function(){
 	if (delete_side){
+		azimuth[7] = undefined;
+		elevation[7] = undefined;
+		if (document.getElementById('head-item-8').style.display != 'none') azimuth_count -= 1;
+		elevation_count -= 1;
+
 		document.getElementById('head-item-8').style.display = 'none';
 		document.getElementById('front-item-8').style.display = 'none';
 		document.getElementById('side-item-8').style.display = 'none';
 
-		azimuth[7] = undefined;
-		elevation[7] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_side = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(8,2,7);
 });
 document.getElementById('side-item-9').addEventListener("mousedown",function(){
 	if (delete_side){
+		azimuth[8] = undefined;
+		elevation[8] = undefined;
+		if (document.getElementById('head-item-9').style.display != 'none') azimuth_count -= 1;
+		elevation_count -= 1;
+
 		document.getElementById('head-item-9').style.display = 'none';
 		document.getElementById('front-item-9').style.display = 'none';
 		document.getElementById('side-item-9').style.display = 'none';
 
-		azimuth[8] = undefined;
-		elevation[8] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_side = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(9,2,8);
 });
 document.getElementById('side-item-10').addEventListener("mousedown",function(){
 	if (delete_side){
+		azimuth[9] = undefined;
+		elevation[9] = undefined;
+		if (document.getElementById('head-item-10').style.display != 'none') azimuth_count -= 1;
+		elevation_count -= 1;
+
 		document.getElementById('head-item-10').style.display = 'none';
 		document.getElementById('front-item-10').style.display = 'none';
 		document.getElementById('side-item-10').style.display = 'none';
 
-		azimuth[9] = undefined;
-		elevation[9] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
-
 		delete_side = false;
+		document.getElementById('body').style.cursor = 'default';
 	}
 	else dragElement(10,2,9);
 });
