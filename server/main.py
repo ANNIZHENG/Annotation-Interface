@@ -59,6 +59,7 @@ def next():
         source_count = data['source_count']
         index = 0
         while (index < len(azimuth_list)):
+            if ( (azimuth_list[index] == None) or (azimuth_list[index] == '') or (elevation_list[index] == None) or (elevation_list[index] == '') ): continue
             entry2 = Location(annotaion_id,azimuth_list[index],elevation_list[index])
             ses.add(entry2)
             ses.commit()
