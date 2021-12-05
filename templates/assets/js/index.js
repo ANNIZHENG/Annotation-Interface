@@ -10,7 +10,6 @@ let curr_azimuth = 0;
 let curr_elevation = 0;
 let azimuth = new Array();
 let elevation = new Array();
-
 // Reach to the last question?
 let last_question = false;
 
@@ -85,8 +84,8 @@ function setNextQuestion(){
 		return;
 	}
 
-	// if user not enter enough annotation -> ask whether or not to proceed
-	var proceed = askProceed();
+	// if user not enter enough annotation -> ask whether or not to proceed 
+	let proceed = askProceed(); 
 	if (!proceed) {return;}
 
 	ajax_next(); // update locations and source count to database
@@ -145,6 +144,7 @@ function askProceed(){
 }
 
 function ajax_interaction(){
+	console.log("-----"+action_type+"------");
 	var req = new XMLHttpRequest(); 
 	req.open('POST', '/interaction', true);
 	req.setRequestHeader('content-type', 'application/json;charset=UTF-8');
@@ -153,6 +153,8 @@ function ajax_interaction(){
 }
 
 function ajax_next(){
+	if (last_question) if (!askProceed()) {return;}
+
 	var req = new XMLHttpRequest(); 
 	req.open('POST', '/next', true);
 	req.setRequestHeader('content-type', 'application/json;charset=UTF-8');
@@ -238,14 +240,13 @@ function dragElement(index,indicator,add_index) {
 					azimuth[add_index] = curr_azimuth;
 					value = curr_azimuth;
 					timestamp = Date.now(); // TODO checkRepeat
-					ajax_interaction();
 				}
 				else{
 					elevation[add_index] = curr_elevation;
 					value = curr_elevation;
 					timestamp = Date.now(); // TODO checkRepeat
-					ajax_interaction();
 				}
+				ajax_interaction();
 			}
 			document.getElementById('body').style.cursor = 'default';
 			document.onmouseup = null;
@@ -332,13 +333,13 @@ function keyboardEvent(e){
 			xdistance = Math.abs(e.pageX-cx);
 			ydistance = Math.abs(e.pageY-cy);
 
-			if (xdistance < 83 && ydistance < 83){
+			if (xdistance < 90 && ydistance < 90){
 				calculateAzimuth(e.pageX,e.pageY,cx,cy);
 				azimuth[temp_azimuth_index-1] = curr_azimuth;
 				inner_item.setAttribute('style','');
 				item.style.transform = 'rotate('+curr_azimuth+'deg)';
 
-				// ajax_interaction()
+				// ajax
 				action_type = "azimuth";
 				value = curr_azimuth;
 				timestamp = Date.now();
@@ -381,7 +382,7 @@ function keyboardEvent(e){
 			xdistance = Math.abs(e.pageX-cx);
 			ydistance = Math.abs(e.pageY-cy);
 
-			if (xdistance < 83 && ydistance < 83){
+			if (xdistance < 90 && ydistance < 90){
 				// locate the element first
 				calculateAzimuth(e.pageX,e.pageY,cx,cy);
 				inner_item.setAttribute('style','');
@@ -393,7 +394,7 @@ function keyboardEvent(e){
 				curr_elevation = parseInt(flocation.bottom - innerlocation.top);
 				elevation[temp_elevation_index-1] = curr_elevation;
 
-				// ajax_interaction()
+				// ajax
 				action_type = "elevation";
 				value = curr_elevation;
 				timestamp = Date.now();
@@ -437,7 +438,7 @@ function keyboardEvent(e){
 			xdistance = Math.abs(e.pageX-cx);
 			ydistance = Math.abs(e.pageY-cy);
 
-			if (xdistance < 83 && ydistance < 83){
+			if (xdistance < 90 && ydistance < 90){
 				// locate the element first
 				calculateAzimuth(e.pageX,e.pageY,cx,cy);
 				inner_item.setAttribute('style','');
@@ -449,7 +450,7 @@ function keyboardEvent(e){
 				curr_elevation = parseInt(flocation.bottom - innerlocation.top);
 				elevation[temp_elevation_index-1] = curr_elevation;
 
-				// ajax_interaction()
+				// ajax
 				action_type = "elevation";
 				value = curr_elevation;
 				timestamp = Date.now();

@@ -26,7 +26,7 @@ survey_id = uuid.uuid4()
 def home():
     entry = Survey(survey_id)
     ses.add(entry)
-    ses.commit()
+    # ses.commit()
     return render_template('index.html')
 
 @app.route('/interaction', methods=['POST'])
@@ -39,7 +39,8 @@ def interaction():
         timestamp= datetime.fromtimestamp(data['timestamp']/1000)
         entry = Interaction(annotaion_id,action_type,value,timestamp)
         ses.add(entry)
-        ses.commit()
+        print("-------------------------",annotaion_id, action_type, value)
+        # ses.commit()
     return "success"
 
 @app.route('/next', methods=['POST'])
@@ -50,7 +51,7 @@ def next():
         source_count = data['source_count']
         entry1 = Annotation(survey_id,annotaion_id,source_count)
         ses.add(entry1)
-        ses.commit()
+        # ses.commit()
 
         annotaion_id = int(data['annotation_id'])
         azimuth_list = data['azimuth']
@@ -60,7 +61,7 @@ def next():
         while (index < len(azimuth_list)):
             entry2 = Location(annotaion_id,azimuth_list[index],elevation_list[index])
             ses.add(entry2)
-            ses.commit()
+            # ses.commit()
             index += 1
     return "success"
 
