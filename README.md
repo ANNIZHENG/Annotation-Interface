@@ -1,4 +1,4 @@
-# Annotation Interface (having bugs in main.py)
+# Annotation Interface *still fixing*
 
 ### Set up the virtual environment
 
