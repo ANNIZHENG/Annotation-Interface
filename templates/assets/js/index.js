@@ -2,10 +2,6 @@
 var annotation_id = 1;
 const totalAnnotation = 3;
 
-// used to retrieve item elements
-var azimuth_count = 0;
-var elevation_count = 0;
-
 // Location
 var curr_azimuth = 0;
 var curr_elevation = 0;
@@ -56,8 +52,6 @@ function addSourceCount(){
 	// reset all location elements
 	azimuth = new Array();
 	elevation = new Array();
-	azimuth_count = 0;
-	elevation_count = 0;
 	reloadAll();
 }
 
@@ -86,9 +80,6 @@ function setNextQuestion(){
 	if (!ajax_next()) return false; // update locations and source count to database
 
 	annotation_id += 1; // increment current question number
-
-	azimuth_count = 0; // clear azimuth count
-	elevation_count = 0; // clear elevation count
 
 	// when reaching to the last question
 	if (annotation_id == totalAnnotation) last_question = true;
@@ -124,24 +115,33 @@ function askProceed(){
 		return false;
 	}
 	let index = 0;
-	let count_enter = 0;
+	let acount,ecount = 0;
 	while (index < source_count){
-		if (azimuth[index] != undefined && elevation[index] != undefined) count_enter += 1;
+		if (azimuth[index] != undefined){
+			acount += 1;
+			if (elevation[index] == undefined){
+				window.alert("You must annotate both the azimuth and elevation (dots with the same color)"); 
+				return false;
+			}
+		}
+		else if (elevation[index] != undefined) {
+			ecount += 1;
+			if (azimuth[index] == undefined){
+				window.alert("You must annotate both the azimuth and elevation (dots with the same color)"); 
+				return false;
+			}
+		}
 		index += 1;
 	}
-	if (count_enter == 0){
+	if (acount == 0 && ecount == 0){
 		window.alert("You have to annotate at least one location");
 		return false;
 	}
-	if (azimuth_count != elevation_count){
-		window.alert("You must annotate equal number of azimuth and elevation");
-		return false;
-	}
-	if (count_enter < source_count){
+	if (acount < source_count || ecount < source_count){
 		if (confirm("You haven't annotated all sources. Do you still want to proceed?")) return true;
 		else return false;
 	}
-	else return true;
+	return true;
 }
 
 function ajax_interaction(){
@@ -169,52 +169,6 @@ function ajax_next(){
 	elevation = new Array();
 	return true;
 }
-
-/* container.3d */
-
-container = document.getElementById('3d-head');
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x000000);
-var light = new THREE.HemisphereLight(0xffffff, 1);
-scene.add(light);
-
-var pointLight = new THREE.PointLight(0xffffff, 0.7);
-pointLight.position.set(60, 10, 150);
-scene.add(pointLight);
-
-const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-camera.position.z = 25;
-
-const ringGeometry1 = new THREE.RingGeometry(18.5,19,100);
-const ringMaterial1 = new THREE.MeshLambertMaterial({color: 0x0000ff,side: THREE.DoubleSide});
-
-const ringGeometry2 = new THREE.RingGeometry(15,15.3,100);
-const ringMaterial2 = new THREE.MeshLambertMaterial({color: 0x0000ff,side: THREE.DoubleSide});
-
-var sphereGeometry = new THREE.SphereGeometry(8,30,30);
-var sphereMaterial = new THREE.MeshLambertMaterial({
-	map: new THREE.TextureLoader().load('/templates/img/face.png')
-});
-
-var ring1 = new THREE.Mesh(ringGeometry1, ringMaterial1);
-var ring2 = new THREE.Mesh(ringGeometry2, ringMaterial2);
-ring2.rotation.x = 30;
-
-var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-scene.add(sphere);
-scene.add(ring1);
-scene.add(ring2);
-
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(400,400);
-container.appendChild(renderer.domElement);
-
-function animate(){
-	requestAnimationFrame(animate);
-	renderer.render(scene,camera); 
-}
-animate();
-
 
 /* container.2d.location */
 var del = false; // used to suppress item.onmousedown event listener while deleting
@@ -309,22 +263,24 @@ function keyboardEvent(e){
 	if (e.ctrlKey && e.which == 72){ // Add Head
 		delete_head,delete_front,delete_side = false;
 
-		if (azimuth_count == source_count){
-			window.alert("You have already enter " + source_count + " azimuth elements")
+		let find_undefined = false
+		let temp_azimuth_index = 0;
+		let index = 0;
+		let acount = 0;
+		while (index < source_count){
+			if (azimuth[index] == undefined && !find_undefined){
+				temp_azimuth_index = index+1;
+				find_undefined = true;
+			}
+			if (azimuth[index] != undefined) {acount += 1;}
+			index += 1;
+		}
+		if (acount == source_count){
+			window.alert("You have already enter " + source_count + " azimuth elements");
 			return;
 		}
 
 		document.getElementById('body').style.cursor = 'cell'; // change cursor shape
-
-		let temp_azimuth_index = 0;
-		let index = 0;
-		while (index < source_count){
-			if (azimuth[index] == undefined){
-				temp_azimuth_index = index+1;
-				break;
-			}
-			index += 1;
-		}
 
 		frame = document.getElementById('head');
 		item = document.getElementById('circular'+temp_azimuth_index);
@@ -350,7 +306,6 @@ function keyboardEvent(e){
 				value = curr_azimuth;
 				timestamp = Date.now();
 				ajax_interaction();
-				azimuth_count += 1;
 			}
 			document.getElementById('body').style.cursor = 'default';
 		}, {once: true});
@@ -358,22 +313,24 @@ function keyboardEvent(e){
 	else if (e.ctrlKey && e.which == 70){ // Add Front
 		delete_head,delete_front,delete_side = false;
 
-		if (elevation_count == source_count){
-			window.alert("You have already enter " + source_count + " elevation elements")
+		let find_undefined = false
+		let temp_elevation_index = 0;
+		let index = 0;
+		let ecount = 0;
+		while (index < source_count){
+			if (elevation[index] == undefined && !find_undefined){
+				temp_elevation_index = index+1;
+				find_undefined = true;
+			}
+			if (elevation[index] != undefined) {ecount += 1;}
+			index += 1;
+		}
+		if (ecount == source_count){
+			window.alert("You have already enter " + source_count + " elevation elements");
 			return;
 		}
 
 		document.getElementById('body').style.cursor = 'cell'; // change cursor shape
-
-		let temp_elevation_index = 0;
-		let index = 0;
-		while (index < source_count){
-			if (elevation[index] == undefined){
-				temp_elevation_index = index+1;
-				break;
-			}
-			index += 1;
-		}
 
 		frame = document.getElementById('front');
 		item = document.getElementById('circularF'+temp_elevation_index);
@@ -405,7 +362,6 @@ function keyboardEvent(e){
 				value = curr_elevation;
 				timestamp = Date.now();
 				ajax_interaction();
-				elevation_count += 1;
 			}
 			document.getElementById('body').style.cursor = 'default';
 		},  {once: true});
@@ -413,23 +369,25 @@ function keyboardEvent(e){
 	else if (e.ctrlKey && e.which == 83){ // Add Side
 		delete_head,delete_front,delete_side = false;
 
-		if (elevation_count == source_count){
-			window.alert("You have already enter " + source_count + " elevation elements")
+		let find_undefined = false
+		let temp_elevation_index = 0;
+		let index = 0;
+		let ecount = 0;
+		while (index < source_count){
+			if (elevation[index] == undefined && !find_undefined){
+				temp_elevation_index = index+1;
+				find_undefined = true;
+			}
+			if (elevation[index] != undefined) {ecount += 1;}
+			index += 1;
+		}
+		if (ecount == source_count){
+			window.alert("You have already enter " + source_count + " elevation elements");
 			return;
 		}
 
 		// change cursor shape
 		document.getElementById('body').style.cursor = 'cell';
-
-		let temp_elevation_index = 0;
-		let index = 0;
-		while (index < source_count){
-			if (elevation[index] == undefined){
-				temp_elevation_index = index+1;
-				break;
-			}
-			index += 1;
-		}
 
 		frame = document.getElementById('side');
 		item = document.getElementById('circularS'+temp_elevation_index);
@@ -461,43 +419,75 @@ function keyboardEvent(e){
 				value = curr_elevation;
 				timestamp = Date.now();
 				ajax_interaction();
-				elevation_count += 1;
 			}
 			document.getElementById('body').style.cursor = 'default';
 		},  {once: true});
 	}
 	else if (e.shiftKey && e.which == 72){ // Delete Head
-		if (azimuth_count == 0){
+		let index = 0;
+		let acount = 0;
+		while (index < azimuth.length) {
+			if (azimuth[index] != undefined) acount += 1;
+			index += 1;
+		}
+		if (acount == 0){
 			window.alert("There is no azimuth element");
+			return;
 		}
 		else{
 			document.getElementById('body').style.cursor = "url('templates/img/minus.svg'),auto";
+			document.onmousedown = function(e){
+				document.getElementById('body').style.cursor = 'default';
+				delete_head = false;
+			}
 			delete_head = true;
 			del = true;
 		}
 	}
 	else if (e.shiftKey && e.which == 70){ // Delete Front
-		if (elevation_count == 0){
+		let index = 0;
+		let ecount = 0;
+		while (index < elevation.length) {
+			if (elevation[index] != undefined) ecount += 1;
+			index += 1;
+		}
+		if (ecount == 0){
 			window.alert("There is no elevation element");
+			return;
 		}
 		else{
 			document.getElementById('body').style.cursor = "url('templates/img/minus.svg'),auto";
+			document.onmousedown = function(e){
+				document.getElementById('body').style.cursor = 'default';
+				delete_head = false;
+			}
 			delete_front = true;
 			del = true;
 		}
 	}
 	else if (e.shiftKey && e.which == 83){ // Delete Side
-		if (elevation_count == 0){
+		let index = 0;
+		let ecount = 0;
+		while (index < elevation.length) {
+			if (elevation[index] != undefined) ecount += 1;
+			index += 1;
+		}
+		if (ecount == 0){
 			window.alert("There is no elevation element");
+			return;
 		}
 		else{
 			document.getElementById('body').style.cursor = "url('templates/img/minus.svg'),auto";
+			document.onmousedown = function(e){
+				document.getElementById('body').style.cursor = 'default';
+				delete_head = false;
+			}
 			delete_side = true;
 			del = true;
 		}
 	}
-	console.log("azimuth: "+azimuth.toString()+"\nazimuth_count: "+azimuth_count);
-	console.log("elevation: "+elevation.toString()+"\nelevation_count: "+elevation_count);
+	console.log("azimuth: "+azimuth.toString());
+	console.log("elevation: "+elevation.toString());
 }
 
 function reloadAll(){
@@ -512,11 +502,8 @@ function reloadAll(){
 
 document.getElementById('head-item-1').addEventListener("mousedown",function(){
 	if (delete_head){
-		// -1 elevation and azimuth count
 		azimuth[0] = undefined;
 		elevation[0] = undefined;
-		azimuth_count -= 1;
-		if ( document.getElementById('front-item-1').style.display != 'none' || document.getElementById('side-item-1').style.display != 'none' ) elevation_count -= 1;
 
 		document.getElementById('head-item-1').style.display = 'none';
 		document.getElementById('front-item-1').style.display = 'none';
@@ -531,8 +518,6 @@ document.getElementById('head-item-2').addEventListener("mousedown",function(){
 	if (delete_head){
 		azimuth[1] = undefined;
 		elevation[1] = undefined;
-		azimuth_count -= 1;
-		if ( document.getElementById('front-item-2').style.display != 'none' || document.getElementById('side-item-2').style.display != 'none' ) elevation_count -= 1;
 
 		document.getElementById('head-item-2').style.display = 'none';
 		document.getElementById('front-item-2').style.display = 'none';
@@ -547,8 +532,6 @@ document.getElementById('head-item-3').addEventListener("mousedown",function(){
 	if (delete_head){
 		azimuth[2] = undefined;
 		elevation[2] = undefined;
-		azimuth_count -= 1;
-		if ( document.getElementById('front-item-3').style.display != 'none' || document.getElementById('side-item-3').style.display != 'none' ) elevation_count -= 1;
 
 		document.getElementById('head-item-3').style.display = 'none';
 		document.getElementById('front-item-3').style.display = 'none';
@@ -563,8 +546,6 @@ document.getElementById('head-item-4').addEventListener("mousedown",function(){
 	if (delete_head){
 		azimuth[3] = undefined;
 		elevation[3] = undefined;
-		azimuth_count -= 1;
-		if ( document.getElementById('front-item-4').style.display != 'none' || document.getElementById('side-item-4').style.display != 'none' ) elevation_count -= 1;
 
 		document.getElementById('head-item-4').style.display = 'none';
 		document.getElementById('front-item-4').style.display = 'none';
@@ -579,8 +560,6 @@ document.getElementById('head-item-5').addEventListener("mousedown",function(){
 	if (delete_head){
 		azimuth[4] = undefined;
 		elevation[4] = undefined;
-		azimuth_count -= 1;
-		if ( document.getElementById('front-item-5').style.display != 'none' || document.getElementById('side-item-5').style.display != 'none' ) elevation_count -= 1;
 
 		document.getElementById('head-item-5').style.display = 'none';
 		document.getElementById('front-item-5').style.display = 'none';
@@ -595,8 +574,6 @@ document.getElementById('head-item-6').addEventListener("mousedown",function(){
 	if (delete_head){
 		azimuth[5] = undefined;
 		elevation[5] = undefined;
-		azimuth_count -= 1;
-		if ( document.getElementById('front-item-6').style.display != 'none' || document.getElementById('side-item-5').style.display != 'none' ) elevation_count -= 1;
 
 		document.getElementById('head-item-6').style.display = 'none';
 		document.getElementById('front-item-6').style.display = 'none';
@@ -611,8 +588,6 @@ document.getElementById('head-item-7').addEventListener("mousedown",function(){
 	if (delete_head){
 		azimuth[6] = undefined;
 		elevation[6] = undefined;
-		azimuth_count -= 1;
-		if ( document.getElementById('front-item-7').style.display != 'none' || document.getElementById('side-item-7').style.display != 'none' ) elevation_count -= 1;
 
 		document.getElementById('head-item-7').style.display = 'none';
 		document.getElementById('front-item-7').style.display = 'none';
@@ -627,9 +602,6 @@ document.getElementById('head-item-8').addEventListener("mousedown",function(){
 	if (delete_head){
 		azimuth[7] = undefined;
 		elevation[7] = undefined;
-		azimuth_count -= 1;
-		if ( document.getElementById('front-item-8').style.display != 'none' || document.getElementById('side-item-8').style.display != 'none' ) elevation_count -= 1;
-
 
 		document.getElementById('head-item-8').style.display = 'none';
 		document.getElementById('front-item-8').style.display = 'none';
@@ -644,8 +616,6 @@ document.getElementById('head-item-9').addEventListener("mousedown",function(){
 	if (delete_head){
 		azimuth[8] = undefined;
 		elevation[8] = undefined;
-		azimuth_count -= 1;
-		if ( document.getElementById('front-item-9').style.display != 'none' || document.getElementById('side-item-9').style.display != 'none' ) elevation_count -= 1;
 
 		document.getElementById('head-item-9').style.display = 'none';
 		document.getElementById('front-item-9').style.display = 'none';
@@ -660,8 +630,6 @@ document.getElementById('head-item-10').addEventListener("mousedown",function(){
 	if (delete_head){
 		azimuth[9] = undefined;
 		elevation[9] = undefined;
-		azimuth_count -= 1;
-		if ( document.getElementById('front-item-10').style.display != 'none' || document.getElementById('side-item-10').style.display != 'none' ) elevation_count -= 1;
 
 		document.getElementById('head-item-10').style.display = 'none';
 		document.getElementById('front-item-10').style.display = 'none';
@@ -677,8 +645,6 @@ document.getElementById('front-item-1').addEventListener("mousedown",function(){
 	if (delete_front){
 		azimuth[0] = undefined;
 		elevation[0] = undefined;
-		if (document.getElementById('head-item-1').style.display != 'none') azimuth_count -= 1;
-		elevation_count -= 1;
 
 		document.getElementById('head-item-1').style.display = 'none';
 		document.getElementById('front-item-1').style.display = 'none';
@@ -693,8 +659,6 @@ document.getElementById('front-item-2').addEventListener("mousedown",function(){
 	if (delete_front){
 		azimuth[1] = undefined;
 		elevation[1] = undefined;
-		if (document.getElementById('head-item-2').style.display != 'none') azimuth_count -= 1;
-		elevation_count -= 1;
 
 		document.getElementById('head-item-2').style.display = 'none';
 		document.getElementById('front-item-2').style.display = 'none';
@@ -709,8 +673,6 @@ document.getElementById('front-item-3').addEventListener("mousedown",function(){
 	if (delete_front){
 		azimuth[2] = undefined;
 		elevation[2] = undefined;
-		if (document.getElementById('head-item-3').style.display != 'none') azimuth_count -= 1;
-		elevation_count -= 1;
 
 		document.getElementById('head-item-3').style.display = 'none';
 		document.getElementById('front-item-3').style.display = 'none';
@@ -725,8 +687,6 @@ document.getElementById('front-item-4').addEventListener("mousedown",function(){
 	if (delete_front){
 		azimuth[3] = undefined;
 		elevation[3] = undefined;
-		if (document.getElementById('head-item-4').style.display != 'none') azimuth_count -= 1;
-		elevation_count -= 1;
 
 		document.getElementById('head-item-4').style.display = 'none';
 		document.getElementById('front-item-4').style.display = 'none';
@@ -741,8 +701,6 @@ document.getElementById('front-item-5').addEventListener("mousedown",function(){
 	if (delete_front){
 		azimuth[4] = undefined;
 		elevation[4] = undefined;
-		if (document.getElementById('head-item-5').style.display != 'none') azimuth_count -= 1;
-		elevation_count -= 1;
 
 		document.getElementById('head-item-5').style.display = 'none';
 		document.getElementById('front-item-5').style.display = 'none';
@@ -757,8 +715,6 @@ document.getElementById('front-item-6').addEventListener("mousedown",function(){
 	if (delete_front){
 		azimuth[5] = undefined;
 		elevation[5] = undefined;
-		if (document.getElementById('head-item-6').style.display != 'none') azimuth_count -= 1;
-		elevation_count -= 1;
 
 		document.getElementById('head-item-6').style.display = 'none';
 		document.getElementById('front-item-6').style.display = 'none';
@@ -773,8 +729,6 @@ document.getElementById('front-item-7').addEventListener("mousedown",function(){
 	if (delete_front){
 		azimuth[6] = undefined;
 		elevation[6] = undefined;
-		if (document.getElementById('head-item-7').style.display != 'none') azimuth_count -= 1;
-		elevation_count -= 1;
 
 		document.getElementById('head-item-7').style.display = 'none';
 		document.getElementById('front-item-7').style.display = 'none';
@@ -789,8 +743,6 @@ document.getElementById('front-item-8').addEventListener("mousedown",function(){
 	if (delete_front){
 		azimuth[7] = undefined;
 		elevation[7] = undefined;
-		if (document.getElementById('head-item-8').style.display != 'none') azimuth_count -= 1;
-		elevation_count -= 1;
 
 		document.getElementById('head-item-8').style.display = 'none';
 		document.getElementById('front-item-8').style.display = 'none';
@@ -805,8 +757,6 @@ document.getElementById('front-item-9').addEventListener("mousedown",function(){
 	if (delete_front){
 		azimuth[8] = undefined;
 		elevation[8] = undefined;
-		if (document.getElementById('head-item-9').style.display != 'none') azimuth_count -= 1;
-		elevation_count -= 1;
 
 		document.getElementById('head-item-9').style.display = 'none';
 		document.getElementById('front-item-9').style.display = 'none';
@@ -821,8 +771,6 @@ document.getElementById('front-item-10').addEventListener("mousedown",function()
 	if (delete_front){
 		azimuth[9] = undefined;
 		elevation[9] = undefined;
-		if (document.getElementById('head-item-10').style.display != 'none') azimuth_count -= 1;
-		elevation_count -= 1;
 
 		document.getElementById('head-item-10').style.display = 'none';
 		document.getElementById('front-item-10').style.display = 'none';
@@ -838,8 +786,6 @@ document.getElementById('side-item-1').addEventListener("mousedown",function(){
 	if (delete_side){
 		azimuth[0] = undefined;
 		elevation[0] = undefined;
-		if (document.getElementById('head-item-1').style.display != 'none') azimuth_count -= 1;
-		elevation_count -= 1;
 
 		document.getElementById('head-item-1').style.display = 'none';
 		document.getElementById('front-item-1').style.display = 'none';
@@ -854,8 +800,6 @@ document.getElementById('side-item-2').addEventListener("mousedown",function(){
 	if (delete_side){
 		azimuth[1] = undefined;
 		elevation[1] = undefined;
-		if (document.getElementById('head-item-2').style.display != 'none') azimuth_count -= 1;
-		elevation_count -= 1;
 
 		document.getElementById('head-item-2').style.display = 'none';
 		document.getElementById('front-item-2').style.display = 'none';
@@ -870,8 +814,6 @@ document.getElementById('side-item-3').addEventListener("mousedown",function(){
 	if (delete_side){
 		azimuth[2] = undefined;
 		elevation[2] = undefined;
-		if (document.getElementById('head-item-3').style.display != 'none') azimuth_count -= 1;
-		elevation_count -= 1;
 
 		document.getElementById('head-item-3').style.display = 'none';
 		document.getElementById('front-item-3').style.display = 'none';
@@ -886,8 +828,6 @@ document.getElementById('side-item-4').addEventListener("mousedown",function(){
 	if (delete_side){
 		azimuth[3] = undefined;
 		elevation[3] = undefined;
-		if (document.getElementById('head-item-4').style.display != 'none') azimuth_count -= 1;
-		elevation_count -= 1;
 
 		document.getElementById('head-item-4').style.display = 'none';
 		document.getElementById('front-item-4').style.display = 'none';
@@ -902,8 +842,6 @@ document.getElementById('side-item-5').addEventListener("mousedown",function(){
 	if (delete_side){
 		azimuth[4] = undefined;
 		elevation[4] = undefined;
-		if (document.getElementById('head-item-5').style.display != 'none') azimuth_count -= 1;
-		elevation_count -= 1;
 
 		document.getElementById('head-item-5').style.display = 'none';
 		document.getElementById('front-item-5').style.display = 'none';
@@ -918,8 +856,6 @@ document.getElementById('side-item-6').addEventListener("mousedown",function(){
 	if (delete_side){
 		azimuth[5] = undefined;
 		elevation[5] = undefined;
-		if (document.getElementById('head-item-6').style.display != 'none') azimuth_count -= 1;
-		elevation_count -= 1;
 
 		document.getElementById('head-item-6').style.display = 'none';
 		document.getElementById('front-item-6').style.display = 'none';
@@ -932,14 +868,12 @@ document.getElementById('side-item-6').addEventListener("mousedown",function(){
 });
 document.getElementById('side-item-7').addEventListener("mousedown",function(){
 	if (delete_side){
+		azimuth[6] = undefined;
+		elevation[6] = undefined;
+
 		document.getElementById('head-item-7').style.display = 'none';
 		document.getElementById('front-item-7').style.display = 'none';
 		document.getElementById('side-item-7').style.display = 'none';
-
-		azimuth[6] = undefined;
-		elevation[6] = undefined;
-		if (azimuth_count > 0) azimuth_count -= 1;
-		if (elevation_count > 0) elevation_count -= 1;
 
 		delete_side = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -950,8 +884,6 @@ document.getElementById('side-item-8').addEventListener("mousedown",function(){
 	if (delete_side){
 		azimuth[7] = undefined;
 		elevation[7] = undefined;
-		if (document.getElementById('head-item-8').style.display != 'none') azimuth_count -= 1;
-		elevation_count -= 1;
 
 		document.getElementById('head-item-8').style.display = 'none';
 		document.getElementById('front-item-8').style.display = 'none';
@@ -966,8 +898,6 @@ document.getElementById('side-item-9').addEventListener("mousedown",function(){
 	if (delete_side){
 		azimuth[8] = undefined;
 		elevation[8] = undefined;
-		if (document.getElementById('head-item-9').style.display != 'none') azimuth_count -= 1;
-		elevation_count -= 1;
 
 		document.getElementById('head-item-9').style.display = 'none';
 		document.getElementById('front-item-9').style.display = 'none';
@@ -982,8 +912,6 @@ document.getElementById('side-item-10').addEventListener("mousedown",function(){
 	if (delete_side){
 		azimuth[9] = undefined;
 		elevation[9] = undefined;
-		if (document.getElementById('head-item-10').style.display != 'none') azimuth_count -= 1;
-		elevation_count -= 1;
 
 		document.getElementById('head-item-10').style.display = 'none';
 		document.getElementById('front-item-10').style.display = 'none';
@@ -994,3 +922,48 @@ document.getElementById('side-item-10').addEventListener("mousedown",function(){
 	}
 	else dragElement(10,2,9);
 });
+
+/* container.3d */
+
+container = document.getElementById('3d-head');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x000000);
+var light = new THREE.HemisphereLight(0xffffff, 1);
+scene.add(light);
+
+var pointLight = new THREE.PointLight(0xffffff, 0.7);
+pointLight.position.set(60, 10, 150);
+scene.add(pointLight);
+
+const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+camera.position.z = 25;
+
+const ringGeometry1 = new THREE.RingGeometry(18.5,19,100);
+const ringMaterial1 = new THREE.MeshLambertMaterial({color: 0x0000ff,side: THREE.DoubleSide});
+
+const ringGeometry2 = new THREE.RingGeometry(15,15.3,100);
+const ringMaterial2 = new THREE.MeshLambertMaterial({color: 0x0000ff,side: THREE.DoubleSide});
+
+var sphereGeometry = new THREE.SphereGeometry(8,30,30);
+var sphereMaterial = new THREE.MeshLambertMaterial({
+	map: new THREE.TextureLoader().load('/templates/img/face.png')
+});
+
+var ring1 = new THREE.Mesh(ringGeometry1, ringMaterial1);
+var ring2 = new THREE.Mesh(ringGeometry2, ringMaterial2);
+ring2.rotation.x = 30;
+
+var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+scene.add(sphere);
+scene.add(ring1);
+scene.add(ring2);
+
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(400,400);
+container.appendChild(renderer.domElement);
+
+function animate(){
+	requestAnimationFrame(animate);
+	renderer.render(scene,camera); 
+}
+animate();

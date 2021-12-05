@@ -1,9 +1,8 @@
-from datetime import datetime
 import uuid, sys, json
-from datetime import datetime
-from flask import *
 from sqlalchemy.sql import annotation
 from sqlalchemy.sql.sqltypes import TIMESTAMP
+from datetime import datetime
+from flask import *
 from db_tables import ses, Annotation,Survey,Location,Interaction
 
 app = Flask(__name__,
@@ -58,11 +57,12 @@ def next():
         elevation_list = data['elevation']
         source_count = data['source_count']
         index = 0
+        print(azimuth_list)
         while (index < len(azimuth_list)):
-            if ( (azimuth_list[index] == None) or (azimuth_list[index] == '') or (elevation_list[index] == None) or (elevation_list[index] == '') ): continue
-            entry2 = Location(annotaion_id,azimuth_list[index],elevation_list[index])
-            ses.add(entry2)
-            ses.commit()
+            if (azimuth_list[index] != None):
+                entry2 = Location(annotaion_id,azimuth_list[index],elevation_list[index])
+                ses.add(entry2)
+                ses.commit()
             index += 1
     return "success"
 
