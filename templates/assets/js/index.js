@@ -19,6 +19,10 @@ var action_type = undefined;
 var value = undefined;
 var timestamp = undefined;
 
+// Colors
+var colors = [0x009dff, 0xff7f0e, 0x00ff00, 
+	0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
+
 /* container.2d.user interface */
 
 document.getElementById('audio').addEventListener("ended",displaySelection);
@@ -145,7 +149,7 @@ function askProceed(){
 }
 
 function ajax_interaction(){
-	console.log("ACTION TYPE: "+action_type);
+	console.log("ACTION TYPE: "+action_type+" value: "+curr_elevation);
 	let req = new XMLHttpRequest(); 
 	req.open('POST', '/interaction', true);
 	req.setRequestHeader('content-type', 'application/json;charset=UTF-8');
@@ -498,6 +502,7 @@ function reloadAll(){
 		document.getElementById('side-item-'+(index+1)).style.display = 'none';
 		index += 1;
 	}
+	removeAllBalls();
 }
 
 document.getElementById('head-item-1').addEventListener("mousedown",function(){
@@ -508,6 +513,7 @@ document.getElementById('head-item-1').addEventListener("mousedown",function(){
 		document.getElementById('head-item-1').style.display = 'none';
 		document.getElementById('front-item-1').style.display = 'none';
 		document.getElementById('side-item-1').style.display = 'none';
+		deleteBall(1);
 
 		delete_head = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -522,6 +528,7 @@ document.getElementById('head-item-2').addEventListener("mousedown",function(){
 		document.getElementById('head-item-2').style.display = 'none';
 		document.getElementById('front-item-2').style.display = 'none';
 		document.getElementById('side-item-2').style.display = 'none';
+		deleteBall(2);
 
 		delete_head = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -536,6 +543,7 @@ document.getElementById('head-item-3').addEventListener("mousedown",function(){
 		document.getElementById('head-item-3').style.display = 'none';
 		document.getElementById('front-item-3').style.display = 'none';
 		document.getElementById('side-item-3').style.display = 'none';
+		deleteBall(3);
 
 		delete_head = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -550,6 +558,7 @@ document.getElementById('head-item-4').addEventListener("mousedown",function(){
 		document.getElementById('head-item-4').style.display = 'none';
 		document.getElementById('front-item-4').style.display = 'none';
 		document.getElementById('side-item-4').style.display = 'none';
+		deleteBall(4);
 
 		delete_head = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -564,6 +573,7 @@ document.getElementById('head-item-5').addEventListener("mousedown",function(){
 		document.getElementById('head-item-5').style.display = 'none';
 		document.getElementById('front-item-5').style.display = 'none';
 		document.getElementById('side-item-5').style.display = 'none';
+		deleteBall(5);
 
 		delete_head = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -578,6 +588,7 @@ document.getElementById('head-item-6').addEventListener("mousedown",function(){
 		document.getElementById('head-item-6').style.display = 'none';
 		document.getElementById('front-item-6').style.display = 'none';
 		document.getElementById('side-item-6').style.display = 'none';
+		deleteBall(6);
 
 		delete_head = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -592,6 +603,7 @@ document.getElementById('head-item-7').addEventListener("mousedown",function(){
 		document.getElementById('head-item-7').style.display = 'none';
 		document.getElementById('front-item-7').style.display = 'none';
 		document.getElementById('side-item-7').style.display = 'none';
+		deleteBall(7);
 
 		delete_head = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -606,6 +618,7 @@ document.getElementById('head-item-8').addEventListener("mousedown",function(){
 		document.getElementById('head-item-8').style.display = 'none';
 		document.getElementById('front-item-8').style.display = 'none';
 		document.getElementById('side-item-8').style.display = 'none';
+		deleteBall(8);
 
 		delete_head = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -620,6 +633,7 @@ document.getElementById('head-item-9').addEventListener("mousedown",function(){
 		document.getElementById('head-item-9').style.display = 'none';
 		document.getElementById('front-item-9').style.display = 'none';
 		document.getElementById('side-item-9').style.display = 'none';
+		deleteBall(9);
 
 		delete_head = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -634,6 +648,7 @@ document.getElementById('head-item-10').addEventListener("mousedown",function(){
 		document.getElementById('head-item-10').style.display = 'none';
 		document.getElementById('front-item-10').style.display = 'none';
 		document.getElementById('side-item-10').style.display = 'none';
+		deleteBall(10);
 
 		delete_head = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -649,6 +664,7 @@ document.getElementById('front-item-1').addEventListener("mousedown",function(){
 		document.getElementById('head-item-1').style.display = 'none';
 		document.getElementById('front-item-1').style.display = 'none';
 		document.getElementById('side-item-1').style.display = 'none';
+		deleteBall(1);
 
 		delete_front = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -663,6 +679,7 @@ document.getElementById('front-item-2').addEventListener("mousedown",function(){
 		document.getElementById('head-item-2').style.display = 'none';
 		document.getElementById('front-item-2').style.display = 'none';
 		document.getElementById('side-item-2').style.display = 'none';
+		deleteBall(2);
 
 		delete_front = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -677,6 +694,7 @@ document.getElementById('front-item-3').addEventListener("mousedown",function(){
 		document.getElementById('head-item-3').style.display = 'none';
 		document.getElementById('front-item-3').style.display = 'none';
 		document.getElementById('side-item-3').style.display = 'none';
+		deleteBall(3);
 
 		delete_front = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -691,6 +709,7 @@ document.getElementById('front-item-4').addEventListener("mousedown",function(){
 		document.getElementById('head-item-4').style.display = 'none';
 		document.getElementById('front-item-4').style.display = 'none';
 		document.getElementById('side-item-4').style.display = 'none';
+		deleteBall(4);
 
 		delete_front = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -705,6 +724,7 @@ document.getElementById('front-item-5').addEventListener("mousedown",function(){
 		document.getElementById('head-item-5').style.display = 'none';
 		document.getElementById('front-item-5').style.display = 'none';
 		document.getElementById('side-item-5').style.display = 'none';
+		deleteBall(5);
 
 		delete_front = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -719,6 +739,7 @@ document.getElementById('front-item-6').addEventListener("mousedown",function(){
 		document.getElementById('head-item-6').style.display = 'none';
 		document.getElementById('front-item-6').style.display = 'none';
 		document.getElementById('side-item-6').style.display = 'none';
+		deleteBall(6);
 
 		delete_front = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -733,6 +754,7 @@ document.getElementById('front-item-7').addEventListener("mousedown",function(){
 		document.getElementById('head-item-7').style.display = 'none';
 		document.getElementById('front-item-7').style.display = 'none';
 		document.getElementById('side-item-7').style.display = 'none';
+		deleteBall(7);
 
 		delete_front = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -747,6 +769,7 @@ document.getElementById('front-item-8').addEventListener("mousedown",function(){
 		document.getElementById('head-item-8').style.display = 'none';
 		document.getElementById('front-item-8').style.display = 'none';
 		document.getElementById('side-item-8').style.display = 'none';
+		deleteBall(8);
 
 		delete_front = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -761,6 +784,7 @@ document.getElementById('front-item-9').addEventListener("mousedown",function(){
 		document.getElementById('head-item-9').style.display = 'none';
 		document.getElementById('front-item-9').style.display = 'none';
 		document.getElementById('side-item-9').style.display = 'none';
+		deleteBall(9);
 
 		delete_front = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -775,6 +799,7 @@ document.getElementById('front-item-10').addEventListener("mousedown",function()
 		document.getElementById('head-item-10').style.display = 'none';
 		document.getElementById('front-item-10').style.display = 'none';
 		document.getElementById('side-item-10').style.display = 'none';
+		deleteBall(10);
 
 		delete_front = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -790,6 +815,7 @@ document.getElementById('side-item-1').addEventListener("mousedown",function(){
 		document.getElementById('head-item-1').style.display = 'none';
 		document.getElementById('front-item-1').style.display = 'none';
 		document.getElementById('side-item-1').style.display = 'none';
+		deleteBall(1);
 		
 		delete_front = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -804,6 +830,7 @@ document.getElementById('side-item-2').addEventListener("mousedown",function(){
 		document.getElementById('head-item-2').style.display = 'none';
 		document.getElementById('front-item-2').style.display = 'none';
 		document.getElementById('side-item-2').style.display = 'none';
+		deleteBall(2);
 
 		delete_side = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -818,6 +845,7 @@ document.getElementById('side-item-3').addEventListener("mousedown",function(){
 		document.getElementById('head-item-3').style.display = 'none';
 		document.getElementById('front-item-3').style.display = 'none';
 		document.getElementById('side-item-3').style.display = 'none';
+		deleteBall(3);
 
 		delete_side = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -832,6 +860,7 @@ document.getElementById('side-item-4').addEventListener("mousedown",function(){
 		document.getElementById('head-item-4').style.display = 'none';
 		document.getElementById('front-item-4').style.display = 'none';
 		document.getElementById('side-item-4').style.display = 'none';
+		deleteBall(4);
 
 		delete_side = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -846,6 +875,7 @@ document.getElementById('side-item-5').addEventListener("mousedown",function(){
 		document.getElementById('head-item-5').style.display = 'none';
 		document.getElementById('front-item-5').style.display = 'none';
 		document.getElementById('side-item-5').style.display = 'none';
+		deleteBall(5);
 
 		delete_side = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -860,6 +890,7 @@ document.getElementById('side-item-6').addEventListener("mousedown",function(){
 		document.getElementById('head-item-6').style.display = 'none';
 		document.getElementById('front-item-6').style.display = 'none';
 		document.getElementById('side-item-6').style.display = 'none';
+		deleteBall(6);
 
 		delete_side = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -874,6 +905,7 @@ document.getElementById('side-item-7').addEventListener("mousedown",function(){
 		document.getElementById('head-item-7').style.display = 'none';
 		document.getElementById('front-item-7').style.display = 'none';
 		document.getElementById('side-item-7').style.display = 'none';
+		deleteBall(7);
 
 		delete_side = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -888,6 +920,7 @@ document.getElementById('side-item-8').addEventListener("mousedown",function(){
 		document.getElementById('head-item-8').style.display = 'none';
 		document.getElementById('front-item-8').style.display = 'none';
 		document.getElementById('side-item-8').style.display = 'none';
+		deleteBall(8);
 
 		delete_side = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -902,6 +935,7 @@ document.getElementById('side-item-9').addEventListener("mousedown",function(){
 		document.getElementById('head-item-9').style.display = 'none';
 		document.getElementById('front-item-9').style.display = 'none';
 		document.getElementById('side-item-9').style.display = 'none';
+		deleteBall(9);
 
 		delete_side = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -916,6 +950,7 @@ document.getElementById('side-item-10').addEventListener("mousedown",function(){
 		document.getElementById('head-item-10').style.display = 'none';
 		document.getElementById('front-item-10').style.display = 'none';
 		document.getElementById('side-item-10').style.display = 'none';
+		deleteBall(10);
 
 		delete_side = false;
 		document.getElementById('body').style.cursor = 'default';
@@ -933,23 +968,13 @@ var light = new THREE.HemisphereLight(0xffffff, 0.8);
 scene.add(light);
 
 var pointLight = new THREE.PointLight(0xffffff, 0.7);
-pointLight.position.set(50, 8, 150);
+pointLight.position.set(50, 30, 200);
 scene.add(pointLight);
 
 const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-camera.position.z = 27;
+camera.position.z = 30;
 
 /* geometry */
-const ringGeometry1 = new THREE.TorusGeometry(15,0.16,16,90);
-const ringMaterial1 = new THREE.MeshLambertMaterial({color: 0x0000ff,side: THREE.DoubleSide});
-const ringGeometry2 = new THREE.TorusGeometry(15,0.16,16,90);
-const ringMaterial2 = new THREE.MeshLambertMaterial({color: 0x0000ff,side: THREE.DoubleSide});
-
-var ring1 = new THREE.Mesh(ringGeometry1, ringMaterial1);
-ring1.position.set(0,0,0);
-var ring2 = new THREE.Mesh(ringGeometry2, ringMaterial2);
-ring2.rotation.x = Math.PI / 2;
-ring2.position.set(0,0,0);
 
 var sphereGeometry = new THREE.SphereGeometry(8,60,30);
 var sphereMaterial = new THREE.MeshLambertMaterial({
@@ -980,23 +1005,64 @@ var noseMaterial = new THREE.MeshLambertMaterial({
 var nose = new THREE.Mesh(noseGeometry, noseMaterial);
 nose.position.set(0,0,8);
 
+var frameGeometry = new THREE.SphereBufferGeometry(15,20,20);
+var frameMaterial = new THREE.MeshLambertMaterial({});
+var frame = new THREE.Mesh(frameGeometry, frameMaterial);
+var edgesGeometry = new THREE.EdgesGeometry(frameGeometry);
+var wireframe = new THREE.LineSegments(edgesGeometry, new THREE.LineBasicMaterial({color: 0x0000ff})); 
+
+
+/* balls to be added*/
+var ballGeometry;
+var ballMaterial;
+
+function displayBall(a, e, number){
+	let newx = 15 * Math.cos(a * Math.PI / 180);
+	let newy = 15 * Math.sin(a * Math.PI / 180);
+	//let newz = 15 * Math.sin(a);
+	newz = 0;
+	ballGeometry = new THREE.SphereGeometry(0.8,60,30);
+	ballMaterial = new THREE.MeshLambertMaterial({
+		color: colors[number-1]
+	});
+	var ball = new THREE.Mesh(ballGeometry, ballMaterial);
+	ball.name = 'ball'+number;
+	ball.position.set(newx,newy,newz);
+	scene.remove(scene.getObjectByName('ball'+number));
+	scene.add(ball);
+}
+
+displayBall(0, 0, 1);
+displayBall(270, 0, 2);
+
+function deleteBall(number){
+	scene.remove(scene.getObjectByName('ball'+number));
+}
+
+function removeAllBalls(){
+	let index = 0;
+	while (index < 10){
+		scene.remove(scene.getObjectByName('ball'+(index + 1)));
+		index += 1;
+	}
+}
+
 /* display 3d */
-scene.add(ring1);
-scene.add(ring2);
+scene.add(wireframe);
 scene.add(sphere);
 scene.add(ear1);
 scene.add(ear2);
 scene.add(nose);
 
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize(430,430);
+renderer.setSize(500,500);
 container.appendChild(renderer.domElement);
 
 camera.lookAt(sphere.position);
 
 controls = new THREE.OrbitControls(camera,renderer.domElement);
 controls.minDistance = 1;
-controls.maxDistance = 400;
+controls.maxDistance = 500;
 
 function animate(){
 	requestAnimationFrame(animate);
