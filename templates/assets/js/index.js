@@ -145,7 +145,7 @@ function askProceed(){
 }
 
 function ajax_interaction(){
-	console.log("---- ACTION TYPE: "+action_type);
+	console.log("ACTION TYPE: "+action_type);
 	let req = new XMLHttpRequest(); 
 	req.open('POST', '/interaction', true);
 	req.setRequestHeader('content-type', 'application/json;charset=UTF-8');
@@ -925,45 +925,82 @@ document.getElementById('side-item-10').addEventListener("mousedown",function(){
 
 /* container.3d */
 
+/* set up */
 container = document.getElementById('3d-head');
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000000);
-var light = new THREE.HemisphereLight(0xffffff, 1);
+var light = new THREE.HemisphereLight(0xffffff, 0.8);
 scene.add(light);
 
 var pointLight = new THREE.PointLight(0xffffff, 0.7);
-pointLight.position.set(60, 10, 150);
+pointLight.position.set(50, 8, 150);
 scene.add(pointLight);
 
 const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-camera.position.z = 25;
+camera.position.z = 27;
 
-const ringGeometry1 = new THREE.RingGeometry(18.5,19,100);
+/* geometry */
+const ringGeometry1 = new THREE.TorusGeometry(15,0.16,16,90);
 const ringMaterial1 = new THREE.MeshLambertMaterial({color: 0x0000ff,side: THREE.DoubleSide});
-
-const ringGeometry2 = new THREE.RingGeometry(15,15.3,100);
+const ringGeometry2 = new THREE.TorusGeometry(15,0.16,16,90);
 const ringMaterial2 = new THREE.MeshLambertMaterial({color: 0x0000ff,side: THREE.DoubleSide});
 
-var sphereGeometry = new THREE.SphereGeometry(8,30,30);
-var sphereMaterial = new THREE.MeshLambertMaterial({
-	map: new THREE.TextureLoader().load('/templates/img/face.png')
-});
-
 var ring1 = new THREE.Mesh(ringGeometry1, ringMaterial1);
+ring1.position.set(0,0,0);
 var ring2 = new THREE.Mesh(ringGeometry2, ringMaterial2);
-ring2.rotation.x = 30;
+ring2.rotation.x = Math.PI / 2;
+ring2.position.set(0,0,0);
 
+var sphereGeometry = new THREE.SphereGeometry(8,60,30);
+var sphereMaterial = new THREE.MeshLambertMaterial({
+	map: new THREE.TextureLoader().load('/templates/img/face.png'),
+	color: 0xefd8c3
+});
 var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-scene.add(sphere);
+sphere.position.set(0,0,0);
+
+var ear1Geometry = new THREE.SphereGeometry(2,60,30);
+var ear1Material = new THREE.MeshLambertMaterial({
+	color: 0xc2a68b
+});
+var ear1 = new THREE.Mesh(ear1Geometry, ear1Material);
+ear1.position.set(8,0,0);
+
+var ear2Geometry = new THREE.SphereGeometry(2,60,30);
+var ear2Material = new THREE.MeshLambertMaterial({
+	color: 0xc2a68b
+});
+var ear2 = new THREE.Mesh(ear2Geometry, ear2Material);
+ear2.position.set(-8,0,0);
+
+var noseGeometry = new THREE.SphereGeometry(0.8,60,30);
+var noseMaterial = new THREE.MeshLambertMaterial({
+	color: 0xc2a68b
+});
+var nose = new THREE.Mesh(noseGeometry, noseMaterial);
+nose.position.set(0,0,8);
+
+/* display 3d */
 scene.add(ring1);
 scene.add(ring2);
+scene.add(sphere);
+scene.add(ear1);
+scene.add(ear2);
+scene.add(nose);
 
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize(400,400);
+renderer.setSize(430,430);
 container.appendChild(renderer.domElement);
+
+camera.lookAt(sphere.position);
+
+controls = new THREE.OrbitControls(camera,renderer.domElement);
+controls.minDistance = 1;
+controls.maxDistance = 400;
 
 function animate(){
 	requestAnimationFrame(animate);
+	controls.update();
 	renderer.render(scene,camera); 
 }
 animate();
