@@ -1048,24 +1048,20 @@ function polarToCartesian(lon, lat, radius) {
 function displayBall(azimuth, tilt, number){
 	console.log("height: "+tilt);
 	azimuth = azimuth - 180;
-	/*
-	if (tilt > 90 ) tilt = 0;
-	if (tilt == 90 ) tilt = 0;
-	if (tilt < 90 ) tilt = 0;
-	*/
+	if (tilt > 96) tilt = (tilt - 96) * 1.11;
+	else if (tilt < 96) tilt = (tilt - 96) * 1.13;
+	else tilt = 0;
 	var returnlist = polarToCartesian(azimuth, tilt, 15);
 	ballGeometry = new THREE.SphereGeometry(0.8,60,30);
 	ballMaterial = new THREE.MeshLambertMaterial({
 		color: colors[number-1]
 	});
-	console.log("height z: "+returnlist['z']);
 	var ball = new THREE.Mesh(ballGeometry, ballMaterial);
 	ball.name = 'ball'+number;
 	ball.position.set(returnlist['x'], returnlist['y'], returnlist['z']);
 	scene.remove(scene.getObjectByName('ball'+number));
 	scene.add(ball);
 }
-displayBall(305, -10, 1);
 
 function deleteBall(number){
 	scene.remove(scene.getObjectByName('ball'+number));
