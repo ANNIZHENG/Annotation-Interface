@@ -266,13 +266,15 @@ function calculateAzimuth(x,y,cx,cy){
 	}
 }
 
-// adding dots
+// adding dots (command for adding and option/Alt (keycode 18) for deleting)
 document.addEventListener("keydown", keyboardEvent, false);
 
 var delete_head,delete_front,delete_side = false;
 
 function keyboardEvent(e){
-	if (e.ctrlKey && e.which == 72){ // Add Head
+	if (e.metaKey && e.which == 72){ // Add Head
+		// document.getElementById('head').addEventListener('click', function (e){ /* all functions here */ });
+
 		delete_head,delete_front,delete_side = false;
 
 		let find_undefined = false
@@ -328,7 +330,9 @@ function keyboardEvent(e){
 			document.getElementById('body').style.cursor = 'default';
 		}, {once: true});
 	}
-	else if (e.ctrlKey && e.which == 70){ // Add Front
+	else if (e.metaKey && e.which == 70){ // Add Front
+		// document.getElementById('front').addEventListener('click', function (e){ /* all functions here */ });
+
 		delete_head,delete_front,delete_side = false;
 
 		let find_undefined = false
@@ -390,7 +394,8 @@ function keyboardEvent(e){
 			document.getElementById('body').style.cursor = 'default';
 		},  {once: true});
 	}
-	else if (e.ctrlKey && e.which == 83){ // Add Side
+	else if (e.metaKey && e.which == 83){ // Add Side
+		// document.getElementById('side').addEventListener('click', function (e){ /* all functions here */ });
 		delete_head,delete_front,delete_side = false;
 
 		let find_undefined = false
@@ -453,7 +458,7 @@ function keyboardEvent(e){
 			document.getElementById('body').style.cursor = 'default';
 		},  {once: true});
 	}
-	else if (e.shiftKey && e.which == 72){ // Delete Head
+	else if (e.altKey && e.which == 72){ // Delete Head
 		let index = 0;
 		let acount = 0;
 		while (index < azimuth.length) {
@@ -474,7 +479,7 @@ function keyboardEvent(e){
 			del = true;
 		}
 	}
-	else if (e.shiftKey && e.which == 70){ // Delete Front
+	else if (e.altKey && e.which == 70){ // Delete Front
 		let index = 0;
 		let ecount = 0;
 		while (index < elevation.length) {
@@ -495,7 +500,7 @@ function keyboardEvent(e){
 			del = true;
 		}
 	}
-	else if (e.shiftKey && e.which == 83){ // Delete Side
+	else if (e.altKey && e.which == 83){ // Delete Side
 		let index = 0;
 		let ecount = 0;
 		while (index < elevation.length) {
