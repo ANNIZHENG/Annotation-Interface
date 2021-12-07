@@ -81,7 +81,7 @@ audio::-webkit-media-controls-current-time-display{
 	border-radius: 50%; 
 	width: 15px; 
 	height: 15px;
-	margin-top: -16px;
+	margin-top: -14px;
 	cursor: pointer;
 }	
 

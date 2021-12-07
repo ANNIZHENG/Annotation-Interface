@@ -3,6 +3,8 @@ var annotation_id = 1;
 const totalAnnotation = 3;
 
 // Location
+var save_long = 0;
+var save_lat = 0;
 var curr_azimuth = 0;
 var curr_elevation = 0;
 var azimuth = new Array();
@@ -149,7 +151,7 @@ function askProceed(){
 }
 
 function ajax_interaction(){
-	console.log("ACTION TYPE: "+action_type+" value: "+curr_elevation);
+	console.log("ACTION TYPE: "+action_type);
 	let req = new XMLHttpRequest(); 
 	req.open('POST', '/interaction', true);
 	req.setRequestHeader('content-type', 'application/json;charset=UTF-8');
@@ -203,13 +205,16 @@ function dragElement(index,indicator,add_index) {
 				if(indicator == 0){
 					azimuth[add_index] = curr_azimuth;
 					value = curr_azimuth;
+					save_long = curr_azimuth;
 					timestamp = Date.now(); // TODO checkRepeat
 				}
 				else{
 					elevation[add_index] = curr_elevation;
 					value = curr_elevation;
+					save_lat = curr_elevation;
 					timestamp = Date.now(); // TODO checkRepeat
 				}
+				displayBall(save_long, save_lat, index);
 				ajax_interaction();
 			}
 			document.getElementById('body').style.cursor = 'default';
@@ -305,6 +310,9 @@ function keyboardEvent(e){
 				inner_item.setAttribute('style','');
 				item.style.transform = 'rotate('+curr_azimuth+'deg)';
 
+				save_long = curr_azimuth;
+				displayBall(save_long, save_lat, temp_azimuth_index);
+
 				// ajax
 				action_type = "azimuth";
 				value = curr_azimuth;
@@ -360,6 +368,9 @@ function keyboardEvent(e){
 				innerlocation = inner_item.getBoundingClientRect();
 				curr_elevation = parseInt(flocation.bottom - innerlocation.top);
 				elevation[temp_elevation_index-1] = curr_elevation;
+
+				save_lat = curr_elevation;
+				displayBall(save_long, save_lat, temp_elevation_index);
 
 				// ajax
 				action_type = "elevation";
@@ -417,6 +428,9 @@ function keyboardEvent(e){
 				innerlocation = inner_item.getBoundingClientRect();
 				curr_elevation = parseInt(flocation.bottom - innerlocation.top);
 				elevation[temp_elevation_index-1] = curr_elevation;
+
+				save_lat = curr_elevation;
+				displayBall(save_long, save_lat, temp_elevation_index);
 
 				// ajax
 				action_type = "elevation";
@@ -1016,24 +1030,42 @@ var wireframe = new THREE.LineSegments(edgesGeometry, new THREE.LineBasicMateria
 var ballGeometry;
 var ballMaterial;
 
-function displayBall(a, e, number){
-	let newx = 15 * Math.cos(a * Math.PI / 180);
-	let newy = 15 * Math.sin(a * Math.PI / 180);
-	//let newz = 15 * Math.sin(a);
-	newz = 0;
+function toRadian(angle){
+	return angle * Math.PI / 180;
+}
+
+// https://gist.github.com/jhermsmeier/72626d5fd79c5875248fd2c1e8162489
+function polarToCartesian(lon, lat, radius) {
+	var phi = ( 90 - lat ) * Math.PI / 180
+	var theta = ( lon + 180 ) * Math.PI / 180
+	return {
+	  x: -(radius * Math.sin(phi) * Math.sin(theta)),
+	  y: radius * Math.cos(phi),
+	  z: radius * Math.sin(phi) * Math.cos(theta),
+	}
+}
+
+function displayBall(azimuth, tilt, number){
+	console.log("height: "+tilt);
+	azimuth = azimuth - 180;
+	/*
+	if (tilt > 90 ) tilt = 0;
+	if (tilt == 90 ) tilt = 0;
+	if (tilt < 90 ) tilt = 0;
+	*/
+	var returnlist = polarToCartesian(azimuth, tilt, 15);
 	ballGeometry = new THREE.SphereGeometry(0.8,60,30);
 	ballMaterial = new THREE.MeshLambertMaterial({
 		color: colors[number-1]
 	});
+	console.log("height z: "+returnlist['z']);
 	var ball = new THREE.Mesh(ballGeometry, ballMaterial);
 	ball.name = 'ball'+number;
-	ball.position.set(newx,newy,newz);
+	ball.position.set(returnlist['x'], returnlist['y'], returnlist['z']);
 	scene.remove(scene.getObjectByName('ball'+number));
 	scene.add(ball);
 }
-
-displayBall(0, 0, 1);
-displayBall(270, 0, 2);
+displayBall(305, -10, 1);
 
 function deleteBall(number){
 	scene.remove(scene.getObjectByName('ball'+number));
