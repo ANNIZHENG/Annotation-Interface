@@ -122,21 +122,21 @@ function askProceed(){
 	}
 	let index = 0;
 	let acount,ecount = 0;
+	let both = 0;
 	while (index < source_count){
 		if (azimuth[index] != undefined){
 			acount += 1;
-			if (elevation[index] == undefined){
-				window.alert("You must annotate both the azimuth and elevation (dots with the same color)"); 
-				return false;
-			}
+			both += 0.5;
 		}
-		else if (elevation[index] != undefined) {
+		if (elevation[index] != undefined){
 			ecount += 1;
-			if (azimuth[index] == undefined){
-				window.alert("You must annotate both the azimuth and elevation (dots with the same color)"); 
+			both += 0.5;
+			if (both != 1){
+				window.alert("You have to annotate both azimuth and elevation"); 
 				return false;
 			}
 		}
+		both = 0;
 		index += 1;
 	}
 	if (acount == 0 && ecount == 0){
@@ -205,15 +205,18 @@ function dragElement(index,indicator,add_index) {
 				if(indicator == 0){
 					azimuth[add_index] = curr_azimuth;
 					value = curr_azimuth;
-					save_long = curr_azimuth;
 					timestamp = Date.now(); // TODO checkRepeat
 				}
 				else{
 					elevation[add_index] = curr_elevation;
 					value = curr_elevation;
-					save_lat = curr_elevation;
 					timestamp = Date.now(); // TODO checkRepeat
 				}
+
+				if (elevation[add_index] != undefined) save_lat = elevation[add_index];
+				else save_lat = 96;
+				if (azimuth[add_index] != undefined) save_long = azimuth[add_index];
+				else save_long = 0;
 				displayBall(save_long, save_lat, index);
 				ajax_interaction();
 			}
@@ -310,7 +313,10 @@ function keyboardEvent(e){
 				inner_item.setAttribute('style','');
 				item.style.transform = 'rotate('+curr_azimuth+'deg)';
 
-				save_long = curr_azimuth;
+				if (elevation[temp_azimuth_index-1] != undefined) save_lat = elevation[temp_azimuth_index-1];
+				else save_lat = 96;
+				if (azimuth[temp_azimuth_index-1] != undefined) save_long = azimuth[temp_azimuth_index-1];
+				else save_long = 0;
 				displayBall(save_long, save_lat, temp_azimuth_index);
 
 				// ajax
@@ -369,7 +375,10 @@ function keyboardEvent(e){
 				curr_elevation = parseInt(flocation.bottom - innerlocation.top);
 				elevation[temp_elevation_index-1] = curr_elevation;
 
-				save_lat = curr_elevation;
+				if (elevation[temp_elevation_index-1] != undefined) save_lat = elevation[temp_elevation_index-1];
+				else save_lat = 96;
+				if (azimuth[temp_elevation_index-1] != undefined) save_long = azimuth[temp_elevation_index-1];
+				else save_long = 0;
 				displayBall(save_long, save_lat, temp_elevation_index);
 
 				// ajax
@@ -429,7 +438,10 @@ function keyboardEvent(e){
 				curr_elevation = parseInt(flocation.bottom - innerlocation.top);
 				elevation[temp_elevation_index-1] = curr_elevation;
 
-				save_lat = curr_elevation;
+				if (elevation[temp_elevation_index-1] != undefined) save_lat = elevation[temp_elevation_index-1];
+				else save_lat = 96;
+				if (azimuth[temp_elevation_index-1] != undefined) save_long = azimuth[temp_elevation_index-1];
+				else save_long = 0;
 				displayBall(save_long, save_lat, temp_elevation_index);
 
 				// ajax
@@ -1046,7 +1058,6 @@ function polarToCartesian(lon, lat, radius) {
 }
 
 function displayBall(azimuth, tilt, number){
-	console.log("height: "+tilt);
 	azimuth = azimuth - 180;
 	if (tilt > 96) tilt = (tilt - 96) * 1.11;
 	else if (tilt < 96) tilt = (tilt - 96) * 1.13;
