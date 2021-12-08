@@ -15,7 +15,20 @@ Contact Ray Gonzalez raygon@mit.edu or Kevin J. P. Woods kwoods@mit.edu
     <!-- Import HeadphoneCheck.js (minified) from McDermott S3 server -->
     <script type="text/javascript" src="https://s3.amazonaws.com/mcd-headphone-check/v1.0/src/HeadphoneCheck.min.js"></script>
     <!-- Import HeadphoneCheck.css from McDermott S3 server -->
-    <link rel="stylesheet" type="text/css" href="https://s3.amazonaws.com/mcd-headphone-check/v1.0/src/HeadphoneCheckStyle.css">
+    <!-- <link rel="stylesheet" type="text/css" href="https://s3.amazonaws.com/mcd-headphone-check/v1.0/src/HeadphoneCheckStyle.css"> -->
+    <style type="text/css">
+      body{
+        margin:auto;
+        margin-top: 100px;
+        border: 10px black solid;
+        font-size: 20px;
+        display: flex;
+        max-width: 60%;
+        padding:30px;
+        justify-content: center;
+        align-self: flex-start;
+      }
+    </style>
   </head>
   <script>
     // Bind callback to hcHeadphoneCheckEnd event
@@ -24,7 +37,6 @@ Contact Ray Gonzalez raygon@mit.edu or Kevin J. P. Woods kwoods@mit.edu
       var config = data.config;
       var didPass = data.didPass;
       if (didPass) {
-        alert('All Screening Tasks Are Passed!');
         window.location.href = '/templates/question.html';
       }
       else {

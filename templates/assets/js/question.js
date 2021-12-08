@@ -124,12 +124,8 @@ function askProceed(){
 	var acount = 0;
 	var ecount = 0;
 	while (index < source_count){
-		if (azimuth[index] != undefined){
-			acount += 1;
-		}
-		if (elevation[index] != undefined){
-			ecount += 1;
-		}
+		if (azimuth[index] != undefined) acount += 1;
+		if (elevation[index] != undefined) ecount += 1;
 		if (azimuth[index] == undefined || elevation[index] == undefined){
 			window.alert("You have to annotate both azimuth and elevation"); 
 			return false;
