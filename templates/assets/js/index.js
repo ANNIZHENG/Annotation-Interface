@@ -81,7 +81,7 @@ function displayButton(){
 
 function setNextQuestion(){
 	// if user not enter enough annotation -> ask whether or not to proceed 
-	let proceed = askProceed(); 
+	var proceed = askProceed(); 
 	if (!proceed) return false;
 	if (!ajax_next()) return false; // update locations and source count to database
 
@@ -90,8 +90,8 @@ function setNextQuestion(){
 	// when reaching to the last question
 	if (annotation_id == totalAnnotation) last_question = true;
 
-	let listen = 'Listen to the audio ['+ annotation_id +' / 3]';
-	let audio_source = 'templates/assets/audio/test'+annotation_id+'.wav';
+	var listen = 'Listen to the audio ['+ annotation_id +' / 3]';
+	var audio_source = 'templates/assets/audio/test'+annotation_id+'.wav';
 	document.getElementsByTagName('h2')[0].innerHTML=listen;
 	document.getElementById('default-option').selected=true;
 
@@ -107,8 +107,8 @@ function setNextQuestion(){
 	reloadAll();
 
 	// load new audio
-	let audio = document.getElementById('audio');
-	let source = document.getElementById('source');
+	var audio = document.getElementById('audio');
+	var source = document.getElementById('source');
 	source.src = audio_source;
 	audio.load();
 	
@@ -120,9 +120,9 @@ function askProceed(){
 		window.alert("You must select a response");
 		return false;
 	}
-	let index = 0;
-	let acount,ecount = 0;
-	let both = 0;
+	var index = 0;
+	var acount,ecount = 0;
+	var both = 0;
 	while (index < source_count){
 		if (azimuth[index] != undefined){
 			acount += 1;
@@ -152,10 +152,10 @@ function askProceed(){
 
 function ajax_interaction(){
 	console.log("ACTION TYPE: "+action_type);
-	let req = new XMLHttpRequest(); 
+	var req = new XMLHttpRequest(); 
 	req.open('POST', '/interaction', true);
 	req.setRequestHeader('content-type', 'application/json;charset=UTF-8');
-	let data = JSON.stringify({annotation_id,action_type,value,timestamp});
+	var data = JSON.stringify({annotation_id,action_type,value,timestamp});
 	req.send(data);
 }
 
@@ -166,10 +166,10 @@ function ajax_next(){
 			return false;
 		}
 	}
-	let req = new XMLHttpRequest(); 
+	var req = new XMLHttpRequest(); 
 	req.open('POST', '/next', true);
 	req.setRequestHeader('content-type', 'application/json;charset=UTF-8');
-	let data = JSON.stringify({annotation_id,azimuth,elevation,source_count});
+	var data = JSON.stringify({annotation_id,azimuth,elevation,source_count});
 	req.send(data);
 	azimuth = new Array();
 	elevation = new Array();
@@ -239,7 +239,7 @@ function dragElement(index,indicator,add_index) {
 }
 
 function calculateAzimuth(x,y,cx,cy){
-	let newx, newy;
+	var newx, newy;
 	if ( x>cx && y<cy ){
 		newx = x - cx;
 		newy = cy - y;
@@ -277,10 +277,10 @@ function keyboardEvent(e){
 
 		delete_head,delete_front,delete_side = false;
 
-		let find_undefined = false
-		let temp_azimuth_index = 0;
-		let index = 0;
-		let acount = 0;
+		var find_undefined = false
+		var temp_azimuth_index = 0;
+		var index = 0;
+		var acount = 0;
 		while (index < source_count){
 			if (azimuth[index] == undefined && !find_undefined){
 				temp_azimuth_index = index+1;
@@ -335,10 +335,10 @@ function keyboardEvent(e){
 
 		delete_head,delete_front,delete_side = false;
 
-		let find_undefined = false
-		let temp_elevation_index = 0;
-		let index = 0;
-		let ecount = 0;
+		var find_undefined = false
+		var temp_elevation_index = 0;
+		var index = 0;
+		var ecount = 0;
 		while (index < source_count){
 			if (elevation[index] == undefined && !find_undefined){
 				temp_elevation_index = index+1;
@@ -398,10 +398,10 @@ function keyboardEvent(e){
 		// document.getElementById('side').addEventListener('click', function (e){ /* all functions here */ });
 		delete_head,delete_front,delete_side = false;
 
-		let find_undefined = false
-		let temp_elevation_index = 0;
-		let index = 0;
-		let ecount = 0;
+		var find_undefined = false
+		var temp_elevation_index = 0;
+		var index = 0;
+		var ecount = 0;
 		while (index < source_count){
 			if (elevation[index] == undefined && !find_undefined){
 				temp_elevation_index = index+1;
@@ -459,8 +459,8 @@ function keyboardEvent(e){
 		},  {once: true});
 	}
 	else if (e.altKey && e.which == 72){ // Delete Head
-		let index = 0;
-		let acount = 0;
+		var index = 0;
+		var acount = 0;
 		while (index < azimuth.length) {
 			if (azimuth[index] != undefined) acount += 1;
 			index += 1;
@@ -480,8 +480,8 @@ function keyboardEvent(e){
 		}
 	}
 	else if (e.altKey && e.which == 70){ // Delete Front
-		let index = 0;
-		let ecount = 0;
+		var index = 0;
+		var ecount = 0;
 		while (index < elevation.length) {
 			if (elevation[index] != undefined) ecount += 1;
 			index += 1;
@@ -501,8 +501,8 @@ function keyboardEvent(e){
 		}
 	}
 	else if (e.altKey && e.which == 83){ // Delete Side
-		let index = 0;
-		let ecount = 0;
+		var index = 0;
+		var ecount = 0;
 		while (index < elevation.length) {
 			if (elevation[index] != undefined) ecount += 1;
 			index += 1;
@@ -526,7 +526,7 @@ function keyboardEvent(e){
 }
 
 function reloadAll(){
-	let index = 0;
+	var index = 0;
 	while (index < 10){
 		document.getElementById('head-item-'+(index+1)).style.display = 'none';
 		document.getElementById('front-item-'+(index+1)).style.display = 'none';
@@ -1084,7 +1084,7 @@ function deleteBall(number){
 }
 
 function removeAllBalls(){
-	let index = 0;
+	var index = 0;
 	while (index < 10){
 		scene.remove(scene.getObjectByName('ball'+(index + 1)));
 		index += 1;
