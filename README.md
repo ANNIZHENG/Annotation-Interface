@@ -14,6 +14,8 @@ pip3 install sqlalchemy
 
 pip3 install psycopg2-binary
 
-brew services start postgresql (or other ways to start postgresql)
+*and start postgresql running*
+
+*headphone check code link: https://github.com/mcdermottLab/HeadphoneCheck*
 
 ![Alt text](templates/img/page_sample.png?raw=true)

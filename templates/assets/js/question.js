@@ -40,9 +40,9 @@ function addSourceCount(){
 	document.getElementById('2d-question').innerHTML="Please identify the location of each source:";
 
 	// this is for the first enter
-	document.getElementById('head').setAttribute('style',"background-image: url('templates/img/head.png');");
-	document.getElementById('front').setAttribute('style',"background-image: url('templates/img/front.png'); display: inline-block;");
-	document.getElementById('side').setAttribute('style',"background-image: url('templates/img/side.png'); display: inline-block;");
+	document.getElementById('head').setAttribute('style',"background-image: url('/templates/img/head.png');");
+	document.getElementById('front').setAttribute('style',"background-image: url('/templates/img/front.png'); display: inline-block;");
+	document.getElementById('side').setAttribute('style',"background-image: url('/templates/img/side.png'); display: inline-block;");
 
 	// display button after showing the image;
 	displayButton();
@@ -91,7 +91,7 @@ function setNextQuestion(){
 	if (annotation_id == totalAnnotation) last_question = true;
 
 	var listen = 'Listen to the audio ['+ annotation_id +' / 3]';
-	var audio_source = 'templates/assets/audio/test'+annotation_id+'.wav';
+	var audio_source = '/templates/assets/audio/test'+annotation_id+'.wav';
 	document.getElementsByTagName('h2')[0].innerHTML=listen;
 	document.getElementById('default-option').selected=true;
 
@@ -121,29 +121,27 @@ function askProceed(){
 		return false;
 	}
 	var index = 0;
-	var acount,ecount = 0;
-	var both = 0;
+	var acount = 0;
+	var ecount = 0;
 	while (index < source_count){
 		if (azimuth[index] != undefined){
 			acount += 1;
-			both += 0.5;
 		}
 		if (elevation[index] != undefined){
 			ecount += 1;
-			both += 0.5;
-			if (both != 1){
-				window.alert("You have to annotate both azimuth and elevation"); 
-				return false;
-			}
+		}
+		if (azimuth[index] == undefined || elevation[index] == undefined){
+			window.alert("You have to annotate both azimuth and elevation"); 
+			return false;
 		}
 		both = 0;
 		index += 1;
 	}
-	if (acount == 0 && ecount == 0){
+	if (acount == 0){
 		window.alert("You have to annotate at least one location");
 		return false;
 	}
-	if (acount < source_count || ecount < source_count){
+	if (acount < source_count){
 		if (confirm("You haven't annotated all sources. Do you still want to proceed?")) return true;
 		else return false;
 	}
@@ -272,7 +270,7 @@ document.addEventListener("keydown", keyboardEvent, false);
 var delete_head,delete_front,delete_side = false;
 
 function keyboardEvent(e){
-	if (e.metaKey && e.which == 72){ // Add Head
+	if (e.ctrlKey && e.which == 72){ // Add Head
 		// document.getElementById('head').addEventListener('click', function (e){ /* all functions here */ });
 
 		delete_head,delete_front,delete_side = false;
@@ -330,7 +328,7 @@ function keyboardEvent(e){
 			document.getElementById('body').style.cursor = 'default';
 		}, {once: true});
 	}
-	else if (e.metaKey && e.which == 70){ // Add Front
+	else if (e.ctrlKey && e.which == 70){ // Add Front
 		// document.getElementById('front').addEventListener('click', function (e){ /* all functions here */ });
 
 		delete_head,delete_front,delete_side = false;
@@ -394,7 +392,7 @@ function keyboardEvent(e){
 			document.getElementById('body').style.cursor = 'default';
 		},  {once: true});
 	}
-	else if (e.metaKey && e.which == 83){ // Add Side
+	else if (e.ctrlKey && e.which == 83){ // Add Side
 		// document.getElementById('side').addEventListener('click', function (e){ /* all functions here */ });
 		delete_head,delete_front,delete_side = false;
 
@@ -458,7 +456,7 @@ function keyboardEvent(e){
 			document.getElementById('body').style.cursor = 'default';
 		},  {once: true});
 	}
-	else if (e.altKey && e.which == 72){ // Delete Head
+	else if (e.shiftKey && e.which == 72){ // Delete Head
 		var index = 0;
 		var acount = 0;
 		while (index < azimuth.length) {
@@ -470,7 +468,7 @@ function keyboardEvent(e){
 			return;
 		}
 		else{
-			document.getElementById('body').style.cursor = "url('templates/img/minus.svg'),auto";
+			document.getElementById('body').style.cursor = "url('/templates/img/minus.svg'),auto";
 			document.onmousedown = function(e){
 				document.getElementById('body').style.cursor = 'default';
 				delete_head = false;
@@ -479,7 +477,7 @@ function keyboardEvent(e){
 			del = true;
 		}
 	}
-	else if (e.altKey && e.which == 70){ // Delete Front
+	else if (e.shiftKey && e.which == 70){ // Delete Front
 		var index = 0;
 		var ecount = 0;
 		while (index < elevation.length) {
@@ -491,7 +489,7 @@ function keyboardEvent(e){
 			return;
 		}
 		else{
-			document.getElementById('body').style.cursor = "url('templates/img/minus.svg'),auto";
+			document.getElementById('body').style.cursor = "url('/templates/img/minus.svg'),auto";
 			document.onmousedown = function(e){
 				document.getElementById('body').style.cursor = 'default';
 				delete_head = false;
@@ -500,7 +498,7 @@ function keyboardEvent(e){
 			del = true;
 		}
 	}
-	else if (e.altKey && e.which == 83){ // Delete Side
+	else if (e.shiftKey && e.which == 83){ // Delete Side
 		var index = 0;
 		var ecount = 0;
 		while (index < elevation.length) {
@@ -512,7 +510,7 @@ function keyboardEvent(e){
 			return;
 		}
 		else{
-			document.getElementById('body').style.cursor = "url('templates/img/minus.svg'),auto";
+			document.getElementById('body').style.cursor = "url('/templates/img/minus.svg'),auto";
 			document.onmousedown = function(e){
 				document.getElementById('body').style.cursor = 'default';
 				delete_head = false;
