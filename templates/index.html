@@ -37,7 +37,8 @@ Contact Ray Gonzalez raygon@mit.edu or Kevin J. P. Woods kwoods@mit.edu
       var config = data.config;
       var didPass = data.didPass;
       if (didPass) {
-        window.location.href = '/templates/question.html';
+        window.location.href = '/templates/question/question.html';
+        // do ajax here to send information to the front end
       }
       else {
         $('<div/>', {

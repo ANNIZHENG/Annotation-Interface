@@ -26,7 +26,22 @@ def home():
     entry = Survey(survey_id)
     ses.add(entry)
     # ses.commit()
-    return render_template('index.html')
+    try:
+        return render_template('index.html')
+    except:
+        print ("find a way to refresh everything")
+
+'''
+
+1. json send message via headphone check
+2. change default pass = false to pass = true
+3. once pass = true, users are allowed to redirect to the page
+4. if user directly enters, then, since the global value of pass is false, 
+the user will not be entering in and will be prompted an error message
+
+@app.route('/question', methods=['GET','POST'])
+
+'''
 
 @app.route('/interaction', methods=['POST'])
 def interaction():

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<title></title>
-	<link rel="stylesheet" type="text/css" href="/templates/assets/css/question.css">
+	<link rel="stylesheet" type="text/css" href="/templates/question/assets/css/question.css">
 </head>
 <body id = "body">
 	<div class="container-3D"> 
@@ -13,7 +13,7 @@
 			<div id="message">Keyboard Rules</div>
 			<h2>Listen to the audio [1 / 3]</h2>
 			<audio id="audio" controls>
-				<source id = "source" src="/templates/assets/audio/test1.wav" type="audio/wav">
+				<source id = "source" src="/templates/question/assets/audio/test1.wav" type="audio/wav">
 				Your browser does not support audio
 			</audio>
 			<br>
@@ -30,7 +30,8 @@
 			<label id="2d-question" for="2d"></label><br><br>
 			<div id="2d">
 				<div id="head" style="display: none;">
-					<div class="circular" id="circular1" style="display: none;"><div class="indicator" id="head-item-1"></div></div>
+					<div class="circular" id="circular0"></div>
+					<div class="circular" id="circular1" style="display: none;"><div class="indicator" id="head-item-1" style="display: none;"></div></div>
 					<div class="circular" id="circular2" style="display: none;"><div class="indicator" id="head-item-2" style="display: none;"></div></div>
 					<div class="circular" id="circular3" style="display: none;"><div class="indicator" id="head-item-3" style="display: none;"></div></div>
 					<div class="circular" id="circular4" style="display: none;"><div class="indicator" id="head-item-4" style="display: none;"></div></div>
@@ -42,6 +43,7 @@
 					<div class="circular" id="circular10" style="display: none;"><div class="indicator" id="head-item-10" style="display: none;"></div></div>
 				</div><br>
 				<div id="front" style="display: none;">
+					<div class="circular" id="circularF0"></div>
 					<div class="circular" id="circularF1" style="display: none;"><div class="indicator" id="front-item-1" style="display: none;"></div></div>
 					<div class="circular" id="circularF2" style="display: none;"><div class="indicator" id="front-item-2" style="display: none;"></div></div>
 					<div class="circular" id="circularF3" style="display: none;"><div class="indicator" id="front-item-3" style="display: none;"></div></div>
@@ -54,6 +56,7 @@
 					<div class="circular" id="circularF10" style="display: none;"><div class="indicator" id="front-item-10" style="display: none;"></div></div>
 				</div>
 				<div id="side" style="display: none;">
+					<div class="circular" id="circularS0"></div>
 					<div class="circular" id="circularS1" style="display: none;"><div class="indicator" id="side-item-1" style="display: none;"></div></div>
 					<div class="circular" id="circularS2" style="display: none;"><div class="indicator" id="side-item-2" style="display: none;"></div></div>
 					<div class="circular" id="circularS3" style="display: none;"><div class="indicator" id="side-item-3" style="display: none;"></div></div>
@@ -72,6 +75,6 @@
 	</div>
 	<script src="//cdn.rawgit.com/mrdoob/three.js/master/build/three.js"></script>
 	<script src="//cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
-	<script src="/templates/assets/js/question.js"></script>
+	<script src="/templates/question/assets/js/question.js"></script>
 </body>
 </html>

@@ -81,17 +81,17 @@ audio::-webkit-media-controls-current-time-display{
 	border-radius: 50%; 
 	width: 15px; 
 	height: 15px;
-	margin-top: -14px;
+	/* margin-top: -1px; */
 	cursor: pointer;
 }	
 
 .circular{
 	position: absolute;
 	width: 17px; 
-	height: 150px; 
-	left: 83px;
-	top: 16px;
-	/*border: 1px solid white;*/
+	height: 180px; 
+	left: 82.5px;
+	/* top: 18px; */
+	/* border: 1px solid white; */
 }
 
 #head, #front, #side{
