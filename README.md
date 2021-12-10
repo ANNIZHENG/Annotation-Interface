@@ -18,4 +18,4 @@ pip3 install psycopg2-binary
 
 *and start postgresql running*
 
-![Alt text](templates/img/page_sample.png?raw=true)
+![Alt text](templates/question/img/page_sample.png?raw=true)
