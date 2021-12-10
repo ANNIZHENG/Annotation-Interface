@@ -6,7 +6,7 @@
 
 **headphone check code link: https://github.com/mcdermottLab/HeadphoneCheck**
 
-Please type these command lines to set up the virtual environment.
+**Please type these command lines to set up the virtual environment.**
 ```
 virtualenv env
 
