@@ -33,7 +33,7 @@ document.getElementById('count').addEventListener("change",addSourceCount);
 document.getElementById('message').addEventListener("click",popRules);
 
 function popRules(){
-	window.alert("Please click option(Mac) or Alt(Windows) to add an annotation\nOr click command to delete an annotation");
+	window.alert("1. Please click option(Mac) or Alt(Windows) to add an annotation\n2. Please click command to delete an annotation\n3. If you need more than one view for adding elevation, please click control key");
 }
 
 function addSourceCount(){
@@ -113,7 +113,7 @@ function setNextQuestion(){
 }
 
 function askProceed(){
-	console.log("askProceed "+findUndefinedAzimuth()+", "+findUndefinedElevation());
+	// console.log("askProceed "+findUndefinedAzimuth()+", "+findUndefinedElevation());
 	if (document.getElementById('count').value == undefined){ window.alert("You must select a response"); return false; }
 	if (findUndefinedAzimuth() == -3 && findUndefinedElevation() == -3) { window.alert("You must annotate at least one location"); return false; }
 	if (findUndefinedAzimuth() != findUndefinedElevation()) { window.alert("The number of annotated azimuth does not match with that of elevation"); return false; }
@@ -210,7 +210,7 @@ function dragElement(index,indicator,add_index) {
 		}
 		else {
 			temp_elevation = flocation.bottom - innerlocation.top;
-			console.log(temp_elevation);
+			//console.log(temp_elevation);
 			if (temp_elevation == 97 || temp_elevation == 98) curr_elevation = 0;
 			else if (temp_elevation >= 180) curr_elevation = 90;
 			else if (temp_elevation <= 15) curr_elevation = -90;
@@ -318,6 +318,7 @@ var enable_side = false;
 var delete_head = false;
 var delete_front = false;
 var delete_side = false;
+var add_third = false;
 
 document.addEventListener("keydown", add);
 function add(e){
@@ -334,6 +335,89 @@ function add(e){
 	front_cy = ( front_frameLocation.top + front_frameLocation.bottom ) / 2;
 	side_cx = ( side_frameLocation.right + side_frameLocation.left ) / 2;
 	side_cy = ( side_frameLocation.top + side_frameLocation.bottom ) / 2;
+
+	/*
+
+	if (e.ctrlKey){
+		elevation_item_index = findUndefinedElevation();
+		
+		if ( elevation_item_index > 0 &&  ( ( document.getElementById( 'front-item-'+elevation_item_index ).style.display == 'none' ) && ( document.getElementById( 'side-item-'+elevation_item_index ).style.display == 'none' ) ) ){
+			window.alert("Please enter one more elevation before adding the second annotation of that elevation");
+			document.getElementById('body').style.cursor = 'default';
+		}	
+
+		if ( elevation_item_index > 0
+		&&  ( ( document.getElementById( 'front-item-'+elevation_item_index ).style.display == 'none' ) || ( document.getElementById( 'side-item-'+elevation_item_index ).style.display == 'none' ) ) ){
+			
+			document.getElementById('body').style.cursor = 'cell';
+			console.log("control key activated and the current height is: "+elevation_item_index); // Debug
+
+			document.addEventListener('mousedown', function(e){
+				enable_front = calculateRadius(e.pageX, e.pageY, front_cx, front_cy);
+				enable_side = calculateRadius(e.pageX, e.pageY, side_cx, side_cy);
+
+				if (document.getElementById('front-item-'+elevation_item_index).style.display == 'none' && enable_front){
+
+					temp_azimuth = calculateAzimuth(e.pageX, e.pageY, front_cx, front_cy);
+					document.getElementById('circularF'+elevation_item_index).setAttribute('style','');
+					document.getElementById('circularF'+elevation_item_index).style.transform = 'rotate('+temp_azimuth+'deg)';
+					document.getElementById('front-item-'+elevation_item_index).setAttribute('style','');
+					itemLocation = document.getElementById('front-item-'+elevation_item_index).getBoundingClientRect();
+
+					temp_elevation = front_frameLocation.bottom - itemLocation.top;
+					if (temp_elevation == 97 || temp_elevation == 98) temp_elevation = 0;
+					else if (temp_elevation >= 180) temp_elevation = 90;
+					else if (temp_elevation <= 15) temp_elevation = -90;
+					else if (temp_elevation > 98) temp_elevation = Math.round( temp_elevation - 98 );
+					else if (temp_elevation < 97) temp_elevation = Math.round( temp_elevation - 97 );
+
+					// console.log(temp_elevation);
+					displayBall( (temp_azimuth > 180 ?  270 : 90), temp_elevation, elevation_item_index);
+
+					elevation[elevation_item_index] = temp_elevation;
+					curr_elevation = elevation[elevation_item_index];
+
+					action_type = 'elevation';
+					value = curr_elevation;
+					timestamp = Date.now();
+					ajax_interaction();
+					
+					document.getElementById('body').style.cursor = 'default';
+				}
+				else if (document.getElementById('side-item-'+findUndefinedElevation()).style.display == 'none' && enable_side){
+
+					temp_azimuth = calculateAzimuth(e.pageX, e.pageY, side_cx, side_cy);
+					document.getElementById('circularS'+elevation_item_index).setAttribute('style','');
+					document.getElementById('circularS'+elevation_item_index).style.transform = 'rotate('+temp_azimuth+'deg)';
+					document.getElementById('side-item-'+elevation_item_index).setAttribute('style','');
+					itemLocation = document.getElementById('side-item-'+elevation_item_index).getBoundingClientRect();
+
+					temp_elevation = side_frameLocation.bottom - itemLocation.top;
+					if (temp_elevation == 97 || temp_elevation == 98) temp_elevation = 0;
+					else if (temp_elevation >= 180) temp_elevation = 90;
+					else if (temp_elevation <= 15) temp_elevation = -90;
+					else if (temp_elevation > 98) temp_elevation = Math.round( temp_elevation - 98 );
+					else if (temp_elevation < 97) temp_elevation = Math.round( temp_elevation - 97 );
+
+					console.log(temp_elevation);
+					displayBall( (temp_azimuth > 180 ?  0 : 180), temp_elevation, elevation_item_index);
+
+					elevation[elevation_item_index] = temp_elevation;
+					curr_elevation = elevation[elevation_item_index];
+
+					action_type = 'elevation';
+					value = curr_elevation;
+					timestamp = Date.now();
+					ajax_interaction();
+					
+					document.getElementById('body').style.cursor = 'default';
+				}	
+			},{once:true});
+		}
+		else{ window.alert("Please enter at least one elevation before adding the second annotation of the elevation"); document.getElementById('body').style.cursor = 'default';}
+	}
+
+	*/
 
 	if (e.altKey){
 		document.getElementById('body').style.cursor = 'cell';
@@ -380,11 +464,6 @@ function add(e){
 					window.alert("You must annotate an azimuth"); document.getElementById('body').style.cursor = 'default'; key_perform = false;
 					return;
 				}
-				/*
-				if ( azimuth[elevation_item_index] != undefined && (azimuth[elevation_item_index] > 315 || azimuth[elevation_item_index] < 45) ){
-					window.alert("Your current azimuth is on the view that one cannot see from the back. Please adjust the azimuth or use the side view to mark your elevation"); document.getElementById('body').style.cursor = 'default'; key_perform = false;
-					return;
-				}*/
 
 				elevation_item_index += 1;
 				temp_azimuth = calculateAzimuth(e.pageX, e.pageY, front_cx, front_cy);
@@ -393,7 +472,7 @@ function add(e){
 				document.getElementById('front-item-'+elevation_item_index).setAttribute('style','');
 				itemLocation = document.getElementById('front-item-'+elevation_item_index).getBoundingClientRect();
 
-				temp_elevation = side_frameLocation.bottom - itemLocation.top;
+				temp_elevation = front_frameLocation.bottom - itemLocation.top;
 				if (temp_elevation == 97 || temp_elevation == 98) curr_elevation = 0;
 				else if (temp_elevation >= 180) curr_elevation = 90;
 				else if (temp_elevation <= 15) curr_elevation = -90;
@@ -1037,6 +1116,7 @@ function displayBall(azimuth, tilt, number){
 	ball.position.set(returnlist['x'], returnlist['y'], returnlist['z']);
 	scene.remove(scene.getObjectByName('ball'+number));
 	scene.add(ball);
+	return ball;
 }
 
 function deleteBall(number){
