@@ -337,7 +337,6 @@ function add(e){
 	side_cy = ( side_frameLocation.top + side_frameLocation.bottom ) / 2;
 
 	/*
-
 	if (e.ctrlKey){
 		elevation_item_index = findUndefinedElevation();
 		
@@ -416,7 +415,6 @@ function add(e){
 		}
 		else{ window.alert("Please enter at least one elevation before adding the second annotation of the elevation"); document.getElementById('body').style.cursor = 'default';}
 	}
-
 	*/
 
 	if (e.altKey){
