@@ -4,9 +4,9 @@
 
 #### Please create a database beforehand and change the database path in server/db_tables.py line 11 and 14 to accommodate your environment.
 
-**headphone check code link: https://github.com/mcdermottLab/HeadphoneCheck**
+headphone check code link: https://github.com/mcdermottLab/HeadphoneCheck
 
-**Please type these command lines to set up the virtual environment.**
+Please type these command lines to set up the virtual environment.
 ```
 virtualenv env
 
@@ -18,6 +18,6 @@ pip3 install sqlalchemy
 
 pip3 install psycopg2-binary
 ```
-*and start postgresql running*
+and start postgresql running
 
 ![Alt text](templates/question/img/page_sample.png?raw=true)
