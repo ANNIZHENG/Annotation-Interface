@@ -6,6 +6,7 @@
 
 **headphone check code link: https://github.com/mcdermottLab/HeadphoneCheck**
 
+```
 virtualenv env
 
 source env/bin/activate
@@ -15,7 +16,7 @@ pip3 install flask
 pip3 install sqlalchemy
 
 pip3 install psycopg2-binary
-
+```
 *and start postgresql running*
 
 ![Alt text](templates/question/img/page_sample.png?raw=true)
