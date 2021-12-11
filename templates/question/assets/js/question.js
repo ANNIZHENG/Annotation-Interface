@@ -175,7 +175,43 @@ function dragElement(index,indicator,add_index) {
 	item.onmousedown = function (e) {
    		document.onmousemove = mouse;
 		document.onmouseup = function (e) {
-			// if (!del){ } // del = false;
+
+			if (indicator == 0){ // drag head
+				if (document.getElementById('front-item-'+index).style.display != 'none'){
+					degree = parseInt(document.getElementById('circularF'+index).style.transform.replace('rotate(','').replace('deg)',''));
+					if ( (temp_azimuth > 180 && azimuth[add_index] < 180) || (temp_azimuth < 180 && azimuth[add_index] > 180) ){ document.getElementById('circularF'+index).style.transform = 'rotate('+(360 - degree)+'deg)'; }
+				}
+
+				displayBall(temp_azimuth-180, elevation[add_index] != undefined ? elevation[add_index] : 0, index);
+				curr_azimuth = temp_azimuth;
+				azimuth[add_index] = curr_azimuth;
+			}
+			else if (indicator == 1){ // drag front
+				if (document.getElementById('head-item-'+index).style.display != 'none'){
+					degree = parseInt(document.getElementById('circular'+index).style.transform.replace('rotate(','').replace('deg)',''));
+					if ( (degree < 180 && temp_azimuth > 180) || (degree > 180 && temp_azimuth < 180) ){ 
+						window.alert("Your BACK view annotation does not match with your FRONT view annotation");
+						item.style.transform = 'rotate('+elevation[add_index]+'deg)';
+
+						document.getElementById('body').style.cursor = 'default';
+						document.onmouseup = null;
+						document.onmousemove = null;
+						return;
+					}
+				}
+				temp_azimuth = azimuth[add_index] != undefined ? azimuth[add_index] - 180 : -180;
+				displayBall(temp_azimuth, curr_elevation, index);
+				elevation[add_index] = curr_elevation;
+			}
+			else{ // drag side
+				/*
+				if (temp_azimuth < 180 && azimuth[add_index] != undefined) temp_azimuth = azimuth[add_index];
+				else if (temp_azimuth > 180 && azimuth[add_index] != undefined) temp_azimuth = azimuth[add_index] - 180;
+				else if (azimuth[add_index] == undefined || temp_azimuth == 180) temp_azimuth = 0;
+				*/
+				displayBall(temp_azimuth-180, curr_elevation, index);
+			}
+
 			if(indicator == 0){
 				azimuth[add_index] = curr_azimuth;
 				value = curr_azimuth;
@@ -185,22 +221,6 @@ function dragElement(index,indicator,add_index) {
 				elevation[add_index] = curr_elevation;
 				value = curr_elevation;
 				timestamp = Date.now();
-			}
-
-			if (indicator == 0) displayBall( (azimuth[add_index] != undefined ? azimuth[add_index] - 180 : 180), (elevation[add_index] != undefined ? elevation[add_index] : 0), index);
-			else if (indicator == 1){
-				if (temp_azimuth < 180 && azimuth[add_index] != undefined) temp_azimuth = azimuth[add_index] + 90;
-				else if (temp_azimuth > 180 && azimuth[add_index] != undefined) temp_azimuth = azimuth[add_index] - 90;
-				else if (azimuth[add_index] == undefined || temp_azimuth == 180) temp_azimuth = 0;
-
-				displayBall(temp_azimuth-180, curr_elevation, index);
-			}
-			else{
-				if (temp_azimuth < 180 && azimuth[add_index] != undefined) temp_azimuth = azimuth[add_index];
-				else if (temp_azimuth > 180 && azimuth[add_index] != undefined) temp_azimuth = azimuth[add_index] - 180;
-				else if (azimuth[add_index] == undefined || temp_azimuth == 180) temp_azimuth = 0;
-
-				displayBall(temp_azimuth-180, curr_elevation, index);
 			}
 
 			ajax_interaction();
@@ -218,19 +238,20 @@ function dragElement(index,indicator,add_index) {
 		temp_azimuth = calculateAzimuth(e.pageX, e.pageY, cx, cy);
 
 		if (indicator == 0){
-			curr_azimuth = temp_azimuth
-			azimuth[add_index] = curr_azimuth;
+			//curr_azimuth = temp_azimuth;
+			//azimuth[add_index] = curr_azimuth;
 		}
-		else {
+		else  {
 			temp_elevation = flocation.bottom - innerlocation.top;
 			if (temp_elevation == 97 || temp_elevation == 98) curr_elevation = 0;
 			else if (temp_elevation >= 180) curr_elevation = 90;
 			else if (temp_elevation <= 15) curr_elevation = -90;
 			else if (temp_elevation > 98) curr_elevation = Math.round( temp_elevation - 98 );
 			else if (temp_elevation < 97) curr_elevation = Math.round( temp_elevation - 97 );
-			elevation[add_index] = curr_elevation;
+			//elevation[add_index] = curr_elevation;
 		}
-		item.style.transform = 'rotate('+temp_azimuth+'deg)';
+
+		item.style.transform = 'rotate('+(temp_azimuth)+'deg)';
 	}
 }
 
@@ -464,7 +485,7 @@ function add(e){
 				timestamp = Date.now();
 				ajax_interaction();
 			}
-			else if (enable_front){
+			else if (enable_front){ // add front
 				if ( elevation_item_index == -1 ){
 					window.alert("You have already enter " + source_count + " elevation elements"); document.getElementById('body').style.cursor = 'default'; key_perform = false;
 					return;
@@ -475,7 +496,11 @@ function add(e){
 				}
 
 				elevation_item_index += 1;
+
 				temp_azimuth = calculateAzimuth(e.pageX, e.pageY, front_cx, front_cy);
+				if (azimuth[elevation_item_index-1] != undefined){
+					if (azimuth[elevation_item_index-1] > 180) temp_azimuth = 360 - temp_azimuth;
+				}
 				document.getElementById('circularF'+elevation_item_index).setAttribute('style','');
 				document.getElementById('circularF'+elevation_item_index).style.transform = 'rotate('+temp_azimuth+'deg)';
 				document.getElementById('front-item-'+elevation_item_index).setAttribute('style','');
@@ -489,10 +514,8 @@ function add(e){
 				else if (temp_elevation < 97) curr_elevation = Math.round( temp_elevation - 97 );
 				elevation[elevation_item_index-1] = curr_elevation;
 
-				if (temp_azimuth < 180 && azimuth[elevation_item_index-1] != undefined) temp_azimuth = azimuth[elevation_item_index-1] + 90;
-				else if (temp_azimuth > 180 && azimuth[elevation_item_index-1] != undefined) temp_azimuth = azimuth[elevation_item_index-1] - 90;
-				else if (azimuth[elevation_item_index-1] == undefined || temp_azimuth == 180) temp_azimuth = 0;
-				displayBall(temp_azimuth-180, curr_elevation, elevation_item_index);
+				temp_azimuth = azimuth[elevation_item_index-1] != undefined ? azimuth[elevation_item_index-1] - 180 : -180;
+				displayBall(temp_azimuth, curr_elevation, elevation_item_index);
 
 				action_type = 'elevation'
 				value = curr_elevation
