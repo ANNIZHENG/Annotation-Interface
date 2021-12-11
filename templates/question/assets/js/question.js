@@ -33,7 +33,7 @@ document.getElementById('count').addEventListener("change",addSourceCount);
 document.getElementById('message').addEventListener("click",popRules);
 
 function popRules(){
-	window.alert("1. Please click option(Mac) or Alt(Windows) to add an annotation\n2. Please click command to delete an annotation\n3. If you need more than one view for adding elevation, please click control key");
+	window.alert("1. Please click option(Mac) or Alt(Windows) to add an annotation\n2. Please click command to delete an annotation\n3. If you need more than one view for adding elevation, please click control key (COMING SOON)");
 }
 
 function addSourceCount(){
@@ -182,13 +182,26 @@ function dragElement(index,indicator,add_index) {
 				timestamp = Date.now();
 			}
 			else{
-
 				elevation[add_index] = curr_elevation;
 				value = curr_elevation;
 				timestamp = Date.now();
 			}
-			displayBall( (azimuth[add_index] != undefined ? azimuth[add_index] - 180 : 180) , 
-			(elevation[add_index] != undefined ? elevation[add_index] : 0), index);
+
+			if (indicator == 0) displayBall( (azimuth[add_index] != undefined ? azimuth[add_index] - 180 : 180), (elevation[add_index] != undefined ? elevation[add_index] : 0), index);
+			else if (indicator == 1){
+				if (temp_azimuth < 180 && azimuth[add_index] != undefined) temp_azimuth = azimuth[add_index] + 90;
+				else if (temp_azimuth > 180 && azimuth[add_index] != undefined) temp_azimuth = azimuth[add_index] - 90;
+				else if (azimuth[add_index] == undefined || temp_azimuth == 180) temp_azimuth = 0;
+
+				displayBall(temp_azimuth-180, curr_elevation, index);
+			}
+			else{
+				if (temp_azimuth < 180 && azimuth[add_index] != undefined) temp_azimuth = azimuth[add_index];
+				else if (temp_azimuth > 180 && azimuth[add_index] != undefined) temp_azimuth = azimuth[add_index] - 180;
+				else if (azimuth[add_index] == undefined || temp_azimuth == 180) temp_azimuth = 0;
+
+				displayBall(temp_azimuth-180, curr_elevation, index);
+			}
 
 			ajax_interaction();
 			document.getElementById('body').style.cursor = 'default';
@@ -210,7 +223,6 @@ function dragElement(index,indicator,add_index) {
 		}
 		else {
 			temp_elevation = flocation.bottom - innerlocation.top;
-			//console.log(temp_elevation);
 			if (temp_elevation == 97 || temp_elevation == 98) curr_elevation = 0;
 			else if (temp_elevation >= 180) curr_elevation = 90;
 			else if (temp_elevation <= 15) curr_elevation = -90;
@@ -336,7 +348,7 @@ function add(e){
 	side_cx = ( side_frameLocation.right + side_frameLocation.left ) / 2;
 	side_cy = ( side_frameLocation.top + side_frameLocation.bottom ) / 2;
 
-	/*
+	/* Please create a refresh button here to
 	if (e.ctrlKey){
 		elevation_item_index = findUndefinedElevation();
 		
@@ -416,7 +428,6 @@ function add(e){
 		else{ window.alert("Please enter at least one elevation before adding the second annotation of the elevation"); document.getElementById('body').style.cursor = 'default';}
 	}
 	*/
-
 	if (e.altKey){
 		document.getElementById('body').style.cursor = 'cell';
 		var azimuth_item_index = findUndefinedAzimuth();
@@ -478,7 +489,10 @@ function add(e){
 				else if (temp_elevation < 97) curr_elevation = Math.round( temp_elevation - 97 );
 				elevation[elevation_item_index-1] = curr_elevation;
 
-				displayBall( (azimuth[elevation_item_index-1] != undefined ? azimuth[elevation_item_index-1] - 180 : 180) , curr_elevation, elevation_item_index);
+				if (temp_azimuth < 180 && azimuth[elevation_item_index-1] != undefined) temp_azimuth = azimuth[elevation_item_index-1] + 90;
+				else if (temp_azimuth > 180 && azimuth[elevation_item_index-1] != undefined) temp_azimuth = azimuth[elevation_item_index-1] - 90;
+				else if (azimuth[elevation_item_index-1] == undefined || temp_azimuth == 180) temp_azimuth = 0;
+				displayBall(temp_azimuth-180, curr_elevation, elevation_item_index);
 
 				action_type = 'elevation'
 				value = curr_elevation
@@ -510,7 +524,10 @@ function add(e){
 				else if (temp_elevation < 97) curr_elevation = Math.round( temp_elevation - 97 );
 				elevation[elevation_item_index-1] = curr_elevation;
 
-				displayBall( (azimuth[elevation_item_index-1] != undefined ? azimuth[elevation_item_index-1] - 180 : 180) , curr_elevation, elevation_item_index);
+				if (temp_azimuth < 180 && azimuth[elevation_item_index-1] != undefined) temp_azimuth = azimuth[elevation_item_index-1];
+				else if (temp_azimuth > 180 && azimuth[elevation_item_index-1] != undefined) temp_azimuth = azimuth[elevation_item_index-1] - 180;
+				else if (azimuth[elevation_item_index-1] == undefined || temp_azimuth == 180) temp_azimuth = 0;
+				displayBall(temp_azimuth-180, curr_elevation, elevation_item_index);
 
 				action_type = 'elevation'
 				value = curr_elevation
@@ -1103,8 +1120,8 @@ function polarToCartesian(lon, lat, radius) {
 	}
 }
 
-function displayBall(azimuth, tilt, number){
-	var returnlist = polarToCartesian(azimuth, tilt, 15);
+function displayBall(azimuth, elevation, number){
+	var returnlist = polarToCartesian(azimuth, elevation, 15);
 	ballGeometry = new THREE.SphereGeometry(0.8,60,30);
 	ballMaterial = new THREE.MeshLambertMaterial({
 		color: colors[number-1]
