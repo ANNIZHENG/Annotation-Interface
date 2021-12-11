@@ -172,6 +172,8 @@ function dragElement(index,indicator,add_index) {
 		frame = document.getElementById('side');
 	}
 
+	original_front_degree = parseInt(document.getElementById('circularF'+index).style.transform.replace('rotate(','').replace('deg)',''));
+
 	item.onmousedown = function (e) {
    		document.onmousemove = mouse;
 		document.onmouseup = function (e) {
@@ -191,7 +193,7 @@ function dragElement(index,indicator,add_index) {
 					degree = parseInt(document.getElementById('circular'+index).style.transform.replace('rotate(','').replace('deg)',''));
 					if ( (degree < 180 && temp_azimuth > 180) || (degree > 180 && temp_azimuth < 180) ){ 
 						window.alert("Your BACK view annotation does not match with your FRONT view annotation");
-						item.style.transform = 'rotate('+elevation[add_index]+'deg)';
+						item.style.transform = 'rotate('+original_front_degree+'deg)';
 
 						document.getElementById('body').style.cursor = 'default';
 						document.onmouseup = null;
@@ -496,11 +498,13 @@ function add(e){
 				}
 
 				elevation_item_index += 1;
-
 				temp_azimuth = calculateAzimuth(e.pageX, e.pageY, front_cx, front_cy);
+
 				if (azimuth[elevation_item_index-1] != undefined){
-					if (azimuth[elevation_item_index-1] > 180) temp_azimuth = 360 - temp_azimuth;
+					if (azimuth[elevation_item_index-1] > 180 && temp_azimuth < 180) temp_azimuth = 360 - temp_azimuth;
+					else if (azimuth[elevation_item_index-1] < 180 && temp_azimuth > 180) temp_azimuth = 360 - temp_azimuth;
 				}
+
 				document.getElementById('circularF'+elevation_item_index).setAttribute('style','');
 				document.getElementById('circularF'+elevation_item_index).style.transform = 'rotate('+temp_azimuth+'deg)';
 				document.getElementById('front-item-'+elevation_item_index).setAttribute('style','');
