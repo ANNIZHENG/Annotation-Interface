@@ -499,7 +499,6 @@ function add(e){
 
 				elevation_item_index += 1;
 				temp_azimuth = calculateAzimuth(e.pageX, e.pageY, front_cx, front_cy);
-
 				if (azimuth[elevation_item_index-1] != undefined){
 					if (azimuth[elevation_item_index-1] > 180 && temp_azimuth < 180) temp_azimuth = 360 - temp_azimuth;
 					else if (azimuth[elevation_item_index-1] < 180 && temp_azimuth > 180) temp_azimuth = 360 - temp_azimuth;
@@ -538,11 +537,18 @@ function add(e){
 
 				elevation_item_index += 1;
 				temp_azimuth = calculateAzimuth(e.pageX, e.pageY, side_cx, side_cy);
+
+				if (azimuth[elevation_item_index-1] != undefined){
+					if (azimuth[elevation_item_index-1] < 90 || azimuth[elevation_item_index-1] > 270){ if (temp_azimuth > 180) temp_azimuth = 360 - temp_azimuth; }
+					else if (azimuth[elevation_item_index-1] > 90 || azimuth[elevation_item_index-1]< 270){ if (temp_azimuth < 180) temp_azimuth = 360 - temp_azimuth; }
+				}
+				else temp_azimuth = 0;
+
 				document.getElementById('circularS'+elevation_item_index).setAttribute('style','');
 				document.getElementById('circularS'+elevation_item_index).style.transform = 'rotate('+temp_azimuth+'deg)';
 				document.getElementById('side-item-'+elevation_item_index).setAttribute('style','');
 				itemLocation = document.getElementById('side-item-'+elevation_item_index).getBoundingClientRect();
-
+				
 				temp_elevation = side_frameLocation.bottom - itemLocation.top;
 				if (temp_elevation == 97 || temp_elevation == 98) curr_elevation = 0;
 				else if (temp_elevation >= 180) curr_elevation = 90;
@@ -551,9 +557,6 @@ function add(e){
 				else if (temp_elevation < 97) curr_elevation = Math.round( temp_elevation - 97 );
 				elevation[elevation_item_index-1] = curr_elevation;
 
-				if (temp_azimuth < 180 && azimuth[elevation_item_index-1] != undefined) temp_azimuth = azimuth[elevation_item_index-1];
-				else if (temp_azimuth > 180 && azimuth[elevation_item_index-1] != undefined) temp_azimuth = azimuth[elevation_item_index-1] - 180;
-				else if (azimuth[elevation_item_index-1] == undefined || temp_azimuth == 180) temp_azimuth = 0;
 				displayBall(temp_azimuth-180, curr_elevation, elevation_item_index);
 
 				action_type = 'elevation'
