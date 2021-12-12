@@ -1103,26 +1103,27 @@ var sphereMaterial = new THREE.MeshLambertMaterial({
 var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 sphere.position.set(0,0,0);
 
-var ear1Geometry = new THREE.SphereGeometry(2,60,30);
+var ear1Geometry = new THREE.TorusGeometry(1,1.2,30,100);
 var ear1Material = new THREE.MeshLambertMaterial({
 	color: 0xc2a68b
 });
 var ear1 = new THREE.Mesh(ear1Geometry, ear1Material);
-ear1.position.set(8,0,0);
+ear1.position.set(7.8,0,0);
 
-var ear2Geometry = new THREE.SphereGeometry(2,60,30);
+var ear2Geometry = new THREE.TorusGeometry(1,1.2,30,100);
 var ear2Material = new THREE.MeshLambertMaterial({
 	color: 0xc2a68b
 });
 var ear2 = new THREE.Mesh(ear2Geometry, ear2Material);
-ear2.position.set(-8,0,0);
+ear2.position.set(-7.8,0,0);
 
-var noseGeometry = new THREE.SphereGeometry(0.8,60,30);
+var noseGeometry = new THREE.TorusGeometry(0.3,0.8,30,100);
 var noseMaterial = new THREE.MeshLambertMaterial({
 	color: 0xc2a68b
 });
 var nose = new THREE.Mesh(noseGeometry, noseMaterial);
-nose.position.set(0,0,8);
+nose.position.set(0,0,7.4);
+nose.rotation.y = 90;
 
 var frameGeometry = new THREE.SphereBufferGeometry(15,20,20);
 var frameMaterial = new THREE.MeshLambertMaterial({});
