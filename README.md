@@ -1,6 +1,6 @@
 # Annotation Interface
 
-### Set up the virtual environment (debugging)
+### Set up the virtual environment (updating)
 
 #### Please create a database beforehand and change the database path in server/db_tables.py line 11 and 14 to accommodate your environment.
 
@@ -20,4 +20,4 @@ pip3 install psycopg2-binary
 ```
 and start postgresql running
 
-![Alt text](templates/question/img/page_sample.png?raw=true)
+![Alt text](templates/question/img/sample.png?raw=true)

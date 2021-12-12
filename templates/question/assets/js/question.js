@@ -537,10 +537,15 @@ function add(e){
 
 				elevation_item_index += 1;
 				temp_azimuth = calculateAzimuth(e.pageX, e.pageY, side_cx, side_cy);
+				console.log("temp_azimuth: "+temp_azimuth);
 
 				if (azimuth[elevation_item_index-1] != undefined){
-					if (azimuth[elevation_item_index-1] < 90 || azimuth[elevation_item_index-1] > 270){ if (temp_azimuth > 180) temp_azimuth = 360 - temp_azimuth; }
-					else if (azimuth[elevation_item_index-1] > 90 || azimuth[elevation_item_index-1]< 270){ if (temp_azimuth < 180) temp_azimuth = 360 - temp_azimuth; }
+					if (azimuth[elevation_item_index-1] < 90 || azimuth[elevation_item_index-1] > 270){ 
+						if (temp_azimuth > 180){ temp_azimuth = 360 - temp_azimuth; }
+					}
+					else if (azimuth[elevation_item_index-1] > 90 && azimuth[elevation_item_index-1]< 270){ 
+						if (temp_azimuth < 180){ temp_azimuth = 360 - temp_azimuth; }
+					}
 				}
 				else temp_azimuth = 0;
 
@@ -557,7 +562,8 @@ function add(e){
 				else if (temp_elevation < 97) curr_elevation = Math.round( temp_elevation - 97 );
 				elevation[elevation_item_index-1] = curr_elevation;
 
-				displayBall(temp_azimuth-180, curr_elevation, elevation_item_index);
+				temp_azimuth = azimuth[elevation_item_index-1] != undefined ? azimuth[elevation_item_index-1] - 180 : -180;
+				displayBall(temp_azimuth, curr_elevation, elevation_item_index);
 
 				action_type = 'elevation'
 				value = curr_elevation
