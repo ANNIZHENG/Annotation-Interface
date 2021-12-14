@@ -7,7 +7,7 @@ from db_tables import ses, Annotation,Survey,Location,Interaction
 
 app = Flask(__name__,
             static_folder="../templates",
-            template_folder="../templates") # template_folder="../docs"
+            template_folder="../templates")
 
 BATCH_SIZE = 12
 PAY_PER_ANNOTATION_NORMAL = 0.24

@@ -197,6 +197,7 @@ function dragElement(index,indicator,add_index) {
 						document.getElementById('body').style.cursor = 'default';
 						document.onmouseup = null;
 						document.onmousemove = null;
+						document.getElementById('p-elevation').innerHTML = 'current elevation: '+elevation[add_index];
 						return; // because this case should not be happening
 					}
 				}
@@ -215,6 +216,7 @@ function dragElement(index,indicator,add_index) {
 						document.getElementById('body').style.cursor = 'default';
 						document.onmouseup = null;
 						document.onmousemove = null;
+						document.getElementById('p-elevation').innerHTML = 'current elevation: '+elevation[add_index];
 						return; // because this case should not be happening
 					}
 				}
