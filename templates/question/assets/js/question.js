@@ -475,16 +475,19 @@ function add(e){
 				}
 				azimuth_item_index += 1;
 				curr_azimuth = calculateAzimuth(e.pageX, e.pageY, head_cx, head_cy);
+
 				if ( document.getElementById('front-item-'+azimuth_item_index).style.display != 'none' ){
-					if ( (elevation[azimuth_item_index-1] < 180 && curr_azimuth > 180)
-					|| (elevation[azimuth_item_index-1] > 180 && curr_azimuth < 180) ) {
+					original_front_degree = parseInt(document.getElementById('circularF'+azimuth_item_index).style.transform.replace('rotate(','').replace('deg)',''));
+					if ( (original_front_degree < 180 && curr_azimuth > 180)
+					|| (original_front_degree > 180 && curr_azimuth < 180) ) {
 						document.getElementById('body').style.cursor = 'default';
 						window.alert("Your HEAD view annotation does not match with your FRONT view annotation"); return;
 					}
 				}
 				else if ( document.getElementById('side-item-'+azimuth_item_index).style.display != 'none' ){
-					if ( ((curr_azimuth < 90 || curr_azimuth > 270) && (elevation[azimuth_item_index-1] > 180))
-					|| ((curr_azimuth > 90 && curr_azimuth < 270) && (elevation[azimuth_item_index-1] < 180)) ) {
+					original_side_degree = parseInt(document.getElementById('circularS'+azimuth_item_index).style.transform.replace('rotate(','').replace('deg)',''));
+					if ( ((curr_azimuth < 90 || curr_azimuth > 270) && (original_side_degree > 180))
+					|| ((curr_azimuth > 90 && curr_azimuth < 270) && (original_side_degree < 180)) ) {
 						document.getElementById('body').style.cursor = 'default';
 						window.alert("Your HEAD view annotation does not match with your SIDE view annotation"); return;
 					}
