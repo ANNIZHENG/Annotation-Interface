@@ -73,8 +73,9 @@ function displaySelection(){
 }
 
 function displayButton(){
-	if (!last_question) document.getElementById('btn-button-next').setAttribute('style','');
+	if (!last_question) document.getElementById('btn-button-next').setAttribute('style','float:right;');
 	else document.getElementById('btn-button-submit').setAttribute('style','');
+	document.getElementById('btn-button-refresh').setAttribute('style','float:left;');
 }
 
 function setNextQuestion(){
@@ -85,10 +86,6 @@ function setNextQuestion(){
 	// when reaching to the last question
 	if (annotation_id == totalAnnotation) last_question = true;
 	annotation_id += 1;
-
-	// reload azimuth and elevation
-	azimuth = new Array();
-	elevation = new Array();
 
 	// display
 	var listen = 'Listen to the audio ['+ annotation_id +' / 3]';
@@ -389,7 +386,7 @@ function add(e){
 	side_cx = ( side_frameLocation.right + side_frameLocation.left ) / 2;
 	side_cy = ( side_frameLocation.top + side_frameLocation.bottom ) / 2;
 
-	/* Please create a refresh button here to
+	/*
 	if (e.ctrlKey){
 
 		elevation_item_index = findUndefinedElevation();
@@ -596,7 +593,7 @@ function add(e){
 			}
 		}, {once:true});
 	}
-	// document.onmouseup = function(e){ document.getElementById('body').style.cursor = 'default'; }
+	document.onmouseup = function(e){ document.getElementById('body').style.cursor = 'default'; }
 	enable_head = false; enable_front = false; enable_side = false; key_perform = false;
 
 	console.log("AZIMUTH: "+azimuth.toString());
@@ -604,6 +601,8 @@ function add(e){
 }
 
 function reloadAll(){
+	azimuth = new Array();
+	elevation = new Array();
 	var index = 0;
 	while (index < 10){
 		document.getElementById('head-item-'+(index+1)).style.display = 'none';
