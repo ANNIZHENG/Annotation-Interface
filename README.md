@@ -18,7 +18,7 @@ pip3 install sqlalchemy
 
 pip3 install psycopg2-binary
 ```
-and start postgresql running, then type
+and start postgresql, then type
 
 ```
 python3 server/main.py
