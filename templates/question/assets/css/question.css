@@ -90,15 +90,21 @@ audio::-webkit-media-controls-current-time-display{
 	width: 17px; 
 	height: 180px; 
 	left: 82.5px;
-	/* top: 18px; */
 	/* border: 1px solid white; */
 }
 
-#head, #front, #side{
+#head, #front, #side, #feedback{
 	height: 180px; 
 	width: 180px;
 	background-size: cover; 
 	position: relative;
+	vertical-align: top;
+	margin-bottom: 8px;
+}
+
+p{
+	margin-left: 7px;
+	font-size: 13px;
 }
 
 #head-item-1, #front-item-1, #side-item-1{

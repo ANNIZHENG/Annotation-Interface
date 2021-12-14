@@ -3,8 +3,6 @@ var annotation_id = 1;
 const totalAnnotation = 3;
 
 // Location
-var save_long = 0;
-var save_lat = 0;
 var curr_azimuth = 0;
 var curr_elevation = 0;
 var azimuth = new Array();
@@ -40,9 +38,12 @@ function addSourceCount(){
 	document.getElementById('2d-question').innerHTML = "Please identify the location of each source:";
 
 	// this is for the first enter
-	document.getElementById('head').setAttribute('style',"background-image: url('/templates/question/img/head.png');");
+	document.getElementById('head').setAttribute('style',"background-image: url('/templates/question/img/head.png'); display:inline-block;");
+	document.getElementById('feedback').setAttribute('style',"display:inline-block;");
 	document.getElementById('front').setAttribute('style',"background-image: url('/templates/question/img/front.png'); display: inline-block;");
 	document.getElementById('side').setAttribute('style',"background-image: url('/templates/question/img/side.png'); display: inline-block;");
+	document.getElementById('p-azimuth').innerHTML = 'current azimuth:';
+	document.getElementById('p-elevation').innerHTML = 'current elevation:';
 
 	// display button after showing the image;
 	displayButton();
@@ -79,14 +80,15 @@ function setNextQuestion(){
 	if (!proceed) return false;
 	if (!ajax_next()) return false;
 
+	// when reaching to the last question
+	if (annotation_id == totalAnnotation) last_question = true;
+	annotation_id += 1;
+
+	// reload azimuth and elevation
 	azimuth = new Array();
 	elevation = new Array();
 
-	annotation_id += 1;
-
-	// when reaching to the last question
-	if (annotation_id == totalAnnotation) last_question = true;
-
+	// display
 	var listen = 'Listen to the audio ['+ annotation_id +' / 3]';
 	var audio_source = '/templates/question/assets/audio/test'+annotation_id+'.wav';
 	document.getElementsByTagName('h2')[0].innerHTML=listen;
@@ -98,6 +100,7 @@ function setNextQuestion(){
 	document.getElementById('btn-button-next').style.display='none'; // no next button
 
 	// do not display images yet
+	document.getElementById("feedback").style.display='none';
 	document.getElementById("head").style.display='none';
 	document.getElementById("front").style.display='none';
 	document.getElementById("side").style.display='none';
@@ -113,7 +116,6 @@ function setNextQuestion(){
 }
 
 function askProceed(){
-	// console.log("askProceed "+findUndefinedAzimuth()+", "+findUndefinedElevation());
 	if (document.getElementById('count').value == undefined){ window.alert("You must select a response"); return false; }
 	if (findUndefinedAzimuth() == -3 && findUndefinedElevation() == -3) { window.alert("You must annotate at least one location"); return false; }
 	if (findUndefinedAzimuth() != findUndefinedElevation()) { window.alert("The number of annotated azimuth does not match with that of elevation"); return false; }
@@ -252,6 +254,9 @@ function dragElement(index,indicator,add_index) {
 			else if (temp_elevation < 97) curr_elevation = Math.round( temp_elevation - 97 );
 		}
 		item.style.transform = 'rotate('+(temp_azimuth)+'deg)';
+
+		if (indicator == 0) document.getElementById('p-azimuth').innerHTML = 'current azimuth: '+temp_azimuth; 
+		else document.getElementById('p-elevation').innerHTML = 'current elevation: '+curr_elevation;
 	}
 }
 
@@ -403,16 +408,7 @@ function add(e){
 					else if (temp_elevation > 98) temp_elevation = Math.round( temp_elevation - 98 );
 					else if (temp_elevation < 97) temp_elevation = Math.round( temp_elevation - 97 );
 
-					// console.log(temp_elevation);
-					displayBall( (temp_azimuth > 180 ?  270 : 90), temp_elevation, elevation_item_index);
-
-					elevation[elevation_item_index] = temp_elevation;
-					curr_elevation = elevation[elevation_item_index];
-
-					action_type = 'elevation';
-					value = curr_elevation;
-					timestamp = Date.now();
-					ajax_interaction();
+					// ajax_interaction();
 					
 					document.getElementById('body').style.cursor = 'default';
 				}
@@ -431,16 +427,7 @@ function add(e){
 					else if (temp_elevation > 98) temp_elevation = Math.round( temp_elevation - 98 );
 					else if (temp_elevation < 97) temp_elevation = Math.round( temp_elevation - 97 );
 
-					console.log(temp_elevation);
-					displayBall( (temp_azimuth > 180 ?  0 : 180), temp_elevation, elevation_item_index);
-
-					elevation[elevation_item_index] = temp_elevation;
-					curr_elevation = elevation[elevation_item_index];
-
-					action_type = 'elevation';
-					value = curr_elevation;
-					timestamp = Date.now();
-					ajax_interaction();
+					// ajax_interaction();
 					
 					document.getElementById('body').style.cursor = 'default';
 				}	
@@ -480,12 +467,14 @@ function add(e){
 
 				displayBall(curr_azimuth - 180, (elevation[azimuth_item_index-1] != undefined ? elevation[azimuth_item_index-1] : 0) , azimuth_item_index);
 
+				document.getElementById('p-azimuth').innerHTML = 'current azimuth: '+curr_azimuth;
+
 				action_type = 'azimuth';
 				value = curr_azimuth;
 				timestamp = Date.now();
 				ajax_interaction();
 			}
-			else if (enable_front){ // add front
+			else if (enable_front){
 				if ( elevation_item_index == -1 ){
 					window.alert("You have already enter " + source_count + " elevation elements"); document.getElementById('body').style.cursor = 'default'; key_perform = false;
 					return;
@@ -517,6 +506,8 @@ function add(e){
 
 				temp_azimuth = azimuth[elevation_item_index-1] != undefined ? azimuth[elevation_item_index-1] - 180 : -180;
 				displayBall(temp_azimuth, curr_elevation, elevation_item_index);
+
+				document.getElementById('p-elevation').innerHTML = 'current elevation: '+curr_elevation;
 
 				action_type = 'elevation'
 				value = curr_elevation
@@ -562,6 +553,8 @@ function add(e){
 
 				temp_azimuth = azimuth[elevation_item_index-1] != undefined ? azimuth[elevation_item_index-1] - 180 : -180;
 				displayBall(temp_azimuth, curr_elevation, elevation_item_index);
+
+				document.getElementById('p-elevation').innerHTML = 'current elevation: '+curr_elevation;
 
 				action_type = 'elevation'
 				value = curr_elevation
