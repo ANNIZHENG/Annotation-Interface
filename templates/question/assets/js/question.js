@@ -150,26 +150,27 @@ function ajax_next(){
 /* container.2d.location */
 
 function dragElement(index,indicator,add_index){
-	if (suppress) return;
 	var item, inner_item, frame;
-	if (indicator == 0){ 
-		item = document.getElementById('circular'+index); inner_item = document.getElementById('head-item-'+index); frame = document.getElementById('head');
+	if (indicator == 0){
+		item = document.getElementById('circular'+index); inner_item = document.getElementById('head-item-'+index); 
+		frame = document.getElementById('head');
 	}
 	else if (indicator == 1){
-		item = document.getElementById('circularF'+index); inner_item = document.getElementById('front-item-'+index); frame = document.getElementById('front');
+		item = document.getElementById('circularF'+index); inner_item = document.getElementById('front-item-'+index); 
+		frame = document.getElementById('front');
 	}
 	else{
-		item = document.getElementById('circularS'+index); inner_item = document.getElementById('side-item-'+index); frame = document.getElementById('side');
+		item = document.getElementById('circularS'+index); inner_item = document.getElementById('side-item-'+index); 
+		frame = document.getElementById('side');
 	}
 	original_head_degree = parseInt(document.getElementById('circular'+index).style.transform.replace('rotate(','').replace('deg)',''));
 	original_front_degree = parseInt(document.getElementById('circularF'+index).style.transform.replace('rotate(','').replace('deg)',''));
 	original_side_degree = parseInt(document.getElementById('circularS'+index).style.transform.replace('rotate(','').replace('deg)',''));
 
-	item.onmousedown = function() {
-		if (suppress) return;
+	item.onmousedown = function() { if (suppress) return;
    		document.onmousemove = mouse;
-		document.onmouseup = function(e) {
-			e.preventDefault(); //if (suppress) return;
+		document.onmouseup = function(e) { if (suppress) return; 
+			e.preventDefault();
 			suppress = true;
 			if (indicator == 0){
 				if (document.getElementById('front-item-'+index).style.display != 'none'){
@@ -247,7 +248,7 @@ function dragElement(index,indicator,add_index){
 			document.onmouseup = null; document.onmousemove = null;
 		}
 	}
-	function mouse(e) {
+	function mouse(e) { if (suppress) return;
 		e.preventDefault();
 		var flocation = frame.getBoundingClientRect();
 		var innerlocation = inner_item.getBoundingClientRect();
@@ -264,8 +265,8 @@ function dragElement(index,indicator,add_index){
 			else if (temp_elevation < 97) curr_elevation = Math.round( temp_elevation - 97 );
 		}
 		item.style.transform = 'rotate('+(temp_azimuth)+'deg)';
-		if (indicator == 0 && !suppress) document.getElementById('p-azimuth').innerHTML = 'current azimuth: '+temp_azimuth; 
-		else if (indicator != 0 && !suppress) document.getElementById('p-elevation').innerHTML = 'current elevation: '+curr_elevation;
+		if (indicator == 0) document.getElementById('p-azimuth').innerHTML = 'current azimuth: '+temp_azimuth; 
+		else if (indicator != 0) document.getElementById('p-elevation').innerHTML = 'current elevation: '+curr_elevation;
 	}
 }
 
