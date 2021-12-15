@@ -2,14 +2,20 @@
 var annotation_id = 1;
 const totalAnnotation = 3;
 
+// reach to the last question
+var last_question = false;
+
+// colors
+var colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
+
+// prevent deletion and mousemove happen at the same time
+var suppress = false;
+
 // Location
 var curr_azimuth = 0;
 var curr_elevation = 0;
 var azimuth = new Array();
 var elevation = new Array();
-
-// reach to the last question
-var last_question = false;
 
 // Annotation
 var source_count = 0;
@@ -18,12 +24,6 @@ var source_count = 0;
 var action_type = undefined;
 var value = undefined;
 var timestamp = undefined;
-
-// colors
-var colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
-
-// prevent deletion and mousemove happen at the same time
-var suppress = false;
 
 /* container.2d.user interface */
 
