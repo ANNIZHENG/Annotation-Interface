@@ -385,68 +385,71 @@ function add(e){
 	front_cy = ( front_frameLocation.top + front_frameLocation.bottom ) / 2;
 	side_cx = ( side_frameLocation.right + side_frameLocation.left ) / 2;
 	side_cy = ( side_frameLocation.top + side_frameLocation.bottom ) / 2;
-
 	/*
 	if (e.ctrlKey){
-
 		elevation_item_index = findUndefinedElevation();
+		console.log("control key active, elevation: "+elevation_item_index);
 		
-		if ( elevation_item_index > 0 &&  ( ( document.getElementById( 'front-item-'+elevation_item_index ).style.display == 'none' ) && ( document.getElementById( 'side-item-'+elevation_item_index ).style.display == 'none' ) ) ){
-			window.alert("Please enter one more elevation before adding the second annotation of that elevation");
-			document.getElementById('body').style.cursor = 'default';
+		if (elevation_item_index > 0 && ((document.getElementById('front-item-'+elevation_item_index).style.display == 'none') 
+		&& (document.getElementById('side-item-'+elevation_item_index).style.display == 'none'))){
+			window.alert("Please annotate one more elevation before adding the second annotation");
+			document.getElementById('body').style.cursor = 'default'; 
+			return;
+		}
+		if ( (elevation_item_index > 0 &&  ((document.getElementById('front-item-'+elevation_item_index).style.display == 'none') 
+		&& (document.getElementById('side-item-'+elevation_item_index).style.display == 'none')))
+		|| elevation_item_index == 0){
+			window.alert("Please enter at least one elevation before adding another elevation annotation");
+			document.getElementById('body').style.cursor = 'default'; 
+			return;
 		}	
 
-		if ( elevation_item_index > 0
-		&&  ( ( document.getElementById( 'front-item-'+elevation_item_index ).style.display == 'none' ) || ( document.getElementById( 'side-item-'+elevation_item_index ).style.display == 'none' ) ) ){
-			
-			document.getElementById('body').style.cursor = 'cell';
-			console.log("control key activated and the current height is: "+elevation_item_index); // Debug
+		document.getElementById('body').style.cursor = 'cell';
+		document.addEventListener('mousedown', function(e){
+			enable_front = calculateRadius(e.pageX, e.pageY, front_cx, front_cy);
+			enable_side = calculateRadius(e.pageX, e.pageY, side_cx, side_cy);
 
-			document.addEventListener('mousedown', function(e){
+			if (document.getElementById('front-item-'+elevation_item_index).style.display == 'none' && enable_front){
+				temp_azimuth = calculateAzimuth(e.pageX, e.pageY, front_cx, front_cy);
+				document.getElementById('circularF'+elevation_item_index).setAttribute('style','');
+				document.getElementById('circularF'+elevation_item_index).style.transform = 'rotate('+temp_azimuth+'deg)';
+				document.getElementById('front-item-'+elevation_item_index).setAttribute('style','');
+				itemLocation = document.getElementById('front-item-'+elevation_item_index).getBoundingClientRect();
 
-				enable_front = calculateRadius(e.pageX, e.pageY, front_cx, front_cy);
-				enable_side = calculateRadius(e.pageX, e.pageY, side_cx, side_cy);
+				temp_elevation = front_frameLocation.bottom - itemLocation.top;
+				if (temp_elevation == 97 || temp_elevation == 98) temp_elevation = 0;
+				else if (temp_elevation >= 180) temp_elevation = 90;
+				else if (temp_elevation <= 15) temp_elevation = -90;
+				else if (temp_elevation > 98) temp_elevation = Math.round( temp_elevation - 98 );
+				else if (temp_elevation < 97) temp_elevation = Math.round( temp_elevation - 97 );
+				console.log("temp elevation now: "+temp_elevation);
 
-				if (document.getElementById('front-item-'+elevation_item_index).style.display == 'none' && enable_front){
+				if (temp_azimuth)
+				displayBall(0, 0, elevation_item_index);
 
-					temp_azimuth = calculateAzimuth(e.pageX, e.pageY, front_cx, front_cy);
-					document.getElementById('circularF'+elevation_item_index).setAttribute('style','');
-					document.getElementById('circularF'+elevation_item_index).style.transform = 'rotate('+temp_azimuth+'deg)';
-					document.getElementById('front-item-'+elevation_item_index).setAttribute('style','');
-					itemLocation = document.getElementById('front-item-'+elevation_item_index).getBoundingClientRect();
+				// ajax_interaction();
+				// document.getElementById('body').style.cursor = 'default';
+			}
+			else if (document.getElementById('side-item-'+findUndefinedElevation()).style.display == 'none' && enable_side){
+				temp_azimuth = calculateAzimuth(e.pageX, e.pageY, side_cx, side_cy);
+				document.getElementById('circularS'+elevation_item_index).setAttribute('style','');
+				document.getElementById('circularS'+elevation_item_index).style.transform = 'rotate('+temp_azimuth+'deg)';
+				document.getElementById('side-item-'+elevation_item_index).setAttribute('style','');
+				itemLocation = document.getElementById('side-item-'+elevation_item_index).getBoundingClientRect();
 
-					temp_elevation = front_frameLocation.bottom - itemLocation.top;
-					if (temp_elevation == 97 || temp_elevation == 98) temp_elevation = 0;
-					else if (temp_elevation >= 180) temp_elevation = 90;
-					else if (temp_elevation <= 15) temp_elevation = -90;
-					else if (temp_elevation > 98) temp_elevation = Math.round( temp_elevation - 98 );
-					else if (temp_elevation < 97) temp_elevation = Math.round( temp_elevation - 97 );
+				temp_elevation = side_frameLocation.bottom - itemLocation.top;
+				if (temp_elevation == 97 || temp_elevation == 98) temp_elevation = 0;
+				else if (temp_elevation >= 180) temp_elevation = 90;
+				else if (temp_elevation <= 15) temp_elevation = -90;
+				else if (temp_elevation > 98) temp_elevation = Math.round( temp_elevation - 98 );
+				else if (temp_elevation < 97) temp_elevation = Math.round( temp_elevation - 97 );
+				console.log("temp elevation now: "+temp_elevation);
+				displayBall(0, 0, elevation_item_index);
 
-					// ajax_interaction();
-					
-					document.getElementById('body').style.cursor = 'default';
-				}
-				else if (document.getElementById('side-item-'+findUndefinedElevation()).style.display == 'none' && enable_side){
-
-					temp_azimuth = calculateAzimuth(e.pageX, e.pageY, side_cx, side_cy);
-					document.getElementById('circularS'+elevation_item_index).setAttribute('style','');
-					document.getElementById('circularS'+elevation_item_index).style.transform = 'rotate('+temp_azimuth+'deg)';
-					document.getElementById('side-item-'+elevation_item_index).setAttribute('style','');
-					itemLocation = document.getElementById('side-item-'+elevation_item_index).getBoundingClientRect();
-
-					temp_elevation = side_frameLocation.bottom - itemLocation.top;
-					if (temp_elevation == 97 || temp_elevation == 98) temp_elevation = 0;
-					else if (temp_elevation >= 180) temp_elevation = 90;
-					else if (temp_elevation <= 15) temp_elevation = -90;
-					else if (temp_elevation > 98) temp_elevation = Math.round( temp_elevation - 98 );
-					else if (temp_elevation < 97) temp_elevation = Math.round( temp_elevation - 97 );
-
-					// ajax_interaction();
-					document.getElementById('body').style.cursor = 'default';
-				}	
-			},{once:true});
-		}
-		else{ window.alert("Please enter at least one elevation before adding the second annotation of the elevation"); document.getElementById('body').style.cursor = 'default';}
+				// ajax_interaction();
+				// document.getElementById('body').style.cursor = 'default';
+			}	
+		},{once:true});
 	}
 	*/
 	if (e.altKey){
@@ -495,9 +498,7 @@ function add(e){
 				document.getElementById('head-item-'+azimuth_item_index).setAttribute('style','');
 
 				displayBall(curr_azimuth - 180, (elevation[azimuth_item_index-1] != undefined ? elevation[azimuth_item_index-1] : 0) , azimuth_item_index);
-
 				document.getElementById('p-azimuth').innerHTML = 'current azimuth: '+curr_azimuth;
-				document.getElementById('body').style.cursor = 'default';
 
 				action_type = 'azimuth';
 				value = curr_azimuth;
@@ -536,9 +537,7 @@ function add(e){
 
 				temp_azimuth = azimuth[elevation_item_index-1] != undefined ? azimuth[elevation_item_index-1] - 180 : -180;
 				displayBall(temp_azimuth, curr_elevation, elevation_item_index);
-
 				document.getElementById('p-elevation').innerHTML = 'current elevation: '+curr_elevation;
-				document.getElementById('body').style.cursor = 'default';
 
 				action_type = 'elevation'
 				value = curr_elevation
@@ -582,9 +581,7 @@ function add(e){
 
 				temp_azimuth = azimuth[elevation_item_index-1] != undefined ? azimuth[elevation_item_index-1] - 180 : -180;
 				displayBall(temp_azimuth, curr_elevation, elevation_item_index);
-
 				document.getElementById('p-elevation').innerHTML = 'current elevation: '+curr_elevation;
-				document.getElementById('body').style.cursor = 'default';
 
 				action_type = 'elevation'
 				value = curr_elevation
