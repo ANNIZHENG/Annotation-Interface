@@ -180,7 +180,7 @@ function dragElement(index,indicator,add_index){
 						item.style.transform = 'rotate('+original_head_degree+'deg)';
 						document.getElementById('body').style.cursor = 'default';
 						document.onmouseup = null; document.onmousemove = null;
-						document.getElementById('p-azimuth').innerHTML = 'current azimuth: '+azimuth[add_index];
+						document.getElementById('p-azimuth').innerHTML = 'current azimuth: '+ (azimuth[add_index] == 360 ? 0 : azimuth[add_index]);
 						return;
 					}
 				}
@@ -192,7 +192,7 @@ function dragElement(index,indicator,add_index){
 						item.style.transform = 'rotate('+original_head_degree+'deg)';
 						document.getElementById('body').style.cursor = 'default';
 						document.onmouseup = null; document.onmousemove = null;
-						document.getElementById('p-azimuth').innerHTML = 'current azimuth: '+azimuth[add_index];
+						document.getElementById('p-azimuth').innerHTML = 'current azimuth: '+ (azimuth[add_index] == 360 ? 0 : azimuth[add_index]);
 						return;
 					}
 				}
@@ -265,7 +265,7 @@ function dragElement(index,indicator,add_index){
 			else if (temp_elevation < 97) curr_elevation = Math.round( temp_elevation - 97 );
 		}
 		item.style.transform = 'rotate('+(temp_azimuth)+'deg)';
-		if (indicator == 0) document.getElementById('p-azimuth').innerHTML = 'current azimuth: '+temp_azimuth; 
+		if (indicator == 0) document.getElementById('p-azimuth').innerHTML = 'current azimuth: '+ (temp_azimuth == 360 ? 0 : temp_azimuth); 
 		else if (indicator != 0) document.getElementById('p-elevation').innerHTML = 'current elevation: '+curr_elevation;
 	}
 }
@@ -318,7 +318,7 @@ function findUndefinedAzimuth(){
 		if ( azimuth[index] != undefined ) azimuth_count += 1;
 		index += 1;
 	}
-	if (azimuth_count == 0 && !key_perform) return -3;
+	if (azimuth_count == 0 && !key_perform) return -3; // if this is not for keyboard event
 	if (azimuth_count > source_count) return -2;
 	if (azimuth_count == source_count) return -1;
 	else return azimuth_item_index;
@@ -364,10 +364,10 @@ var delete_front = false;
 var delete_side = false;
 var add_third = false;
 
-document.addEventListener("keydown", add); // should I make it {once: true}
-function add(e){
-	e.preventDefault(); // prevent any keyboard event contradicts with what is designed below
-	key_perform = true; // so when findUndefinedElevation() or findUndefiendAzimuth is active, negative number will not be returned
+document.addEventListener("keydown", keyboardEvents);
+function keyboardEvents(e){
+	e.preventDefault(); // prevent any undesired keyboard event
+	key_perform = true; // prevent undesired index (findUndefinedElevation() or findUndefiendAzimuth will not give back negative number)
 	if(e.metaKey){
 		document.getElementById('body').style.cursor = "url('/templates/question/img/minus.svg'), auto";
 		enable_head = false; enable_front = false; enable_side = false; // no adding is allowed
@@ -518,7 +518,7 @@ function add(e){
 				document.getElementById('circular'+azimuth_item_index).style.transform = 'rotate('+curr_azimuth+'deg)';
 				document.getElementById('head-item-'+azimuth_item_index).setAttribute('style','');
 				displayBall(curr_azimuth - 180, (elevation[azimuth_item_index-1] != undefined ? elevation[azimuth_item_index-1] : 0) , azimuth_item_index); // display 3D azimuth
-				document.getElementById('p-azimuth').innerHTML = 'current azimuth: '+curr_azimuth; // display azimuth in word
+				document.getElementById('p-azimuth').innerHTML = 'current azimuth: ' + (curr_azimuth == 360 ? 0 : curr_azimuth); // display azimuth in word
 
 				enable_head = false; enable_front = false; enable_side = false; // exit adding
 				key_perform = false; // adding key/event no longer active
@@ -526,7 +526,7 @@ function add(e){
 				document.onkeydown = null;
 
 				action_type = 'azimuth';
-				value = curr_azimuth;
+				value = (curr_azimuth == 360 ? 0 : curr_azimuth);
 				timestamp = Date.now();
 				ajax_interaction();
 			}
@@ -547,15 +547,19 @@ function add(e){
 				}
 				elevation_item_index += 1;
 				temp_azimuth = calculateAzimuth(e.pageX, e.pageY, front_cx, front_cy);
-				if (azimuth[elevation_item_index-1] != undefined){  // check if elevation is marked at the matching position as azimuth
+				// check if elevation is matching the azimuth
+				if (azimuth[elevation_item_index-1] != undefined){
 					if (azimuth[elevation_item_index-1] > 180 && temp_azimuth < 180) temp_azimuth = 360 - temp_azimuth;
 					else if (azimuth[elevation_item_index-1] < 180 && temp_azimuth > 180) temp_azimuth = 360 - temp_azimuth;
 				}
+				// display elevation
 				document.getElementById('circularF'+elevation_item_index).setAttribute('style','');
 				document.getElementById('circularF'+elevation_item_index).style.transform = 'rotate('+temp_azimuth+'deg)';
 				document.getElementById('front-item-'+elevation_item_index).setAttribute('style','');
+				// calculate the actual elevation
 				itemLocation = document.getElementById('front-item-'+elevation_item_index).getBoundingClientRect();
 				temp_elevation = front_frameLocation.bottom - itemLocation.top;
+				// calculate the displayed elevation
 				if (temp_elevation == 97 || temp_elevation == 98) curr_elevation = 0;
 				else if (temp_elevation >= 180) curr_elevation = 90;
 				else if (temp_elevation <= 15) curr_elevation = -90;
@@ -564,7 +568,7 @@ function add(e){
 				elevation[elevation_item_index-1] = curr_elevation;
 				temp_azimuth = azimuth[elevation_item_index-1] != undefined ? azimuth[elevation_item_index-1] - 180 : -180;
 				displayBall(temp_azimuth, curr_elevation, elevation_item_index);
-				document.getElementById('p-elevation').innerHTML = 'current elevation: '+curr_elevation;
+				document.getElementById('p-elevation').innerHTML = 'current elevation: ' + curr_elevation;
 
 				enable_head = false; enable_front = false; enable_side = false; // exit adding
 				key_perform = false; // adding key/event no longer active
@@ -578,22 +582,24 @@ function add(e){
 			}
 			else if (enable_side){
 				if ( elevation_item_index == -1 ){
-					window.alert("You have already enter " + source_count + " elevation elements"); document.getElementById('body').style.cursor = 'default'; 
-					key_perform = false; // adding key/event no longer active
+					window.alert("You have already enter " + source_count + " elevation elements"); 
+					document.getElementById('body').style.cursor = 'default'; 
+					key_perform = false; // prevent giving back undesired azimuth index
 					document.onmousedown = null; 
 					document.onkeydown = null;
 					return;
 				}
 				if (elevation_item_index > azimuth_item_index && azimuth_item_index != -1) {
 					window.alert("You must annotate an azimuth"); document.getElementById('body').style.cursor = 'default'; 
-					key_perform = false; // adding key/event no longer active
+					key_perform = false; // prevent giving back undesired azimuth index
 					document.onmousedown = null; 
 					document.onkeydown = null;
 					return;
 				}
 				elevation_item_index += 1;
 				temp_azimuth = calculateAzimuth(e.pageX, e.pageY, side_cx, side_cy);
-				if (azimuth[elevation_item_index-1] != undefined){  // check if elevation is marked at the matching position as azimuth
+				// check if elevation is matching the azimuth
+				if (azimuth[elevation_item_index-1] != undefined){
 					if (azimuth[elevation_item_index-1] < 90 || azimuth[elevation_item_index-1] > 270){ 
 						if (temp_azimuth > 180){ temp_azimuth = 360 - temp_azimuth; }
 					}
@@ -601,11 +607,14 @@ function add(e){
 						if (temp_azimuth < 180){ temp_azimuth = 360 - temp_azimuth; }
 					}
 				}
+				// display annotation
 				document.getElementById('circularS'+elevation_item_index).setAttribute('style','');
 				document.getElementById('circularS'+elevation_item_index).style.transform = 'rotate('+temp_azimuth+'deg)';
 				document.getElementById('side-item-'+elevation_item_index).setAttribute('style','');
+				// calculate actual elevation
 				itemLocation = document.getElementById('side-item-'+elevation_item_index).getBoundingClientRect();
 				temp_elevation = side_frameLocation.bottom - itemLocation.top;
+				// calculate the displayed elevation
 				if (temp_elevation == 97 || temp_elevation == 98) curr_elevation = 0;
 				else if (temp_elevation >= 180) curr_elevation = 90;
 				else if (temp_elevation <= 15) curr_elevation = -90;
