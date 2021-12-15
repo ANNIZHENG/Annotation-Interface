@@ -11,12 +11,12 @@ body{
 	overflow: hidden;
 }
 
-.container,.container-3D{
+.container,.container-3D{ /* These are the two separated areas of the webpage*/
 	height: 100vh;
 	width: 100%;
 }
 
-.container{
+.container{ /* This is where user make the annotation */
 	background-color: white;
 	color: black;
 	display: flex;
@@ -24,14 +24,14 @@ body{
 	align-items: center;
 }
 
-.container-3D{
+.container-3D{ /* This is where 3D image is shown */
 	background-color: black;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
 
-#message{
+#message{ /* This is for decording keyboard event button */
 	padding: 5px;
 	width: 170px;
 	background-color: black;
@@ -75,8 +75,6 @@ audio::-webkit-media-controls-current-time-display{
 	font-family: Monaco;
 	font-weight: bold;
 }
-
-/* https://www.youtube.com/watch?v=WqgKe3dcXxg */
 
 .indicator{
 	border-radius: 50%; 
