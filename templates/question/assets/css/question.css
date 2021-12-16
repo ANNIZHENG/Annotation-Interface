@@ -100,9 +100,17 @@ audio::-webkit-media-controls-current-time-display{
 	margin-bottom: 8px;
 }
 
-p{
-	margin-left: 7px;
+#p-azimuth, #p-elevation{
 	font-size: 13px;
+	display: inline-block;
+}
+
+#azimuth-dot, #elevation-dot{
+	margin-left: 8px;
+	border-radius: 50%; 
+	width: 15px; 
+	height: 15px;
+	display: inline-block;
 }
 
 #head-item-1, #front-item-1, #side-item-1{
