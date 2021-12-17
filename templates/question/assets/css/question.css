@@ -40,22 +40,12 @@ body{
 	cursor: pointer;
 }
 
-#btn-button-next,#btn-button-refresh{
+#btn-button-next,#btn-button-refresh,#btn-button-submit{
 	margin-top: 18px;
 	width: 170px;
 	color: white;
 	background-color: black;
 	padding:5px;
-	cursor: pointer;
-}
-
-#btn-button-submit{
-	margin-top: 18px;
-	float: right;
-	width: 200px;
-	color: white;
-	background-color: black;
-	padding: 10px;
 	cursor: pointer;
 }
 
