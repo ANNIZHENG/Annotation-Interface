@@ -17,7 +17,7 @@
 				Your browser does not support audio
 			</audio>
 			<br>
-			<label id="question" for="count">How many sources can you hear?</label>
+			<label id="question" for="count" style="font-size: 15px;">How many sources can you hear?</label>
 			<select id="count" name="count" style="display: none;">
 				<option id="default-option" value="" selected disabled></option>
 				<option id="option1" value=1>1</option> <option id="option2" value=2>2</option>
@@ -27,7 +27,7 @@
 				<option id="option9" value=9>9</option> <option id="option10" value=10>10</option>
 			</select>
 			<br><br>
-			<label id="2d-question" for="2d"></label><br><br>
+			<label id="2d-question" for="2d" style="font-size: 15px;"></label><br><br>
 			<div id="2d">
 				<div id="head" style="display: none;">
 					<div class="circular" id="circular0"></div>
@@ -43,8 +43,8 @@
 					<div class="circular" id="circular10" style="display: none;"><div class="indicator" id="head-item-10" style="display: none;"></div></div>
 				</div>
 				<div id="feedback" style="display: none;">
-					<div id='azimuth-dot'></div> <div id='p-azimuth'"></div><br><br>
-					<div id='elevation-dot'></div> <div id='p-elevation'"></div>
+					<div id='azimuth-dot'></div>azimuth: <button id='azimuth-minus'>-</button><div id='p-azimuth'"></div><button id='azimuth-plus'>+</button><br><br>
+					<div id='elevation-dot'></div>elevation: <button id='elevation-minus'>-</button><div id='p-elevation'"></div><button id='elevation-plus'>+</button>
 				</div>
 				<br>
 				<div id="front" style="display: none;">
