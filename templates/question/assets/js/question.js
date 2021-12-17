@@ -1,6 +1,6 @@
 // used to determine which question user is at
 var annotation_id = 1;
-const totalAnnotation = 3;
+const totalAnnotation = 5;
 
 // colors
 var colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
@@ -76,7 +76,7 @@ function setNextQuestion(){
 	annotation_id += 1;
 
 	// display
-	var listen = 'Listen to the audio ['+ annotation_id +' / 3]';
+	var listen = 'Listen to the audio ['+annotation_id+' / '+totalAnnotation+']';
 	var audio_source = '/templates/question/assets/audio/test'+annotation_id+'.wav';
 	document.getElementsByTagName('h2')[0].innerHTML=listen;
 	document.getElementById('default-option').selected = true;
@@ -441,7 +441,7 @@ function dragElement(index,indicator,add_index){
 					if (degree > 180){ document.getElementById('circularS'+index).style.transform = 'rotate('+(360-degree)+'deg)'; }
 					else{ document.getElementById('circularS'+index).style.transform = 'rotate('+degree+'deg)'; }
 				}
-				else if (temp_azimuth > 67.5 && temp_azimuth < 112.5){ // front
+				else if (temp_azimuth > 67.5 && temp_azimuth < 112.5){
 					document.getElementById('side-item-'+index).style.display = 'none';
 					document.getElementById('circularS'+index).style.display = 'none';
 				}
@@ -454,14 +454,14 @@ function dragElement(index,indicator,add_index){
 					if (degree < 180){ document.getElementById('circularS'+index).style.transform = 'rotate('+(360-degree)+'deg)'; }
 					else{ document.getElementById('circularS'+index).style.transform = 'rotate('+degree+'deg)'; }
 				}
-				else if (temp_azimuth > 247.5 && temp_azimuth < 292.5){ // front
+				else if (temp_azimuth > 247.5 && temp_azimuth < 292.5){
 					document.getElementById('side-item-'+index).style.display = 'none';
 					document.getElementById('circularS'+index).style.display = 'none';
 				}
 				else{
 					document.getElementById('side-item-'+index).style.display = '';
 					document.getElementById('circularS'+index).style.display = '';
-					if (temp_azimuth < 270 && temp_azimuth > 90){
+					if (temp_azimuth > 270 || temp_azimuth < 90){
 						if (degree < 180){ document.getElementById('circularS'+index).style.transform = 'rotate('+degree+'deg)'; }
 						else{ document.getElementById('circularS'+index).style.transform = 'rotate('+(360-degree)+'deg)';  }
 					}
