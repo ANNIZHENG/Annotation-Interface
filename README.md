@@ -24,4 +24,4 @@ and start postgresql, then type
 python3 server/main.py
 ```
 
-<img src="/templates/question/img/display2.png" width="600" height=auto />
+<img src="/templates/question/img/display.png" width="600" height=auto />

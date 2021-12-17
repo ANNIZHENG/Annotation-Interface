@@ -25,7 +25,7 @@ survey_id = uuid.uuid4()
 def home():
     entry = Survey(survey_id)
     ses.add(entry)
-    ses.commit()
+    #ses.commit()
     return render_template('index.html')
 
 @app.route('/interaction', methods=['POST'])
