@@ -6,7 +6,7 @@
 
 headphone check code link: https://github.com/mcdermottLab/HeadphoneCheck
 
-Please start postgresql and type these command lines to set up the virtual environment
+Please start postgresql and type these commands to set up the virtual environment
 
 ```
 virtualenv env
