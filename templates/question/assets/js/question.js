@@ -30,7 +30,6 @@ var key_perform = false;
 // user control of audio
 var isPlaying = false;
 
-
 /* below is the first event triggered when a user comes in */
 for (let i = 1; i <= totalAnnotation; i++) { audio_sequence.push(i); }
 document.getElementsByTagName('h2')[0].innerHTML='Please listen to the audio ['+ 1 +'/'+totalAnnotation+']';
@@ -266,10 +265,7 @@ function move_azimuth_plus(e){
 	if (document.getElementById('front-item-'+(current_colors_index+1)).style.display != 'none'){
 		degree = parseInt(document.getElementById('circularF'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
 
-		if ((temp_azimuth < 180 && degree > 180) || (temp_azimuth > 180 && degree < 180)){
-			//document.getElementById('circularF'+(current_colors_index+1)).style.transform = 'rotate('+(360-degree)+'deg)';
-			degree = 360 - degree;
-		}
+		if ((temp_azimuth < 180 && degree > 180) || (temp_azimuth > 180 && degree < 180)){ degree = 360 - degree; }
 		displayBoth(true, (current_colors_index+1), temp_azimuth, degree);
 	}
 
@@ -277,10 +273,7 @@ function move_azimuth_plus(e){
 		degree = parseInt(document.getElementById('circularS'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
 
 		if ( ((temp_azimuth > 270 || temp_azimuth < 90) && degree>180)
-		|| ((temp_azimuth < 270 && temp_azimuth > 90) && degree<180) ){
-			//document.getElementById('circularS'+(current_colors_index+1)).style.transform = 'rotate('+(360-degree)+'deg)'; 
-			degree = 360 - degree;
-		}
+		|| ((temp_azimuth < 270 && temp_azimuth > 90) && degree<180) ){ degree = 360 - degree; }
 		displayBoth(false, (current_colors_index+1), temp_azimuth, degree);
 	}
 
@@ -310,10 +303,7 @@ function move_azimuth_minus(e){
 	if (document.getElementById('front-item-'+(current_colors_index+1)).style.display != 'none'){
 		degree = parseInt(document.getElementById('circularF'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
 
-		if ((temp_azimuth < 180 && degree > 180) || (temp_azimuth > 180 && degree < 180)){
-			//document.getElementById('circularF'+(current_colors_index+1)).style.transform = 'rotate('+(360-degree)+'deg)';
-			degree = 360 - degree;
-		}
+		if ((temp_azimuth < 180 && degree > 180) || (temp_azimuth > 180 && degree < 180)){ degree = 360 - degree; }
 		displayBoth(true, (current_colors_index+1), temp_azimuth, degree);
 	}
 
@@ -321,10 +311,7 @@ function move_azimuth_minus(e){
 		degree = parseInt(document.getElementById('circularS'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
 
 		if ( ((temp_azimuth > 270 || temp_azimuth < 90) && degree>180)
-		|| ((temp_azimuth < 270 && temp_azimuth > 90) && degree<180) ){
-			//document.getElementById('circularS'+(current_colors_index+1)).style.transform = 'rotate('+(360-degree)+'deg)'; 
-			degree = 360 - degree;
-		}
+		|| ((temp_azimuth < 270 && temp_azimuth > 90) && degree<180) ){ degree = 360 - degree; }
 		displayBoth(false, (current_colors_index+1), temp_azimuth, degree);
 	}
 
@@ -607,10 +594,7 @@ function dragElement(index,indicator,add_index){
 			if (document.getElementById('front-item-'+index).style.display != 'none'){
 				degree = parseInt(document.getElementById('circularF'+index).style.transform.replace('rotate(','').replace('deg)',''));
 
-				if ((temp_azimuth < 180 && degree > 180) || (temp_azimuth > 180 && degree < 180)){
-					//document.getElementById('circularF'+index).style.transform = 'rotate('+(360-degree)+'deg)';
-					degree = 360 - degree;
-				}
+				if ((temp_azimuth < 180 && degree > 180) || (temp_azimuth > 180 && degree < 180)){ degree = 360 - degree; }
 				displayBoth(true, index, temp_azimuth, degree);
 			}
 
@@ -618,10 +602,7 @@ function dragElement(index,indicator,add_index){
 				degree = parseInt(document.getElementById('circularS'+index).style.transform.replace('rotate(','').replace('deg)',''));
 
 				if ( ((temp_azimuth > 270 || temp_azimuth < 90) && degree>180)
-					|| ((temp_azimuth < 270 && temp_azimuth > 90) && degree<180) ){
-					//document.getElementById('circularS'+index).style.transform = 'rotate('+(360-degree)+'deg)'; 
-					degree = 360 - degree;
-				}
+					|| ((temp_azimuth < 270 && temp_azimuth > 90) && degree<180) ){ degree = 360 - degree; }
 				displayBoth(false, index, temp_azimuth, degree);
 			}
 
@@ -719,7 +700,7 @@ function calculateAzimuth(x,y,cx,cy){
 
 /* add item */
 
-function findUndefinedAzimuth(){ // DEBUG
+function findUndefinedAzimuth(){
 	var index = 0;
 	var azimuth_item_index = 0;
 	var azimuth_count = 0;
@@ -744,7 +725,7 @@ function findUndefinedAzimuth(){ // DEBUG
 	else return azimuth_item_index;
 }
 
-function findUndefinedElevation(){ // DEBUG
+function findUndefinedElevation(){
 	var index = 0;
 	var elevation_item_index = 0;
 	var elevation_count = 0;
@@ -770,7 +751,7 @@ function findUndefinedElevation(){ // DEBUG
 	else return elevation_item_index;
 }
 
-function calculateRadius(mouseX, mouseY, frameX, frameY){ //DEBUG
+function calculateRadius(mouseX, mouseY, frameX, frameY){
 	x = frameX - mouseX;
 	y = frameY - mouseY;
 	radius = Math.sqrt( Math.pow(x,2) + Math.pow(y,2) );
