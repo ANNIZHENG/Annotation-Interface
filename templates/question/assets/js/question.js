@@ -719,14 +719,16 @@ function calculateAzimuth(x,y,cx,cy){
 
 /* add item */
 
-function findUndefinedAzimuth(){
+function findUndefinedAzimuth(){ // DEBUG
 	var index = 0;
 	var azimuth_item_index = 0;
 	var azimuth_count = 0;
 	var find_undefined = false;
 	var lock = 0;
+
 	if (azimuth.length > source_count) lock = azimuth.length;
 	else lock = source_count;
+
 	while ( index < lock ){
 		if ( azimuth[index] == undefined && !find_undefined ){
 			azimuth_item_index = index;
@@ -735,18 +737,20 @@ function findUndefinedAzimuth(){
 		if ( azimuth[index] != undefined ) azimuth_count += 1;
 		index += 1;
 	}
-	if (azimuth_count == 0 && !key_perform) return -3; // if this is not for keyboard event
+
+	if (azimuth_count == 0 && !key_perform) return -3;
 	if (azimuth_count > source_count) return -2;
 	if (azimuth_count == source_count) return -1;
 	else return azimuth_item_index;
 }
 
-function findUndefinedElevation(){
+function findUndefinedElevation(){ // DEBUG
 	var index = 0;
 	var elevation_item_index = 0;
 	var elevation_count = 0;
 	var find_undefined = false;
 	var lock = 0;
+
 	if (elevation.length > source_count) lock = elevation.length;
 	else lock = source_count;
 
@@ -759,13 +763,14 @@ function findUndefinedElevation(){
 		if ( elevation[index] != undefined ) elevation_count += 1;
 		index += 1;
 	}
+
 	if (elevation_count == 0 && !key_perform) return -3;
 	if (elevation_count > source_count) return -2;
 	if (elevation_count == source_count) return -1;
 	else return elevation_item_index;
 }
 
-function calculateRadius(mouseX, mouseY, frameX, frameY){
+function calculateRadius(mouseX, mouseY, frameX, frameY){ //DEBUG
 	x = frameX - mouseX;
 	y = frameY - mouseY;
 	radius = Math.sqrt( Math.pow(x,2) + Math.pow(y,2) );
@@ -814,6 +819,7 @@ function keyboardEvents(e){
 	if (e.altKey){
 		delete_head = false; delete_front = false; delete_side = false; // prevent deletion
 		document.getElementById('body').style.cursor = 'cell';
+
 		var azimuth_item_index = findUndefinedAzimuth();
 		var elevation_item_index = findUndefinedElevation();
 
@@ -824,15 +830,17 @@ function keyboardEvents(e){
 
 			if (enable_head){
 				if ( azimuth_item_index == -1 ){
-					window.alert("You have already enter " + source_count + " azimuth elements"); document.getElementById('body').style.cursor = 'default'; 
+					window.alert("You have already enter " + source_count + " azimuth elements"); 
+					document.getElementById('body').style.cursor = 'default'; 
 					key_perform = false; // adding event no longer active
 					document.onmousedown = null; 
 					document.onkeydown = null;
 					return;
 				}
 
-				if ( azimuth_item_index > elevation_item_index ) {
-					window.alert("You must annotate an elevation"); document.getElementById('body').style.cursor = 'default'; 
+				if ((azimuth_item_index > elevation_item_index) && elevation_item_index != -1) {
+					window.alert("You must annotate an elevation"); 
+					document.getElementById('body').style.cursor = 'default'; 
 					key_perform = false; // adding event no longer active
 					document.onmousedown = null; 
 					document.onkeydown = null;
@@ -992,8 +1000,10 @@ function keyboardEvents(e){
 					document.onkeydown = null;
 					return;
 				}
-				if ( elevation_item_index > azimuth_item_index ) {
-					window.alert("You must annotate an azimuth"); document.getElementById('body').style.cursor = 'default'; 
+
+				if ((elevation_item_index > azimuth_item_index) && azimuth_item_index != -1) {
+					window.alert("You must annotate an azimuth"); 
+					document.getElementById('body').style.cursor = 'default'; 
 					key_perform = false; // adding event no longer active
 					document.onmousedown = null; 
 					document.onkeydown = null;
@@ -1107,7 +1117,7 @@ function keyboardEvents(e){
 				ajax_interaction();
 			}
 			else if (enable_side){
-				if ( elevation_item_index == -1 ){
+				if (elevation_item_index == -1){
 					window.alert("You have already enter " + source_count + " elevation elements"); 
 					document.getElementById('body').style.cursor = 'default'; 
 					key_perform = false; // prevent giving back undesired azimuth index
@@ -1115,7 +1125,7 @@ function keyboardEvents(e){
 					document.onkeydown = null;
 					return;
 				}
-				if ( elevation_item_index > azimuth_item_index ) {
+				if ((elevation_item_index > azimuth_item_index) && azimuth_item_index != -1) {
 					window.alert("You must annotate an azimuth"); document.getElementById('body').style.cursor = 'default'; 
 					key_perform = false; // prevent giving back undesired azimuth index
 					document.onmousedown = null; 
