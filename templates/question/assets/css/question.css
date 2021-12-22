@@ -11,12 +11,12 @@ body{
 	overflow: hidden;
 }
 
-.container,.container-3D{ /* These are the two separated areas of the webpage*/
+.container,.container-3D{
 	height: 100vh;
 	width: 100%;
 }
 
-.container{ /* This is where user make the annotation */
+.container{
 	background-color: white;
 	color: black;
 	display: flex;
@@ -24,14 +24,14 @@ body{
 	align-items: center;
 }
 
-.container-3D{ /* This is where 3D image is shown */
+.container-3D{
 	background-color: black;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
 
-#message{ /* This is for decording keyboard event button */
+#message{
 	width: 170px;
 	height: 40px;
 	text-align: center;
@@ -48,16 +48,9 @@ body{
 	cursor: pointer;
 }
 
-audio{
-	display: block;
-	margin-left: -20px;
-	width: 450px;
-	background-color: white;
-}
-
 #audio-frame{
 	height: 40px;
-	width: 430px;
+	width: 350px;
 	margin-bottom: 20px;
 	text-align: center;
 	font-size: 16px;
