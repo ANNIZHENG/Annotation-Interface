@@ -175,12 +175,12 @@ function displayBoth(hasFront, index, temp_azimuth, degree){
 
 			document.getElementById('side-item-'+index).style.display = '';
 			document.getElementById('circularS'+index).style.display = '';
-
 			document.getElementById('circularS'+index).style.transform = 'rotate('+degree+'deg)';
 		}
 		else if (temp_azimuth > 67.5 && temp_azimuth < 112.5){
 			document.getElementById('side-item-'+index).style.display = 'none';
 			document.getElementById('circularS'+index).style.display = 'none';
+			document.getElementById('circularF'+index).style.transform = 'rotate('+degree+'deg)';
 		}
 		else if (temp_azimuth > 157.5 && temp_azimuth < 202.5){ 
 			document.getElementById('front-item-'+index).style.display = 'none';
@@ -188,12 +188,12 @@ function displayBoth(hasFront, index, temp_azimuth, degree){
 
 			document.getElementById('side-item-'+index).style.display = '';
 			document.getElementById('circularS'+index).style.display = '';
-
 			document.getElementById('circularS'+index).style.transform = 'rotate('+degree+'deg)';
 		}
 		else if (temp_azimuth > 247.5 && temp_azimuth < 292.5){
 			document.getElementById('side-item-'+index).style.display = 'none';
 			document.getElementById('circularS'+index).style.display = 'none';
+			document.getElementById('circularF'+index).style.transform = 'rotate('+degree+'deg)';
 		}
 		else{
 			document.getElementById('side-item-'+index).style.display = '';
@@ -208,10 +208,11 @@ function displayBoth(hasFront, index, temp_azimuth, degree){
 			}
 		}
 	}
-	else{
+	if (!hasFront){
 		if (temp_azimuth < 22.5 || temp_azimuth > 337.5){ 
 			document.getElementById('front-item-'+index).style.display = 'none';
 			document.getElementById('circularF'+index).style.display = 'none';
+			document.getElementById('circularS'+index).style.transform = 'rotate('+degree+'deg)';
 		}
 		else if (temp_azimuth > 67.5 && temp_azimuth < 112.5){
 			document.getElementById('side-item-'+index).style.display = 'none';
@@ -219,12 +220,12 @@ function displayBoth(hasFront, index, temp_azimuth, degree){
 
 			document.getElementById('front-item-'+index).style.display = '';
 			document.getElementById('circularF'+index).style.display = '';
-
 			document.getElementById('circularF'+index).style.transform = 'rotate('+degree+'deg)';
 		}
 		else if (temp_azimuth > 157.5 && temp_azimuth < 202.5){ 
 			document.getElementById('front-item-'+index).style.display = 'none';
 			document.getElementById('circularF'+index).style.display = 'none';
+			document.getElementById('circularS'+index).style.transform = 'rotate('+degree+'deg)';
 		}
 		else if (temp_azimuth > 247.5 && temp_azimuth < 292.5){
 			document.getElementById('side-item-'+index).style.display = 'none';
@@ -232,7 +233,6 @@ function displayBoth(hasFront, index, temp_azimuth, degree){
 
 			document.getElementById('front-item-'+index).style.display = '';
 			document.getElementById('circularF'+index).style.display = '';
-
 			document.getElementById('circularF'+index).style.transform = 'rotate('+degree+'deg)';
 		}
 		else{
@@ -267,7 +267,7 @@ function move_azimuth_plus(e){
 		degree = parseInt(document.getElementById('circularF'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
 
 		if ((temp_azimuth < 180 && degree > 180) || (temp_azimuth > 180 && degree < 180)){
-			document.getElementById('circularF'+(current_colors_index+1)).style.transform = 'rotate('+(360-degree)+'deg)';
+			//document.getElementById('circularF'+(current_colors_index+1)).style.transform = 'rotate('+(360-degree)+'deg)';
 			degree = 360 - degree;
 		}
 		displayBoth(true, (current_colors_index+1), temp_azimuth, degree);
@@ -278,7 +278,7 @@ function move_azimuth_plus(e){
 
 		if ( ((temp_azimuth > 270 || temp_azimuth < 90) && degree>180)
 		|| ((temp_azimuth < 270 && temp_azimuth > 90) && degree<180) ){
-			document.getElementById('circularS'+(current_colors_index+1)).style.transform = 'rotate('+(360-degree)+'deg)'; 
+			//document.getElementById('circularS'+(current_colors_index+1)).style.transform = 'rotate('+(360-degree)+'deg)'; 
 			degree = 360 - degree;
 		}
 		displayBoth(false, (current_colors_index+1), temp_azimuth, degree);
@@ -311,7 +311,7 @@ function move_azimuth_minus(e){
 		degree = parseInt(document.getElementById('circularF'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
 
 		if ((temp_azimuth < 180 && degree > 180) || (temp_azimuth > 180 && degree < 180)){
-			document.getElementById('circularF'+(current_colors_index+1)).style.transform = 'rotate('+(360-degree)+'deg)';
+			//document.getElementById('circularF'+(current_colors_index+1)).style.transform = 'rotate('+(360-degree)+'deg)';
 			degree = 360 - degree;
 		}
 		displayBoth(true, (current_colors_index+1), temp_azimuth, degree);
@@ -322,7 +322,7 @@ function move_azimuth_minus(e){
 
 		if ( ((temp_azimuth > 270 || temp_azimuth < 90) && degree>180)
 		|| ((temp_azimuth < 270 && temp_azimuth > 90) && degree<180) ){
-			document.getElementById('circularS'+(current_colors_index+1)).style.transform = 'rotate('+(360-degree)+'deg)'; 
+			//document.getElementById('circularS'+(current_colors_index+1)).style.transform = 'rotate('+(360-degree)+'deg)'; 
 			degree = 360 - degree;
 		}
 		displayBoth(false, (current_colors_index+1), temp_azimuth, degree);
@@ -608,7 +608,7 @@ function dragElement(index,indicator,add_index){
 				degree = parseInt(document.getElementById('circularF'+index).style.transform.replace('rotate(','').replace('deg)',''));
 
 				if ((temp_azimuth < 180 && degree > 180) || (temp_azimuth > 180 && degree < 180)){
-					document.getElementById('circularF'+index).style.transform = 'rotate('+(360-degree)+'deg)';
+					//document.getElementById('circularF'+index).style.transform = 'rotate('+(360-degree)+'deg)';
 					degree = 360 - degree;
 				}
 				displayBoth(true, index, temp_azimuth, degree);
@@ -619,8 +619,8 @@ function dragElement(index,indicator,add_index){
 
 				if ( ((temp_azimuth > 270 || temp_azimuth < 90) && degree>180)
 					|| ((temp_azimuth < 270 && temp_azimuth > 90) && degree<180) ){
-						document.getElementById('circularS'+index).style.transform = 'rotate('+(360-degree)+'deg)'; 
-						degree = 360 - degree;
+					//document.getElementById('circularS'+index).style.transform = 'rotate('+(360-degree)+'deg)'; 
+					degree = 360 - degree;
 				}
 				displayBoth(false, index, temp_azimuth, degree);
 			}
@@ -1230,8 +1230,8 @@ function keyboardEvents(e){
 			}
 		}, {once:true});
 	}
-	console.log("AZIMUTH: "+azimuth.toString());
-	console.log("ELEVATION: "+elevation.toString());
+	//console.log("AZIMUTH: "+azimuth.toString());
+	//console.log("ELEVATION: "+elevation.toString());
 	return;
 }
 
