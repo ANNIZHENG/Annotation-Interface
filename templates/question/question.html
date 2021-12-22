@@ -10,12 +10,10 @@
 	</div>
 	<div class="container" id = "container">
 		<form action="/templates/question/submit.html">
-			<div id="message">Keyboard Rules</div>
-			<h2>Listen to the audio [1 / 5]</h2>
-			<audio id="audio" controls>
-				<source id = "source" src="/templates/question/assets/audio/test1.wav" type="audio/wav">
-				Your browser does not support audio
-			</audio>
+			<button id="message">Keyboard Rules</button>
+			<h2></h2>
+			<audio id="audio" controls style="display: none;"><source id = "source" type="audio/wav"> Your browser does not support audio </audio>
+			<button id="audio-frame">Play Audio</button>
 			<br>
 			<label id="question" for="count" style="font-size: 15px;">How many sources can you hear?</label>
 			<select id="count" name="count" style="display: none;">

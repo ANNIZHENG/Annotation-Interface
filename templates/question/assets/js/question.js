@@ -1,10 +1,11 @@
 // used to determine which question user is at
-var annotation_id = 1;
-const totalAnnotation = 5;
+var annotation_id = 0;
+const totalAnnotation = 3;
+var audio_sequence = [];
 
 // colors
 var colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
-var current_colors_index = -1;
+var current_colors_index = 0;
 
 // prevent deletion and mousemove happen at the same time
 var suppress = false;
@@ -23,19 +24,30 @@ var action_type = undefined;
 var value = undefined;
 var timestamp = undefined;
 
-/* container.2d.user.interface */
+// user control of audio
+var isPlaying = false;
 
-document.getElementById('audio').addEventListener("ended",displaySelection);
-document.getElementById('audio').addEventListener("playing",addPlaying);
-document.getElementById('count').addEventListener("change",addSourceCount);
-document.getElementById('message').addEventListener("click",popRules);
+/* below is the first event triggered when a user comes in */
+for (let i = 1; i <= totalAnnotation; i++) { audio_sequence.push(i); }
+document.getElementsByTagName('h2')[0].innerHTML='Please listen to the audio ['+ 1 +'/'+totalAnnotation+']';
+document.getElementById('source').src = '/templates/question/assets/audio/test'+(audio_sequence[annotation_id].toString())+'.wav';
+document.getElementById('audio').load();
+
+/* container.2d.user.interface */
 document.getElementById('body').addEventListener("mouseup",function(){ document.getElementById('body').style.cursor = 'default'; });
+document.getElementById('message').addEventListener("click",popRules);
+document.getElementById('audio-frame').addEventListener("click",addPlaying);
+document.getElementById('audio').addEventListener("ended",displaySelection);
+document.getElementById('count').addEventListener("change",addSourceCount);
 document.getElementById('azimuth-plus').addEventListener("click",move_azimuth_plus);
 document.getElementById('elevation-plus').addEventListener("click",move_elevation_plus);
 document.getElementById('azimuth-minus').addEventListener("click",move_azimuth_minus);
 document.getElementById('elevation-minus').addEventListener("click",move_elevation_minus);
 
-function popRules(){ window.alert("ANNOTATION COMING SOON\n\n1. Please press option (Mac) or Alt (Windows) to add an annotation\n2. Please press command to delete an annotation"); }
+function popRules(e){ 
+	e.preventDefault();
+	window.alert("1. Please press option or Alt to add an annotation\n2. Please press command to delete an annotation"); 
+}
 
 function addSourceCount(){
 	document.getElementById('2d-question').innerHTML = "Please identify the location of each source:";
@@ -43,7 +55,8 @@ function addSourceCount(){
 	document.getElementById('feedback').setAttribute('style',"display:inline-block;");
 	document.getElementById('front').setAttribute('style',"background-image: url('/templates/question/img/front.png'); display: inline-block;");
 	document.getElementById('side').setAttribute('style',"background-image: url('/templates/question/img/side.png'); display: inline-block;");
-	displayButton(); // display button after showing the image;
+	displayButton();
+
 	source_count = document.getElementById('count').value;
 	action_type = "source count";
 	value = document.getElementById('count').value;
@@ -51,19 +64,32 @@ function addSourceCount(){
 	ajax_interaction();
 }
 
-function addPlaying(){
-	action_type = "play audio";
-	value = null;
-	timestamp = Date.now();
-	ajax_interaction();
+function addPlaying(e){
+	e.preventDefault();
+	if (!isPlaying){
+		document.getElementById('audio').play();
+		document.getElementById('audio-frame').innerHTML='Pause Audio';
+		isPlaying = true;
+		action_type = "play audio";
+		value = null;
+		timestamp = Date.now();
+		ajax_interaction();
+	}
+	else{
+		isPlaying = false
+		document.getElementById('audio').pause();
+		document.getElementById('audio-frame').innerHTML='Play Audio';
+	}
 }
 
 function displaySelection(){ 
+	isPlaying = false;
+	document.getElementById('audio-frame').innerHTML='Play Audio';
 	document.getElementById('count').setAttribute('style','');
 }
 
 function displayButton(){
-	if(annotation_id < totalAnnotation) document.getElementById('btn-button-next').setAttribute('style','float:right;');
+	if( annotation_id+1 < totalAnnotation) document.getElementById('btn-button-next').setAttribute('style','float:right;');
 	else document.getElementById('btn-button-submit').setAttribute('style','float:right;');
 	document.getElementById('btn-button-refresh').setAttribute('style','float:left;');
 }
@@ -76,15 +102,15 @@ function setNextQuestion(){
 	annotation_id += 1;
 
 	// display
-	var listen = 'Listen to the audio ['+annotation_id+' / '+totalAnnotation+']';
-	var audio_source = '/templates/question/assets/audio/test'+annotation_id+'.wav';
-	document.getElementsByTagName('h2')[0].innerHTML=listen;
+	document.getElementsByTagName('h2')[0].innerHTML='Please listen to the audio ['+(annotation_id+1)+'/'+totalAnnotation+']';
+	document.getElementById('source').src = '/templates/question/assets/audio/test'+(audio_sequence[annotation_id].toString())+'.wav';
+	document.getElementById('audio').load();
 	document.getElementById('default-option').selected = true;
 
 	// do not display questions yet
-	document.getElementById('2d-question').innerHTML=''; // no asking for selection
-	document.getElementById('count').style.display='none'; // no dropdown 
-	document.getElementById('btn-button-next').style.display='none'; // no next button
+	document.getElementById('2d-question').innerHTML=''; 
+	document.getElementById('count').style.display='none';
+	document.getElementById('btn-button-next').style.display='none';
 	document.getElementById('btn-button-refresh').style.display='none';
 
 	// do not display images yet
@@ -93,12 +119,6 @@ function setNextQuestion(){
 	document.getElementById("front").style.display='none';
 	document.getElementById("side").style.display='none';
 	reloadAll();
-
-	// load new audio
-	var audio = document.getElementById('audio');
-	var source = document.getElementById('source');
-	source.src = audio_source;
-	audio.load();
 	
 	return true;
 }
@@ -124,7 +144,7 @@ function ajax_interaction(){
 }
 
 function ajax_next(){
-	if (annotation_id == totalAnnotation){
+	if (annotation_id+1 == totalAnnotation){
 		if (!askProceed()){
 			event.preventDefault();
 			return false;
@@ -144,79 +164,107 @@ function ajax_next(){
 
 function move_azimuth_plus(e){
 	e.preventDefault();
-	if (document.getElementById('head-item-'+(current_colors_index+1)).style.display == 'none'){ window.alert("You have not entered any annotation, or you have not selected any annotation yet"); return false; }
+
+	if (document.getElementById('head-item-'+(current_colors_index+1)).style.display == 'none'){ 
+		window.alert("Please select an annotation"); 
+		return false; 
+	}
+
 	new_azimuth = parseInt(document.getElementById('p-azimuth').innerHTML) + 1;
 	new_azimuth = (new_azimuth == 360 ? new_azimuth = 0 : new_azimuth);
-	old_azimuth_degree = parseInt(document.getElementById('circular'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
+	old_azimuth = parseInt(document.getElementById('circular'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
+
 	if (document.getElementById('front-item-'+(current_colors_index+1)).style.display != 'none'){
 		degree = parseInt(document.getElementById('circularF'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
 		if ( (new_azimuth > 180 && degree < 180) || (new_azimuth < 180 && degree > 180) ){ 
-			window.alert("Your HEAD view annotation does not match with your FRONT view annotation");
-			document.getElementById('circular'+(current_colors_index+1)).style.transform = 'rotate('+old_azimuth_degree+'deg)';
-			document.getElementById('p-azimuth').innerHTML = azimuth[current_colors_index];
+			window.alert("Your head view annotation does not match with your front view annotation");
+			document.getElementById('circular'+(current_colors_index+1)).style.transform = 'rotate('+old_azimuth+'deg)';
+			document.getElementById('p-azimuth').innerHTML = old_azimuth;
 			return false;
 		}
 	}
+
 	if (document.getElementById('side-item-'+(current_colors_index+1)).style.display != 'none'){
 		degree = parseInt(document.getElementById('circularS'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
 		if ( ((new_azimuth > 270 || new_azimuth < 90) && degree > 180) || ((new_azimuth < 270 && new_azimuth > 90) && degree < 180) ){
-			window.alert("Your HEAD view annotation does not match with your SIDE view annotation");
-			document.getElementById('circular'+(current_colors_index+1)).style.transform = 'rotate('+old_azimuth_degree+'deg)';
-			document.getElementById('p-azimuth').innerHTML = azimuth[current_colors_index];
+			window.alert("Your head view annotation does not match with your side view annotation");
+			document.getElementById('circular'+(current_colors_index+1)).style.transform = 'rotate('+old_azimuth+'deg)';
+			document.getElementById('p-azimuth').innerHTML = old_azimuth;
 			return false;
 		}
 	}
+
 	document.getElementById('p-azimuth').innerHTML = new_azimuth;
 	azimuth[current_colors_index] = new_azimuth;
 	document.getElementById('circular'+(current_colors_index+1)).style.transform = 'rotate('+new_azimuth+'deg)';
-	old_elevation_degree = (elevation[current_colors_index] == undefined ? 0 : elevation[current_colors_index]);
-	displayBall((azimuth[current_colors_index]-180), old_elevation_degree, (current_colors_index+1));
+	current_elevation = (elevation[current_colors_index] == undefined ? 0 : elevation[current_colors_index]);
+	displayBall((azimuth[current_colors_index]-180), current_elevation, (current_colors_index+1));
 }
 
 function move_azimuth_minus(e){
 	e.preventDefault();
-	if (document.getElementById('head-item-'+(current_colors_index+1)).style.display == 'none'){ window.alert("You have not entered any annotation, or you have not selected any annotation yet"); return false; }
+
+	if (document.getElementById('head-item-'+(current_colors_index+1)).style.display == 'none'){ 
+		window.alert("Please select an annotation"); 
+		return false; 
+	}
+
 	new_azimuth = parseInt(document.getElementById('p-azimuth').innerHTML) - 1;
 	new_azimuth = (new_azimuth == -1 ? new_azimuth = 359 : new_azimuth);
-	old_azimuth_degree = parseInt(document.getElementById('circular'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
+	old_azimuth = parseInt(document.getElementById('circular'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
+
 	if (document.getElementById('front-item-'+(current_colors_index+1)).style.display != 'none'){
 		degree = parseInt(document.getElementById('circularF'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
 		if ( (new_azimuth > 180 && degree < 180) || (new_azimuth < 180 && degree > 180) ){ 
-			window.alert("Your HEAD view annotation does not match with your FRONT view annotation");
-			document.getElementById('circular'+(current_colors_index+1)).style.transform = 'rotate('+old_azimuth_degree+'deg)';
-			document.getElementById('p-azimuth').innerHTML = azimuth[current_colors_index];
+			window.alert("Your head view annotation does not match with your front view annotation");
+			document.getElementById('circular'+(current_colors_index+1)).style.transform = 'rotate('+old_azimuth+'deg)';
+			document.getElementById('p-azimuth').innerHTML = old_azimuth;
 			return false;
 		}
 	}
+
 	if (document.getElementById('side-item-'+(current_colors_index+1)).style.display != 'none'){
 		degree = parseInt(document.getElementById('circularS'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
 		if ( ((new_azimuth > 270 || new_azimuth < 90) && degree > 180) || ((new_azimuth < 270 && new_azimuth > 90) && degree < 180) ){
 			window.alert("Your HEAD view annotation does not match with your SIDE view annotation");
-			document.getElementById('circular'+(current_colors_index+1)).style.transform = 'rotate('+old_azimuth_degree+'deg)';
-			document.getElementById('p-azimuth').innerHTML = azimuth[current_colors_index];
+			document.getElementById('circular'+(current_colors_index+1)).style.transform = 'rotate('+old_azimuth+'deg)';
+			document.getElementById('p-azimuth').innerHTML = old_azimuth;
 			return false;
 		}
 	}
+
 	document.getElementById('p-azimuth').innerHTML = new_azimuth;
 	azimuth[current_colors_index] = new_azimuth;
 	document.getElementById('circular'+(current_colors_index+1)).style.transform = 'rotate('+new_azimuth+'deg)';
-	old_elevation_degree = (elevation[current_colors_index] == undefined ? 0 : elevation[current_colors_index]);
-	displayBall((azimuth[current_colors_index]-180), old_elevation_degree, (current_colors_index+1));
+	old_elevation = (elevation[current_colors_index] == undefined ? 0 : elevation[current_colors_index]);
+	displayBall((azimuth[current_colors_index]-180), old_elevation, (current_colors_index+1));
 }
 
 function move_elevation_plus(e){
 	e.preventDefault();
-	if (document.getElementById('front-item-'+(current_colors_index+1)).style.display == 'none' && document.getElementById('side-item-'+(current_colors_index+1)).style.display == 'none' ){ window.alert("You have not entered any annotation, or you have not selected any annotation yet"); return false; }
+
+	if (document.getElementById('front-item-'+(current_colors_index+1)).style.display == 'none' 
+	&& document.getElementById('side-item-'+(current_colors_index+1)).style.display == 'none' ){ 
+		window.alert("Please select an annotation"); 
+		return false; 
+	}
+
 	new_elevation = parseInt(document.getElementById('p-elevation').innerHTML) + 1;
-	if (new_elevation > 90) { window.alert("The highest elevation should be 90"); return false; }
-	old_elevation_degree = 0;
+	if (new_elevation > 90) { return false; }
+	// old_elevation_degree = 0;
 
 	if (document.getElementById('front-item-'+(current_colors_index+1)).style.display != 'none'){
-		old_elevation_degree = parseInt(document.getElementById('circularF'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
+		old_elevation = parseInt(document.getElementById('circularF'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
 		degree = parseInt(document.getElementById('circular'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
+
 		document.getElementById('p-elevation').innerHTML = new_elevation;
 		elevation[current_colors_index] = new_elevation;
-		if (old_elevation_degree < 180){
+
+		document.getElementById('circularF'+(current_colors_index+1)).style.transform = 'rotate('+(old_elevation-1)+'deg)';
+		displayBall((azimuth[current_colors_index]==undefined ? -180 : azimuth[current_colors_index]-180), new_elevation, (current_colors_index+1));
+
+		/*
+		if (old_elevation < 180){
 			step = old_elevation_degree / (90 - new_elevation);
 			document.getElementById('circularF'+(current_colors_index+1)).style.transform = 'rotate('+(old_elevation_degree-step)+'deg)';
 			displayBall((azimuth[current_colors_index]==undefined ? -180 : azimuth[current_colors_index]-180), new_elevation, (current_colors_index+1));
@@ -226,12 +274,16 @@ function move_elevation_plus(e){
 			document.getElementById('circularF'+(current_colors_index+1)).style.transform = 'rotate('+(old_elevation_degree+step)+'deg)';
 			displayBall((azimuth[current_colors_index]==undefined ? -180 : azimuth[current_colors_index]-180), new_elevation, (current_colors_index+1));
 		}
+		*/
+
 	}
 	if (document.getElementById('side-item-'+(current_colors_index+1)).style.display != 'none'){
 		old_elevation_degree = parseInt(document.getElementById('circularS'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
 		degree = parseInt(document.getElementById('circular'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
+		
 		document.getElementById('p-elevation').innerHTML = new_elevation;
 		elevation[current_colors_index] = new_elevation;
+
 		if (old_elevation_degree < 180){
 			step = old_elevation_degree / (90 - new_elevation)
 			document.getElementById('circularS'+(current_colors_index+1)).style.transform = 'rotate('+(old_elevation_degree-step)+'deg)';
@@ -247,9 +299,12 @@ function move_elevation_plus(e){
 
 function move_elevation_minus(e){
 	e.preventDefault();
-	if (document.getElementById('front-item-'+(current_colors_index+1)).style.display == 'none' && document.getElementById('side-item-'+(current_colors_index+1)).style.display == 'none' ){ window.alert("You have not entered any annotation, or you have not selected any annotation yet"); return false; }
+	if (document.getElementById('front-item-'+(current_colors_index+1)).style.display == 'none' && document.getElementById('side-item-'+(current_colors_index+1)).style.display == 'none' ){ 
+		window.alert("Please select an annotation"); 
+		return false; 
+	}
 	new_elevation = parseInt(document.getElementById('p-elevation').innerHTML) - 1;
-	if (new_elevation < -90) { window.alert("The highest elevation should be -90"); return false; }
+	if (new_elevation < -90) { return false; }
 	old_elevation_degree = 0;
 
 	if (document.getElementById('front-item-'+(current_colors_index+1)).style.display != 'none'){
@@ -287,7 +342,8 @@ function move_elevation_minus(e){
 }
 
 function dragElement(index,indicator,add_index){
-	var item, itemF, itemS, frameF, frameS;
+	var item, itemF, itemS;
+
 	item = document.getElementById('circular'+index); 
 	inner_item = document.getElementById('head-item-'+index); 
 	frame = document.getElementById('head');
@@ -312,19 +368,25 @@ function dragElement(index,indicator,add_index){
 			if (suppress) return; 
 			e.preventDefault();
 			suppress = true;
+
+			temp_azimuthS = parseInt(document.getElementById('circularS'+index).style.transform.replace('rotate(','').replace('deg)',''));
+
 			if (document.getElementById('head-item-'+index).style.display != 'none'){
 				degree = parseInt(document.getElementById('circular'+index).style.transform.replace('rotate(','').replace('deg)',''));
+
 				if ( 
-					((degree < 90 || degree > 270) && (temp_azimuthS > 180)) && ((degree > 90 && degree < 270) && (temp_azimuthS < 180))
+					((degree < 90 || degree > 270) && (temp_azimuthS > 180)) || ((degree > 90 && degree < 270) && (temp_azimuthS < 180))
 				){
-					window.alert("Your SIDE view annotation does not match with your azimuth");
-					itemS.style.transform = 'rotate('+original_front_degree+'deg)';
+					window.alert("Your side view annotation does not match with your azimuth");
+					itemS.style.transform = 'rotate('+original_side_degree+'deg)';
+
 					document.getElementById('body').style.cursor = 'default';
 					document.onmouseup = null; 
 					document.onmousemove = null;
 					document.getElementById('p-elevation').innerHTML = elevation[add_index];
 					return;
 				}
+
 				if (azimuth[add_index] >= 22.5 && azimuth[add_index] <= 67.5) {
 					document.getElementById('circularF'+index).setAttribute('style','');
 					document.getElementById('circularF'+index).style.transform = 'rotate('+temp_azimuthS+'deg)';
@@ -345,17 +407,19 @@ function dragElement(index,indicator,add_index){
 					document.getElementById('circularF'+index).style.transform = 'rotate('+(360-temp_azimuthS)+'deg)';
 					document.getElementById('front-item-'+index).setAttribute('style','');
 				}
-				else{ // when side should not be displayed
+				else{
 					document.getElementById('front-item-'+index).style.display = 'none';
 					document.getElementById('circularF'+index).style.display = 'none';
 				}
 			}
-			temp_azimuth = azimuth[add_index] != undefined ? azimuth[add_index] - 180 : -180;
-			displayBall(temp_azimuth, curr_elevation, index);
+
+			displayBall( (azimuth[add_index] != undefined ? azimuth[add_index] - 180 : -180) , curr_elevation, index);
 			elevation[add_index] = curr_elevation;
+
 			value = curr_elevation;
 			timestamp = Date.now();
 			ajax_interaction();
+
 			document.getElementById('body').style.cursor = 'default';
 			document.onmouseup = null; 
 			document.onmousemove = null;
@@ -370,10 +434,14 @@ function dragElement(index,indicator,add_index){
 			if (suppress) return; 
 			e.preventDefault();
 			suppress = true;
+
+			temp_azimuthF = parseInt(document.getElementById('circularF'+index).style.transform.replace('rotate(','').replace('deg)',''));
+
 			if (document.getElementById('head-item-'+index).style.display != 'none'){
 				degree = parseInt(document.getElementById('circular'+index).style.transform.replace('rotate(','').replace('deg)',''));
+
 				if ( (degree < 180 && temp_azimuthF > 180) || (degree > 180 && temp_azimuthF < 180) ){
-					window.alert("Your BACK view annotation does not match with your azimuth");
+					window.alert("Your back view annotation does not match with your azimuth");
 					itemF.style.transform = 'rotate('+original_front_degree+'deg)';
 					document.getElementById('body').style.cursor = 'default';
 					document.onmouseup = null; 
@@ -381,8 +449,8 @@ function dragElement(index,indicator,add_index){
 					document.getElementById('p-elevation').innerHTML = elevation[add_index];
 					return;
 				}
+
 				if (azimuth[add_index] >= 22.5 && azimuth[add_index] <= 67.5) {
-					console.log(temp_azimuth);
 					document.getElementById('circularS'+index).setAttribute('style','');
 					document.getElementById('circularS'+index).style.transform = 'rotate('+temp_azimuthF+'deg)';
 					document.getElementById('side-item-'+index).setAttribute('style','');
@@ -402,24 +470,25 @@ function dragElement(index,indicator,add_index){
 					document.getElementById('circularS'+index).style.transform = 'rotate('+(360-temp_azimuthF)+'deg)';
 					document.getElementById('side-item-'+index).setAttribute('style','');
 				}
-				else{ // when side should not be displayed
+				else{
 					document.getElementById('side-item-'+index).style.display = 'none';
 					document.getElementById('circularS'+index).style.display = 'none';
 				}
 			}
-			temp_azimuth = azimuth[add_index] != undefined ? azimuth[add_index] - 180 : -180;
-			displayBall(temp_azimuth, curr_elevation, index);
+
+			displayBall( (azimuth[add_index] != undefined ? azimuth[add_index] - 180 : -180) , curr_elevation, index);
 			elevation[add_index] = curr_elevation;
 			value = curr_elevation;
 			timestamp = Date.now();
 			ajax_interaction();
+
 			document.getElementById('body').style.cursor = 'default';
 			document.onmouseup = null; 
 			document.onmousemove = null;
 		}
 	}
 
-	item.onmousedown = function() { 
+	item.onmousedown = function() {
 		if (suppress) return;
 
    		document.onmousemove = mouse;
@@ -427,17 +496,22 @@ function dragElement(index,indicator,add_index){
 			if (suppress) return; 
 			e.preventDefault();
 			suppress = true;
+
+			temp_azimuth = parseInt(document.getElementById('p-azimuth').innerHTML);
+
 			if (document.getElementById('front-item-'+index).style.display != 'none'){
 				degree = parseInt(document.getElementById('circularF'+index).style.transform.replace('rotate(','').replace('deg)',''));
+
 				if ((temp_azimuth < 180 && degree > 180) || (temp_azimuth > 180 && degree < 180)){
 					document.getElementById('circularF'+index).style.transform = 'rotate('+(360-degree)+'deg)';
 				}
+
 				if (temp_azimuth < 22.5 || temp_azimuth > 337.5){ 
 					document.getElementById('front-item-'+index).style.display = 'none';
 					document.getElementById('circularF'+index).style.display = 'none';
+
 					document.getElementById('side-item-'+index).style.display = '';
 					document.getElementById('circularS'+index).style.display = '';
-					// display only side item
 					if (degree > 180){ document.getElementById('circularS'+index).style.transform = 'rotate('+(360-degree)+'deg)'; }
 					else{ document.getElementById('circularS'+index).style.transform = 'rotate('+degree+'deg)'; }
 				}
@@ -448,9 +522,9 @@ function dragElement(index,indicator,add_index){
 				else if (temp_azimuth > 157.5 && temp_azimuth < 202.5){ 
 					document.getElementById('front-item-'+index).style.display = 'none';
 					document.getElementById('circularF'+index).style.display = 'none';
+
 					document.getElementById('side-item-'+index).style.display = '';
 					document.getElementById('circularS'+index).style.display = '';
-					// display only side item
 					if (degree < 180){ document.getElementById('circularS'+index).style.transform = 'rotate('+(360-degree)+'deg)'; }
 					else{ document.getElementById('circularS'+index).style.transform = 'rotate('+degree+'deg)'; }
 				}
@@ -471,8 +545,11 @@ function dragElement(index,indicator,add_index){
 					}
 				}
 			}
+
+
 			if (document.getElementById('side-item-'+index).style.display != 'none'){
 				degree = parseInt(document.getElementById('circularS'+index).style.transform.replace('rotate(','').replace('deg)',''));
+
 				if ( ((temp_azimuth > 270 || temp_azimuth < 90) && degree>180)
 					|| ((temp_azimuth < 270 && temp_azimuth > 90) && degree<180) ){ 
 						document.getElementById('circularS'+index).style.transform = 'rotate('+(360-degree)+'deg)'; 
@@ -481,12 +558,12 @@ function dragElement(index,indicator,add_index){
 					document.getElementById('front-item-'+index).style.display = 'none';
 					document.getElementById('circularF'+index).style.display = 'none';
 				}
-				else if (temp_azimuth > 67.5 && temp_azimuth < 112.5){ // front
+				else if (temp_azimuth > 67.5 && temp_azimuth < 112.5){
 					document.getElementById('side-item-'+index).style.display = 'none';
 					document.getElementById('circularS'+index).style.display = 'none';
+
 					document.getElementById('front-item-'+index).style.display = '';
 					document.getElementById('circularF'+index).style.display = '';
-					// display only front item
 					if (degree > 180){ document.getElementById('circularF'+index).style.transform = 'rotate('+(360-degree)+'deg)'; }
 					else{ document.getElementById('circularF'+index).style.transform = 'rotate('+degree+'deg)'; }
 				}
@@ -494,12 +571,12 @@ function dragElement(index,indicator,add_index){
 					document.getElementById('front-item-'+index).style.display = 'none';
 					document.getElementById('circularF'+index).style.display = 'none';
 				}
-				else if (temp_azimuth > 247.5 && temp_azimuth < 292.5){ // front
+				else if (temp_azimuth > 247.5 && temp_azimuth < 292.5){
 					document.getElementById('side-item-'+index).style.display = 'none';
 					document.getElementById('circularS'+index).style.display = 'none';
+
 					document.getElementById('front-item-'+index).style.display = '';
 					document.getElementById('circularF'+index).style.display = '';
-					// display only front item
 					if (degree < 180){ document.getElementById('circularF'+index).style.transform = 'rotate('+(360-degree)+'deg)'; }
 					else{ document.getElementById('circularF'+index).style.transform = 'rotate('+degree+'deg)'; }
 				}
@@ -516,80 +593,63 @@ function dragElement(index,indicator,add_index){
 					}
 				}
 			}
-			displayBall(temp_azimuth-180, elevation[add_index] != undefined ? elevation[add_index] : 0, index);
+
+			displayBall(temp_azimuth-180, (elevation[add_index] != undefined ? elevation[add_index] : 0) , index);
 			curr_azimuth = temp_azimuth;
-			azimuth[add_index] = curr_azimuth;
 			azimuth[add_index] = curr_azimuth;
 			value = curr_azimuth;
 			timestamp = Date.now();
 			ajax_interaction();
+
 			document.getElementById('body').style.cursor = 'default';
 			document.onmouseup = null; 
 			document.onmousemove = null;
 		}
 	}
-	function mouse(e) { 
+	function mouse(e) {
 		if (suppress) return;
 		e.preventDefault();
 
-		var flocationF = frameF.getBoundingClientRect();
-		var innerlocationF = inner_itemF.getBoundingClientRect();
-		var flocationS = frameS.getBoundingClientRect();
-		var innerlocationS = inner_itemS.getBoundingClientRect();
-
-		var ilocation = item.getBoundingClientRect();
-		var ilocationF = itemF.getBoundingClientRect();
-		var ilocationS = itemS.getBoundingClientRect();
-
-		var cx = (ilocation.right + ilocation.left) / 2;
-		var cy = (ilocation.top + ilocation.bottom) / 2;
-		var cxF = (ilocationF.right + ilocationF.left) / 2;
-		var cyF = (ilocationF.top + ilocationF.bottom) / 2;
-		var cxS = (ilocationS.right + ilocationS.left) / 2;
-		var cyS = (ilocationS.top + ilocationS.bottom) / 2;
-
-		temp_azimuth = calculateAzimuth(e.pageX, e.pageY, cx, cy);
-		temp_azimuth = (temp_azimuth == 360 ? 0 : temp_azimuth);
-
-		temp_azimuthF = calculateAzimuth(e.pageX, e.pageY, cxF, cyF);
-		temp_azimuthF = (temp_azimuthF == 360 ? 0 : temp_azimuthF);
-
-		temp_azimuthS = calculateAzimuth(e.pageX, e.pageY, cxS, cyS);
-		temp_azimuthS = (temp_azimuthS == 360 ? 0 : temp_azimuthS);
-
 		if (indicator == 1) {
-			temp_elevationF = flocationF.bottom - innerlocationF.top;
-			if (temp_elevationF == 97 || temp_elevationF == 98) curr_elevation = 0;
-			else if (temp_elevationF >= 180) curr_elevation = 90;
-			else if (temp_elevationF <= 15) curr_elevation = -90;
-			else if (temp_elevationF > 98) curr_elevation = Math.round( temp_elevationF - 98 );
-			else if (temp_elevationF < 97) curr_elevation = Math.round( temp_elevationF - 97 );
-			itemF.style.transform = 'rotate('+(temp_azimuthF)+'deg)';
-		}
-		else if (indicator == 2){
-			temp_elevationS = flocationS.bottom - innerlocationS.top;
-			if (temp_elevationS == 97 || temp_elevationS == 98) curr_elevation = 0;
-			else if (temp_elevationS >= 180) curr_elevation = 90;
-			else if (temp_elevationS <= 15) curr_elevation = -90;
-			else if (temp_elevationS > 98) curr_elevation = Math.round( temp_elevationS - 98 );
-			else if (temp_elevationS < 97) curr_elevation = Math.round( temp_elevationS - 97 );
-			itemS.style.transform = 'rotate('+(temp_azimuthS)+'deg)';
-		}
-		else{
-			item.style.transform = 'rotate('+(temp_azimuth)+'deg)';
-		}
+			var ilocationF = itemF.getBoundingClientRect();
+			var cxF = (ilocationF.right + ilocationF.left) / 2;
+			var cyF = (ilocationF.top + ilocationF.bottom) / 2;
+			var temp_azimuthF = calculateAzimuth(e.pageX, e.pageY, cxF, cyF);
+			temp_azimuthF = (temp_azimuthF == 360 ? 0 : temp_azimuthF);
 
-		// display word
-		if (indicator == 0){
-			document.getElementById('p-azimuth').innerHTML = temp_azimuth;
-			document.getElementById('p-elevation').innerHTML = (elevation[add_index] != undefined ? elevation[add_index] : 0);
-		}
-		else{
+			if (temp_azimuthF <= 180){ curr_elevation = 90 - temp_azimuthF; }
+			else{ curr_elevation = (temp_azimuthF - 180) - 90 }
+
+			itemF.style.transform = 'rotate('+temp_azimuthF+'deg)';
 			document.getElementById('p-azimuth').innerHTML = (azimuth[add_index] != undefined ? azimuth[add_index] : 0);
 			document.getElementById('p-elevation').innerHTML = curr_elevation;
 		}
+		else if (indicator == 2){
+			var ilocationS = itemS.getBoundingClientRect();
+			var cxS = (ilocationS.right + ilocationS.left) / 2;
+			var cyS = (ilocationS.top + ilocationS.bottom) / 2;
+			var temp_azimuthS = calculateAzimuth(e.pageX, e.pageY, cxS, cyS);
+			temp_azimuthS = (temp_azimuthS == 360 ? 0 : temp_azimuthS);
 
-		// display color
+			if (temp_azimuthS <= 180){ curr_elevation = 90 - temp_azimuthS; }
+			else{ curr_elevation = (temp_azimuthS - 180) - 90 }
+
+			itemS.style.transform = 'rotate('+temp_azimuthS+'deg)';
+			document.getElementById('p-azimuth').innerHTML = (azimuth[add_index] != undefined ? azimuth[add_index] : 0);
+			document.getElementById('p-elevation').innerHTML = curr_elevation;
+		}
+		else{
+			var ilocation = item.getBoundingClientRect();
+			var cx = (ilocation.right + ilocation.left) / 2;
+			var cy = (ilocation.top + ilocation.bottom) / 2;
+			var temp_azimuth = calculateAzimuth(e.pageX, e.pageY, cx, cy);
+			temp_azimuth = (temp_azimuth == 360 ? 0 : temp_azimuth);
+
+			item.style.transform = 'rotate('+temp_azimuth+'deg)';
+			document.getElementById('p-azimuth').innerHTML = temp_azimuth;
+			document.getElementById('p-elevation').innerHTML = (elevation[add_index] != undefined ? elevation[add_index] : 0);
+		}
+
 		current_colors_index = add_index;
 		color_hex = '000000'+colors[add_index].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -704,10 +764,12 @@ function keyboardEvents(e){
 		key_perform = false; // deleting key/event no longer active
 		return;
 	}
+
 	// set up to get location
 	document.getElementById('circular0').setAttribute('style','');
 	document.getElementById('circularF0').setAttribute('style','');
 	document.getElementById('circularS0').setAttribute('style','');
+
 	head_frameLocation = document.getElementById('circular0').getBoundingClientRect();
 	front_frameLocation = document.getElementById('circularF0').getBoundingClientRect();
 	side_frameLocation = document.getElementById('circularS0').getBoundingClientRect();
@@ -717,6 +779,7 @@ function keyboardEvents(e){
 	front_cy = ( front_frameLocation.top + front_frameLocation.bottom ) / 2;
 	side_cx = ( side_frameLocation.right + side_frameLocation.left ) / 2;
 	side_cy = ( side_frameLocation.top + side_frameLocation.bottom ) / 2;
+
 	if (e.altKey){
 		delete_head = false; delete_front = false; delete_side = false; // prevent deletion
 		document.getElementById('body').style.cursor = 'cell';
@@ -844,16 +907,22 @@ function keyboardEvents(e){
 				document.getElementById('circularF'+elevation_item_index).style.transform = 'rotate('+temp_azimuth+'deg)';
 				document.getElementById('front-item-'+elevation_item_index).setAttribute('style','');
 
+				// calculate the displayed elevation
+				if (temp_azimuth <= 180){ curr_elevation = 90 - temp_azimuth; }
+				else{ curr_elevation = (temp_azimuth - 180) - 90 }
+
+				/* DELETE
 				// calculate the actual elevation
 				itemLocation = document.getElementById('front-item-'+elevation_item_index).getBoundingClientRect();
 				temp_elevation = front_frameLocation.bottom - itemLocation.top;
 
-				// calculate the displayed elevation
 				if (temp_elevation == 97 || temp_elevation == 98) curr_elevation = 0;
 				else if (temp_elevation >= 180) curr_elevation = 90;
 				else if (temp_elevation <= 15) curr_elevation = -90;
 				else if (temp_elevation > 98) curr_elevation = Math.round( temp_elevation - 98 );
 				else if (temp_elevation < 97) curr_elevation = Math.round( temp_elevation - 97 );
+				*/
+				
 				elevation[elevation_item_index-1] = curr_elevation;
 				temp_azimuth = azimuth[elevation_item_index-1] != undefined ? azimuth[elevation_item_index-1] - 180 : -180;
 				displayBall(temp_azimuth, curr_elevation, elevation_item_index);
@@ -929,16 +998,22 @@ function keyboardEvents(e){
 				document.getElementById('circularS'+elevation_item_index).style.transform = 'rotate('+temp_azimuth+'deg)';
 				document.getElementById('side-item-'+elevation_item_index).setAttribute('style','');
 
+				// calculate the displayed elevation
+				if (temp_azimuth <= 180){ curr_elevation = 90 - temp_azimuth; }
+				else{ curr_elevation = (temp_azimuth - 180) - 90 }
+				
+				/* DELETE
 				// calculate actual elevation
 				itemLocation = document.getElementById('side-item-'+elevation_item_index).getBoundingClientRect();
 				temp_elevation = side_frameLocation.bottom - itemLocation.top;
 
-				// calculate the displayed elevation
 				if (temp_elevation == 97 || temp_elevation == 98) curr_elevation = 0;
 				else if (temp_elevation >= 180) curr_elevation = 90;
 				else if (temp_elevation <= 15) curr_elevation = -90;
 				else if (temp_elevation > 98) curr_elevation = Math.round( temp_elevation - 98 );
 				else if (temp_elevation < 97) curr_elevation = Math.round( temp_elevation - 97 );
+				*/
+
 				elevation[elevation_item_index-1] = curr_elevation;
 				temp_azimuth = azimuth[elevation_item_index-1] != undefined ? azimuth[elevation_item_index-1] - 180 : -180;
 				displayBall(temp_azimuth, curr_elevation, elevation_item_index);

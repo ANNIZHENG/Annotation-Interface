@@ -32,12 +32,11 @@ body{
 }
 
 #message{ /* This is for decording keyboard event button */
-	padding: 5px;
 	width: 170px;
-	background-color: black;
-	color: white;
+	height: 40px;
 	text-align: center;
 	cursor: pointer;
+	font-size: 16px;
 }
 
 #btn-button-next,#btn-button-refresh,#btn-button-submit{
@@ -56,14 +55,13 @@ audio{
 	background-color: white;
 }
 
-audio::-webkit-media-controls-panel {
-	background-color: white;
-}
-
-audio::-webkit-media-controls-time-remaining-display,
-audio::-webkit-media-controls-current-time-display{
-	font-family: Monaco;
-	font-weight: bold;
+#audio-frame{
+	height: 40px;
+	width: 430px;
+	margin-bottom: 20px;
+	text-align: center;
+	font-size: 16px;
+	cursor: pointer;
 }
 
 .indicator{
@@ -78,7 +76,7 @@ audio::-webkit-media-controls-current-time-display{
 	width: 17px; 
 	height: 180px; 
 	left: 82.5px;
-	/*border: 1px solid white;*/
+	/*border: 0.3px solid white;*/
 }
 
 #head, #front, #side, #feedback{
