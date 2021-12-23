@@ -6,7 +6,7 @@
 
 headphone check code link: https://github.com/mcdermottLab/HeadphoneCheck
 
-Please start postgresql and type these commands to set up the virtual environment
+Please start postgresql and set up the virtual environment:
 
 ```
 virtualenv env
@@ -21,7 +21,7 @@ pip3 install psycopg2-binary
 
 python3 server/main.py
 ```
-If you are using conda:
+if you use conda:
 
 ```
 conda config --append channels conda-forge
