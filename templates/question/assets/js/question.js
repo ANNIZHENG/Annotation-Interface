@@ -31,9 +31,9 @@ var key_perform = false;
 var isPlaying = false;
 
 /* below is the first event triggered when a user comes in */
-for (let i = 1; i <= totalAnnotation; i++) { audio_sequence.push(i); }
+for (let i = 0; i < totalAnnotation; i++) { audio_sequence.push(i); }
 document.getElementsByTagName('h2')[0].innerHTML='Please listen to the audio ['+ 1 +'/'+totalAnnotation+']';
-document.getElementById('source').src = '/templates/question/assets/audio/test'+(audio_sequence[annotation_id].toString())+'.wav';
+document.getElementById('source').src = '/templates/question/assets/audio/'+(audio_sequence[annotation_id].toString())+'.wav';
 document.getElementById('audio').load();
 
 /* container.2d.user.interface */
@@ -108,7 +108,7 @@ function setNextQuestion(){
 
 	// display
 	document.getElementsByTagName('h2')[0].innerHTML='Please listen to the audio ['+(annotation_id+1)+'/'+totalAnnotation+']';
-	document.getElementById('source').src = '/templates/question/assets/audio/test'+(audio_sequence[annotation_id].toString())+'.wav';
+	document.getElementById('source').src = '/templates/question/assets/audio/'+(audio_sequence[annotation_id].toString())+'.wav';
 	document.getElementById('audio').load();
 	document.getElementById('default-option').selected = true;
 

@@ -10,10 +10,12 @@ from sqlalchemy.dialects import postgresql
 # database should be created before hand
 db_path = 'postgresql://anniezheng@localhost/test'
 
+'''
 try:
     db_path = os.environ['postgresql://anniezheng@localhost/test']
 except:
     print("except db_tables.py")
+'''
 
 eng = create_engine(db_path)
 Base = declarative_base()
