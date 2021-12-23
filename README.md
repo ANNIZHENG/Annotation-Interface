@@ -21,7 +21,7 @@ pip3 install psycopg2-binary
 
 python3 server/main.py
 ```
-if you use conda:
+if you are using conda:
 
 ```
 conda config --append channels conda-forge
