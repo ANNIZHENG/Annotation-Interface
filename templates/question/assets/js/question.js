@@ -1,4 +1,4 @@
-// used to determine which question user is at
+// for tracking question number
 var annotation_id = 0;
 const totalAnnotation = 3;
 var audio_sequence = [];
