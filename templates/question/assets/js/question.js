@@ -41,6 +41,7 @@ document.getElementById('body').addEventListener("mouseup",function(){ document.
 document.getElementById('message').addEventListener("click",popRules);
 document.getElementById('audio-frame').addEventListener("click",addPlaying);
 document.getElementById('audio').addEventListener("ended",displaySelection);
+document.getElementById('audio').addEventListener("timeupdate",audioTracker);
 document.getElementById('count').addEventListener("change",addSourceCount);
 document.getElementById('azimuth-plus').addEventListener("click",move_azimuth_plus);
 document.getElementById('elevation-plus').addEventListener("click",move_elevation_plus);
@@ -66,6 +67,11 @@ function addSourceCount(){
 	timestamp = Date.now();
 	action_type = "source count";
 	ajax_interaction();
+}
+
+function audioTracker(){
+	let track = document.getElementById('audio').currentTime / document.getElementById('audio').duration * 100;
+	document.getElementById('audio-frame').style.background = 'linear-gradient(to right, #e7e7e7 '+track+'%, #ffffff 0%)';
 }
 
 function addPlaying(e){
@@ -1215,8 +1221,8 @@ function keyboardEvents(e){
 			}
 		}, {once:true});
 	}
-	console.log("AZIMUTH: "+azimuth.toString());
-	console.log("ELEVATION: "+elevation.toString());
+	//console.log("AZIMUTH: "+azimuth.toString());
+	//console.log("ELEVATION: "+elevation.toString());
 	return;
 }
 

@@ -37,6 +37,7 @@ body{
 	text-align: center;
 	cursor: pointer;
 	font-size: 16px;
+	border: 2px solid #696969;
 }
 
 #btn-button-next,#btn-button-refresh,#btn-button-submit{
@@ -49,6 +50,7 @@ body{
 }
 
 #audio-frame{
+	background: linear-gradient(to right, #e7e7e7 0%, #ffffff 0%);
 	height: 40px;
 	width: 350px;
 	margin-bottom: 20px;
