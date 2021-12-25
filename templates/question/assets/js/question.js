@@ -30,15 +30,24 @@ var key_perform = false;
 // user control of audio
 var isPlaying = false;
 
+// modal box
+var modal = document.getElementById("modal");
+
+// instruction number
+var curr_instruction = 1;
+
 /* below is the first event triggered when a user comes in */
 for (let i = 0; i < totalAnnotation; i++) { audio_sequence.push(i); }
-document.getElementsByTagName('h2')[0].innerHTML='Please listen to the audio ['+ 1 +'/'+totalAnnotation+']';
+document.getElementsByTagName('h2')[0].innerHTML='Please listen to the audio ['+ 1 +' / '+totalAnnotation+']';
 document.getElementById('source').src = '/templates/question/assets/audio/'+(audio_sequence[annotation_id].toString())+'.wav';
 document.getElementById('audio').load();
 
 /* container.2d.user.interface */
 document.getElementById('body').addEventListener("mouseup",function(){ document.getElementById('body').style.cursor = 'default'; });
 document.getElementById('message').addEventListener("click",popRules);
+document.getElementById('instruction-left').addEventListener("click",move_instruction_last);
+document.getElementById('instruction-right').addEventListener("click",move_instruction_next);
+document.getElementById("sign").addEventListener("click",closeRules);
 document.getElementById('audio-frame').addEventListener("click",addPlaying);
 document.getElementById('audio').addEventListener("ended",displaySelection);
 document.getElementById('audio').addEventListener("timeupdate",audioTracker);
@@ -50,7 +59,28 @@ document.getElementById('elevation-minus').addEventListener("click",move_elevati
 
 function popRules(e){ 
 	e.preventDefault();
-	window.alert("1. Please press option or Alt to add an annotation\n2. Please press command to delete an annotation"); 
+	modal.style.display = "block";
+}
+
+function closeRules(e){ 
+	e.preventDefault();
+	modal.style.display = "none";
+}
+
+function move_instruction_next(){
+	if (curr_instruction < 6) {
+		document.getElementById('instruction'+curr_instruction).style.display = 'none';
+		document.getElementById('instruction'+(curr_instruction+1)).style.display = '';
+		curr_instruction += 1;
+	}
+}
+
+function move_instruction_last(){
+	if (curr_instruction > 1) {
+		document.getElementById('instruction'+curr_instruction).style.display = 'none';
+		document.getElementById('instruction'+(curr_instruction-1)).style.display = '';
+		curr_instruction -= 1;
+	}
 }
 
 function addSourceCount(){
@@ -71,7 +101,7 @@ function addSourceCount(){
 
 function audioTracker(){
 	let track = document.getElementById('audio').currentTime / document.getElementById('audio').duration * 100;
-	document.getElementById('audio-frame').style.background = 'linear-gradient(to right, #e7e7e7 '+track+'%, #ffffff 0%)';
+	document.getElementById('audio-frame').style.background = 'linear-gradient(to right, #efefef '+track+'%, #ffffff 0%)';
 }
 
 function addPlaying(e){
@@ -113,7 +143,7 @@ function setNextQuestion(){
 	annotation_id += 1;
 
 	// display
-	document.getElementsByTagName('h2')[0].innerHTML='Please listen to the audio ['+(annotation_id+1)+'/'+totalAnnotation+']';
+	document.getElementsByTagName('h2')[0].innerHTML='Please listen to the audio ['+(annotation_id+1)+' / '+totalAnnotation+']';
 	document.getElementById('source').src = '/templates/question/assets/audio/'+(audio_sequence[annotation_id].toString())+'.wav';
 	document.getElementById('audio').load();
 	document.getElementById('default-option').selected = true;

@@ -17,45 +17,107 @@ body{
 }
 
 .container{
-	background-color: white;
-	color: black;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	background-color: white;
+	color: black;
 }
 
 .container-3D{
-	background-color: black;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	background-color: black;
 }
 
 #message{
-	width: 170px;
-	height: 40px;
 	text-align: center;
 	cursor: pointer;
 	font-size: 16px;
-	border: 2px solid #696969;
+	width: 170px;
+	height: 40px;
+	background-color: #efefef;
+	border: 2px solid black;
 }
 
-#btn-button-next,#btn-button-refresh,#btn-button-submit{
-	margin-top: 18px;
-	width: 170px;
+#modal {
+	display: none;
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.4);
+}
+
+.instructions {
+	margin: auto;
+	padding: 40px;
+	width: 80%;
+	height: 100vh;
+	background-color: white;
+}
+
+#sign {
+	font-size: 25px;
+	font-weight: bold;
+	color: rgba(0,0,0,0.4);
+}
+
+.move {
+	display: inline;
+	margin-right: 10px;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-bottom: 5px;
+	font-size: 25px;
 	color: white;
-	background-color: black;
-	padding:5px;
+	background-color: rgba(0,0,0,0.4);
+}
+#instruction-move {
+	position: absolute;
+	right: 13%;
+	bottom: 15px;
+}
+
+.move:hover,
+.move:focus {
 	cursor: pointer;
+	background-color: rgba(0,0,0,0.7);
+}
+
+#sign:hover,
+#sign:focus {
+	cursor: pointer;
+	color: rgba(0,0,0,0.7);
+}
+
+#btn-button-next,
+#btn-button-refresh,
+#btn-button-submit{
+	margin-top: 18px;
+	padding:5px;
+	width: 170px;
+	border: 1px solid black;
+	background-color: #efefef;
+	cursor: pointer;
+}
+
+#btn-button-next:hover,
+#btn-button-refresh:hover,
+#btn-button-submit:hover{
+	background-color:#c7c7c7;
 }
 
 #audio-frame{
-	background: linear-gradient(to right, #e7e7e7 0%, #ffffff 0%);
-	height: 40px;
-	width: 350px;
 	margin-bottom: 20px;
 	text-align: center;
 	font-size: 16px;
+	height: 40px;
+	width: 350px;
+	border: 2px solid black;
+	background: linear-gradient(to right, #efefef 0%, #ffffff 0%);
 	cursor: pointer;
 }
 
@@ -75,13 +137,13 @@ body{
 }
 
 #head, #front, #side, #feedback{
-	height: 180px; 
-	width: 180px;
-	background-size: cover; 
 	position: relative;
 	vertical-align: top;
 	margin-bottom: 8px;
 	font-size: 13px;
+	height: 180px; 
+	width: 180px;
+	background-size: cover; 
 }
 
 #p-azimuth, #p-elevation{

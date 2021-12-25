@@ -10,7 +10,53 @@
 	</div>
 	<div class="container" id = "container">
 		<form action="/templates/question/submit.html">
-			<button id="message">Keyboard Rules</button>
+			<button id="message">Instructions</button>
+			<div id="modal">
+				<div class="instructions">
+					<span id="sign" style="float: right;">&times;</span>
+					<div id="instruction1">
+						<img src="/templates/question/img/1.png" style="width:80%; height: auto;">
+						<p>&ordm; Fraction numbers inside the bracket means: [current audio number / total number of audios] </p>
+						<p>&ordm; Click 'Play Audio' to play the current audio </p>
+						<p>&ordm; You may rotate the 3D head, but you can not perform anything towards the head directly </p>
+					</div>
+					<div id="instruction2" style="display: none;">
+						<img src="/templates/question/img/2.png" style="width:80%; height: auto;">
+						<p>&ordm; Click 'Pause Audio' to pause the current audio </p>
+					</div>
+					<div id="instruction3" style="display: none;">
+						<img src="/templates/question/img/3.png" style="width:80%; height: auto;">
+						<p>&ordm; You may re-play the audio as many times as needed </p>
+						<p>&ordm; Once you have finished listening to the audio, you may see a dropdown menu in which you may select the number of sources you have heard </p>
+					</div>
+					<div id="instruction4" style="display: none;">
+						<img src="/templates/question/img/4.png" style="width:80%; height: auto;">
+						<p>&ordm; Once you have selected a number，three 2D views will automatically appeared </p>
+						<p>&ordm; These three views are where you perform the annotation </p>
+						<p>&ordm; Press 'option' or 'Alt' key to add an annotation once you see the cursor turning to '+' </p>
+						<p>&ordm; Press 'command' key to delete an annotation once you see the cursor turning to '-' </p>
+						<p>&ordm; Keep in mind that deleting an annotation means to delete both its annotated azimuth and elevation(s) </p>
+					</div>
+					<div id="instruction5" style="display: none;">
+						<img src="/templates/question/img/5.png" style="width:80%; height: auto;">
+						<p>&ordm; You may adjust the azimuth and the elevation(s) with [+] and [-] buttons, or by dragging the annotation dots </p>
+						<p>&ordm; At certain angles, the annotation can be seen from both the back and the side view; the system will annotate the 'second elevation' for you</p>
+						<p>&ordm; The annotation will appear automatically in the 3D view </p>
+						<p>&ordm; Keep in mind that the head view is for azimuth annotation, and the back and side views are for elevation annotation </p>
+					</div>
+					<div id="instruction6" style="display: none;">
+						<img src="/templates/question/img/6.png" style="width:80%; height: auto;">
+						<p>&ordm; You can not annotate more annotations than the number of sources you have entered;</p>
+						<p>&ordm; You may change the number of sources you have entered</p>
+						<p>&ordm; You may annotate less number of annotation(s) if you want</p>
+						<p>&ordm; Keep in mind that you must annotate at least 1 annotation (at least 1 azimuth and 1 anotation) </p>
+					</div>
+					<div id="instruction-move">
+						<div class="move" id="instruction-left">&lt;</div>
+						<div class="move" id="instruction-right">&gt;</div>
+					</div>
+				</div>
+			</div>
 			<h2></h2>
 			<audio id="audio" controls style="display: none;"><source id = "source" type="audio/wav"> Your browser does not support audio </audio>
 			<button id="audio-frame">Play Audio</button>
