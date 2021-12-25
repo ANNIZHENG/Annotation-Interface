@@ -177,7 +177,7 @@ function askProceed(){
 	return true;
 }
 
-function ajax_interaction(){
+function ajax_interaction() {
 	var req = new XMLHttpRequest(); 
 	req.open('POST', '/interaction', true);
 	req.setRequestHeader('content-type', 'application/json;charset=UTF-8');
