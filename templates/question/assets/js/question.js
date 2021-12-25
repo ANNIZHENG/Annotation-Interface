@@ -67,7 +67,8 @@ function closeRules(e){
 	modal.style.display = "none";
 }
 
-function move_instruction_next(){
+function move_instruction_next(e){
+	e.preventDefault();
 	if (curr_instruction < 6) {
 		document.getElementById('instruction'+curr_instruction).style.display = 'none';
 		document.getElementById('instruction'+(curr_instruction+1)).style.display = '';
@@ -75,7 +76,8 @@ function move_instruction_next(){
 	}
 }
 
-function move_instruction_last(){
+function move_instruction_last(e){
+	e.preventDefault();
 	if (curr_instruction > 1) {
 		document.getElementById('instruction'+curr_instruction).style.display = 'none';
 		document.getElementById('instruction'+(curr_instruction-1)).style.display = '';
@@ -505,8 +507,6 @@ function dragElement(index,indicator,add_index){
 				if ( ((degree < 90 || degree > 270) && (temp_azimuthS > 180)) || ((degree > 90 && degree < 270) && (temp_azimuthS < 180)) ){
 					window.alert("Your side view annotation does not match with your azimuth");
 					itemS.style.transform = 'rotate('+original_side_degree+'deg)';
-
-					document.getElementById('body').style.cursor = 'default';
 					document.onmouseup = null; 
 					document.onmousemove = null;
 					document.getElementById('p-elevation').innerHTML = elevation[add_index];
@@ -547,7 +547,6 @@ function dragElement(index,indicator,add_index){
 			action_type = "elevation";
 			ajax_interaction();
 
-			document.getElementById('body').style.cursor = 'default';
 			document.onmouseup = null; 
 			document.onmousemove = null;
 		}
@@ -570,7 +569,6 @@ function dragElement(index,indicator,add_index){
 				if ( (degree < 180 && temp_azimuthF > 180) || (degree > 180 && temp_azimuthF < 180) ){
 					window.alert("Your back view annotation does not match with your azimuth");
 					itemF.style.transform = 'rotate('+original_front_degree+'deg)';
-					document.getElementById('body').style.cursor = 'default';
 					document.onmouseup = null; 
 					document.onmousemove = null;
 					document.getElementById('p-elevation').innerHTML = elevation[add_index];
@@ -610,7 +608,6 @@ function dragElement(index,indicator,add_index){
 			action_type = "elevation";
 			ajax_interaction();
 
-			document.getElementById('body').style.cursor = 'default';
 			document.onmouseup = null; 
 			document.onmousemove = null;
 		}
@@ -650,7 +647,6 @@ function dragElement(index,indicator,add_index){
 			action_type = "elevation";
 			ajax_interaction();
 
-			document.getElementById('body').style.cursor = 'default';
 			document.onmouseup = null; 
 			document.onmousemove = null;
 		}
@@ -842,7 +838,6 @@ function keyboardEvents(e){
 			if (enable_head){
 				if ( azimuth_item_index == -1 ){
 					window.alert("You have already enter " + source_count + " azimuth elements"); 
-					document.getElementById('body').style.cursor = 'default'; 
 					key_perform = false; // adding event no longer active
 					document.onmousedown = null; 
 					document.onkeydown = null;
@@ -851,7 +846,6 @@ function keyboardEvents(e){
 
 				if ((azimuth_item_index > elevation_item_index) && elevation_item_index != -1) {
 					window.alert("You must annotate an elevation"); 
-					document.getElementById('body').style.cursor = 'default'; 
 					key_perform = false; // adding event no longer active
 					document.onmousedown = null; 
 					document.onkeydown = null;
@@ -866,7 +860,6 @@ function keyboardEvents(e){
 					original_front = parseInt(document.getElementById('circularF'+azimuth_item_index).style.transform.replace('rotate(','').replace('deg)',''));
 					if ( (original_front < 180 && curr_azimuth > 180)
 					|| (original_front > 180 && curr_azimuth < 180) ) {
-						document.getElementById('body').style.cursor = 'default';
 						window.alert("Your head view annotation does not match with your front view annotation"); 
 						key_perform = false;
 						document.onmousedown = null;
@@ -924,7 +917,6 @@ function keyboardEvents(e){
 					original_side = parseInt(document.getElementById('circularS'+azimuth_item_index).style.transform.replace('rotate(','').replace('deg)',''));
 					if ( ((curr_azimuth < 90 || curr_azimuth > 270) && (original_side > 180))
 					|| ((curr_azimuth > 90 && curr_azimuth < 270) && (original_side < 180)) ) {
-						document.getElementById('body').style.cursor = 'default';
 						window.alert("Your head view annotation does not match with your side view annotation");
 						key_perform = false;
 						document.onmousedown = null; 
@@ -1014,7 +1006,6 @@ function keyboardEvents(e){
 
 				if ((elevation_item_index > azimuth_item_index) && azimuth_item_index != -1) {
 					window.alert("You must annotate an azimuth"); 
-					document.getElementById('body').style.cursor = 'default'; 
 					key_perform = false; // adding event no longer active
 					document.onmousedown = null; 
 					document.onkeydown = null;
@@ -1130,14 +1121,13 @@ function keyboardEvents(e){
 			else if (enable_side){
 				if (elevation_item_index == -1){
 					window.alert("You have already enter " + source_count + " elevation elements"); 
-					document.getElementById('body').style.cursor = 'default'; 
 					key_perform = false; // prevent giving back undesired azimuth index
 					document.onmousedown = null; 
 					document.onkeydown = null;
 					return;
 				}
 				if ((elevation_item_index > azimuth_item_index) && azimuth_item_index != -1) {
-					window.alert("You must annotate an azimuth"); document.getElementById('body').style.cursor = 'default'; 
+					window.alert("You must annotate an azimuth"); 
 					key_perform = false; // prevent giving back undesired azimuth index
 					document.onmousedown = null; 
 					document.onkeydown = null;
