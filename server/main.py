@@ -17,14 +17,26 @@ NEW_TASK = 3
 
 AUDIO_NUMBER = 3
 
-survey_id = uuid.uuid4()
+survey_id = None
 
-@app.route('/', methods=['Get','POST']) 
+@app.route('/')
 def home():
+    return render_template('index.html')
+
+@app.route('/templates/question/question.html')
+def confirm():
+    if (survey_id == None):
+        return redirect('/')
+    else:
+        return 'success'
+
+@app.route('/start', methods=['POST'])
+def start():
+    survey_id = uuid.uuid4()
     entry = Survey(survey_id)
     ses.add(entry)
-    # ses.commit()
-    return render_template('index.html')
+    ses.commit()
+    return 'success'
 
 @app.route('/interaction', methods=['POST'])
 def interaction():
@@ -34,11 +46,11 @@ def interaction():
         action_type = data['action_type']
         value = data['value']
         timestamp= datetime.fromtimestamp(data['timestamp']/1000)
-        print([annotaion_id, action_type, value]) #debug
+        print([annotaion_id, action_type, value]) 
         entry = Interaction(annotaion_id,action_type,value,timestamp)
-        # ses.add(entry)
+        ses.add(entry)
         ses.commit()
-    return "success"
+    return 'success'
 
 @app.route('/next', methods=['POST'])
 def next():
@@ -48,7 +60,7 @@ def next():
         source_count = data['source_count']
         entry1 = Annotation(survey_id,annotaion_id,source_count)
         ses.add(entry1)
-        # ses.commit()
+        ses.commit()
 
         annotaion_id = int(data['annotation_id'])+1
         azimuth_list = data['azimuth']
@@ -59,9 +71,9 @@ def next():
             if (azimuth_list[index] != None):
                 entry2 = Location(annotaion_id,azimuth_list[index],elevation_list[index])
                 ses.add(entry2)
-                # ses.commit()
+                ses.commit()
             index += 1
-        return "success"
+        return 'success'
 
 if __name__ =='__main__':
     app.run(debug=True)
