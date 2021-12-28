@@ -6,6 +6,8 @@
 
 headphone check code link: https://github.com/mcdermottLab/HeadphoneCheck
 
+Please create the Recording database before hand!
+
 Please start postgresql and set up the virtual environment:
 
 ```
