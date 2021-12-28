@@ -19,12 +19,9 @@ CREATE TABLE "Recording" (
 );
 
 INSERT INTO "Recording" (file_name, number)
-VALUES ('0.wav',0),
-('1.wav',0),('2.wav',0),('3.wav',0),
-('4.wav',0),('5.wav',0),('6.wav',0),
-('7.wav',0),('8.wav',0),('9.wav',0),
-('10.wav',0),('11.wav',0),('12.wav',0),
-('13.wav',0),('14.wav',0);
+VALUES ('0.wav',0),('1.wav',0),('2.wav',0),('3.wav',0),
+('4.wav',0),('5.wav',0),('6.wav',0),('7.wav',0),('8.wav',0),('9.wav',0),
+('10.wav',0),('11.wav',0),('12.wav',0),('13.wav',0),('14.wav',0);
 ```
 
 2. Please start postgresql and set up the virtual environment:
