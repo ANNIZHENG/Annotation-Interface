@@ -1,7 +1,24 @@
-// for tracking question number
-var annotation_id = 0;
-const totalAnnotation = 3;
-var audio_sequence = [];
+// request to server
+var req = new XMLHttpRequest(); 
+req.onreadystatechange = function() {
+	if (req.readyState == 4 && req.response != 'success'){
+		window.alert('Something went wrong: Please restart the interface');
+	}
+}
+
+// randomly choose an audio
+var recording_id = 0;
+ajax_select_recording();
+function ajax_select_recording(){
+	var request = new XMLHttpRequest(); 
+	request.open('POST', '/select_recording');
+	request.onreadystatechange = function() {
+		recording_id = request.responseText;
+		document.getElementById('source').src = '/templates/interface/assets/audio/'+recording_id+'.wav';
+		document.getElementById('audio').load();
+	}
+	request.send();
+}
 
 // colors
 var colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
@@ -36,13 +53,11 @@ var modal = document.getElementById("modal");
 // instruction number
 var curr_instruction = 1;
 
-/* below is the first event triggered when a user comes in */
-for (let i = 0; i < totalAnnotation; i++) { audio_sequence.push(i); }
-document.getElementsByTagName('h2')[0].innerHTML='Please listen to the audio ['+ 1 +' / '+totalAnnotation+']';
-document.getElementById('source').src = '/templates/question/assets/audio/'+(audio_sequence[annotation_id].toString())+'.wav';
-document.getElementById('audio').load();
+// for (let i = 0; i < totalAnnotation; i++) { audio_sequence.push(i); }
+// document.getElementsByTagName('h2')[0].innerHTML='Please listen to the audio ['+ 1 +' / '+totalAnnotation+']';
+// document.getElementById('source').src = '/templates/interface/assets/audio/'+recording_id+'.wav';
+// document.getElementById('audio').load();
 
-/* container.2d.user.interface */
 document.getElementById('body').addEventListener("mouseup",function(){ document.getElementById('body').style.cursor = 'default'; });
 document.getElementById('message').addEventListener("click",popRules);
 document.getElementById('instruction-left').addEventListener("click",move_instruction_last);
@@ -87,10 +102,10 @@ function move_instruction_last(e){
 
 function addSourceCount(){
 	document.getElementById('2d-question').innerHTML = "Please identify the location of each source:";
-	document.getElementById('head').setAttribute('style',"background-image: url('/templates/question/img/head.png'); display:inline-block;");
+	document.getElementById('head').setAttribute('style',"background-image: url('/templates/interface/img/head.png'); display:inline-block;");
 	document.getElementById('feedback').setAttribute('style',"display:inline-block;");
-	document.getElementById('front').setAttribute('style',"background-image: url('/templates/question/img/front.png'); display: inline-block;");
-	document.getElementById('side').setAttribute('style',"background-image: url('/templates/question/img/side.png'); display: inline-block;");
+	document.getElementById('front').setAttribute('style',"background-image: url('/templates/interface/img/front.png'); display: inline-block;");
+	document.getElementById('side').setAttribute('style',"background-image: url('/templates/interface/img/side.png'); display: inline-block;");
 	displayButton();
 
 	source_count = document.getElementById('count').value;
@@ -132,37 +147,10 @@ function displaySelection(){
 }
 
 function displayButton(){
-	if( annotation_id+1 < totalAnnotation) document.getElementById('btn-button-next').setAttribute('style','float:right;');
-	else document.getElementById('btn-button-submit').setAttribute('style','float:right;');
+	//if( (recording_id+1 < totalAnnotation) document.getElementById('btn-button-next').setAttribute('style','float:right;');
+	//else document.getElementById('btn-button-submit').setAttribute('style','float:right;');
 	document.getElementById('btn-button-refresh').setAttribute('style','float:left;');
-}
-
-function setNextQuestion(){
-	var proceed = askProceed(); 
-	if (!proceed) return false;
-	if (!ajax_next()) return false;
-
-	annotation_id += 1;
-
-	// display
-	document.getElementsByTagName('h2')[0].innerHTML='Please listen to the audio ['+(annotation_id+1)+' / '+totalAnnotation+']';
-	document.getElementById('source').src = '/templates/question/assets/audio/'+(audio_sequence[annotation_id].toString())+'.wav';
-	document.getElementById('audio').load();
-	document.getElementById('default-option').selected = true;
-
-	// do not display questions yet
-	document.getElementById('2d-question').innerHTML=''; 
-	document.getElementById('count').style.display='none';
-	document.getElementById('btn-button-next').style.display='none';
-	document.getElementById('btn-button-refresh').style.display='none';
-
-	// do not display images yet
-	document.getElementById("feedback").style.display='none';
-	document.getElementById("head").style.display='none';
-	document.getElementById("front").style.display='none';
-	document.getElementById("side").style.display='none';
-	reloadAll();
-	return true;
+	document.getElementById('btn-button-submit').setAttribute('style','float:right;');
 }
 
 function askProceed(){
@@ -171,38 +159,65 @@ function askProceed(){
 	if (findUndefinedAzimuth() != findUndefinedElevation()) { window.alert("The number of annotated azimuth does not match with that of elevation"); return false; }
 	if (findUndefinedAzimuth() == -2 || findUndefinedAzimuth() == -2) { window.alert("Your annotation number is greater than the source count you entered. Please delete some of them."); return false; }
 	if (findUndefinedAzimuth() != -1 || findUndefinedElevation() != -1 ) { 
-		if (confirm("You haven't annotated all sources yet. Do you still want to proceed?")) return true;
+		// "You haven't annotated all sources yet. Do you still want to proceed?"
+		if (confirm("You haven't annotated all sources yet. Do you still want to submit?")) return true;
 		else return false;
 	}
 	return true;
 }
 
+// function setNextQuestion(){
+// 	var proceed = askProceed(); 
+// 	if (!proceed) return false;
+// 	if (!ajax_next()) return false;
+
+// 	recording_id += 1;
+
+// 	document.getElementsByTagName('h2')[0].innerHTML='Please listen to the audio ['+(recording_id+1)+' / '+totalAnnotation+']';
+// 	document.getElementById('source').src = '/templates/interface/assets/audio/'+(audio_sequence[recording_id].toString())+'.wav';
+// 	document.getElementById('audio').load();
+// 	document.getElementById('default-option').selected = true;
+
+// 	document.getElementById('2d-question').innerHTML=''; 
+// 	document.getElementById('count').style.display='none';
+// 	document.getElementById('btn-button-next').style.display='none';
+// 	document.getElementById('btn-button-refresh').style.display='none';
+
+// 	document.getElementById("feedback").style.display='none';
+// 	document.getElementById("head").style.display='none';
+// 	document.getElementById("front").style.display='none';
+// 	document.getElementById("side").style.display='none';
+// 	reloadAll();
+// 	return true;
+// }
+
 function ajax_interaction() {
-	var req = new XMLHttpRequest(); 
 	req.open('POST', '/interaction', true);
 	req.setRequestHeader('content-type', 'application/json;charset=UTF-8');
-	var data = JSON.stringify({annotation_id,action_type,value,timestamp});
+	var data = JSON.stringify({action_type,value,timestamp});
 	req.send(data);
 }
 
-function ajax_next(e){
-	if (annotation_id+1 == totalAnnotation){
-		if (!askProceed()){
-			e.preventDefault();
-			return false;
-		}
+function ajax_next(){
+	// if (recording_id+1 == totalAnnotation){
+	// 	if (!askProceed()){
+	// 		e.preventDefault();
+	// 		return false;
+	// 	}
+	// }
+
+	if (!askProceed()){
+		event.preventDefault();
+		return false;
 	}
-	var req = new XMLHttpRequest(); 
 	req.open('POST', '/next', true);
 	req.setRequestHeader('content-type', 'application/json;charset=UTF-8');
-	var data = JSON.stringify({annotation_id,azimuth,elevation,source_count});
+	var data = JSON.stringify({recording_id,azimuth,elevation,source_count});
 	req.send(data);
 	azimuth = new Array();
 	elevation = new Array();
 	return true;
 }
-
-/* container.2d.location.interface */
 
 function displayBoth(hasFront, index, temp_azimuth, degree){
 	if (hasFront){
@@ -286,8 +301,6 @@ function displayBoth(hasFront, index, temp_azimuth, degree){
 		}
 	}
 }
-
-/* click button to move */
 
 function move_azimuth_plus(e){
 	e.preventDefault();
@@ -468,8 +481,6 @@ function move_elevation_minus(e){
 	action_type = 'elevation';
 	ajax_interaction();
 }
-
-/* drag item to move */
 
 function dragElement(index,indicator,add_index){
 	var item, itemF, itemS;
@@ -725,16 +736,14 @@ function calculateAzimuth(x,y,cx,cy){
 	}
 }
 
-/* add item */
-
 function findUndefinedAzimuth(){
 	var index = 0;
+	var lock = 0;
 	var azimuth_item_index = 0;
 	var azimuth_count = 0;
 	var find_undefined = false;
-	var lock = 0;
 
-	if (azimuth.length > source_count) lock = azimuth.length;
+	if (azimuth.length > source_count) lock = azimuth.length
 	else lock = source_count;
 
 	while ( index < lock ){
@@ -746,10 +755,10 @@ function findUndefinedAzimuth(){
 		index += 1;
 	}
 
-	if (azimuth_count == 0 && !key_perform) return -3;
-	if (azimuth_count > source_count) return -2;
-	if (azimuth_count == source_count) return -1;
-	else return azimuth_item_index;
+	if (azimuth_count == 0 && !key_perform) return -3; // when user hit 'submit' but there is no annotation
+	if (azimuth_count > source_count) return -2; // when user hit submit but annotate more annotation
+	if (azimuth_count == source_count) return -1; // when user hit submit and annotate all annotation(s)
+	else return azimuth_item_index; // when user hit submit but annotate less annotation(s)
 }
 
 function findUndefinedElevation(){
@@ -799,7 +808,7 @@ function keyboardEvents(e){
 	e.preventDefault(); // prevent any undesired keyboard event
 	
 	if(e.metaKey){
-		document.getElementById('body').style.cursor = "url('/templates/question/img/minus.svg'), auto";
+		document.getElementById('body').style.cursor = "url('/templates/interface/img/minus.svg'), auto";
 		enable_head = false; enable_front = false; enable_side = false; // no adding is allowed
 		delete_head = true; delete_front = true; delete_side = true; // deletion active
 		document.onkeydown = null; // to indicate that the key was already pressed
@@ -1241,8 +1250,6 @@ function keyboardEvents(e){
 			}
 		}, {once:true});
 	}
-	//console.log("AZIMUTH: "+azimuth.toString());
-	//console.log("ELEVATION: "+elevation.toString());
 	return;
 }
 
@@ -2552,9 +2559,8 @@ document.getElementById('side-item-10').addEventListener("mousedown",function(e)
 	}
 });
 
-/* container.3d.display */
+/* Three.js */
 
-/* set up */
 container = document.getElementById('3d-head');
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000000);
@@ -2568,11 +2574,9 @@ scene.add(pointLight);
 const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
 camera.position.z = 30;
 
-/* geometry */
-
 var sphereGeometry = new THREE.SphereGeometry(8,60,30);
 var sphereMaterial = new THREE.MeshLambertMaterial({
-	map: new THREE.TextureLoader().load('/templates/question/img/face.png'),
+	map: new THREE.TextureLoader().load('/templates/interface/img/face.png'),
 	color: 0xefd8c3
 });
 var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
@@ -2606,8 +2610,6 @@ var frame = new THREE.Mesh(frameGeometry, frameMaterial);
 var edgesGeometry = new THREE.EdgesGeometry(frameGeometry);
 var wireframe = new THREE.LineSegments(edgesGeometry, new THREE.LineBasicMaterial({color: 0x0000ff})); 
 
-
-/* balls to be added*/
 var ballGeometry;
 var ballMaterial;
 
@@ -2648,8 +2650,6 @@ function removeAllBalls(){
 		index += 1;
 	}
 }
-
-/* display 3d */
 scene.add(wireframe);
 scene.add(sphere);
 scene.add(ear1);

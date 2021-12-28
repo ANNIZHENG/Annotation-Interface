@@ -1,21 +1,10 @@
-import os
-from time import time
-from typing import final
 from sqlalchemy import *
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker
-from sqlalchemy.dialects import postgresql
+from sqlalchemy.orm import sessionmaker
 
 # database should be created before hand
 db_path = 'postgresql://anniezheng@localhost/test'
-
-'''
-try:
-    db_path = os.environ['postgresql://anniezheng@localhost/test']
-except:
-    print("except db_tables.py")
-'''
 
 eng = create_engine(db_path)
 Base = declarative_base()
@@ -45,29 +34,47 @@ class Interaction(Base):
     __tablename__ = "Interaction"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    annotation_id = Column(Integer)
+    survey_id = Column(String, ForeignKey("Survey.id"))
     action_type = Column(String)
     value = Column(String)
     timestamp = Column(TIMESTAMP)
 
-    def __init__(self,annotation_id,action_type,value,timestamp):
-        self.annotation_id = annotation_id
+    def __init__(self,survey_id,action_type,value,timestamp):
+        self.survey_id = survey_id
         self.action_type = action_type
         self.value = value
         self.timestamp = timestamp
+
 
 class Location(Base):
     __tablename__ = "Location"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    annotation_id = Column(Integer)
+    survey_id = Column(String, ForeignKey("Survey.id"))
     azimuth = Column(Integer)
     elevation = Column(Integer)
 
-    def __init__(self,annotation_id,azimuth,elevation):
-        self.annotation_id = annotation_id
+    def __init__(self,survey_id,azimuth,elevation):
+        self.survey_id = survey_id
         self.azimuth = azimuth
         self.elevation = elevation
+
+Base.metadata.bind = eng
+Session = sessionmaker(bind=eng)
+ses = Session()
+
+'''
+class Recording(Base):
+    __tablename__ = "Recording"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    file_name = Column(String)
+    number = Column(Integer)
+
+    def __init__(self,file_name,number):
+        self.file_name = file_name
+        self.number = number
+'''
 
 Base.metadata.bind = eng
 Session = sessionmaker(bind=eng)
