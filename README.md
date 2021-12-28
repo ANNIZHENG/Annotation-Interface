@@ -35,4 +35,4 @@ conda activate <env_name_here>
 python3 server/main.py
 ```
 
-<img src="/templates/question/img/display.png" width="700" height=auto />
+<img src="/templates/interface/img/display.png" width="700" height=auto />
