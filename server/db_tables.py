@@ -20,7 +20,7 @@ class Annotation(Base):
     __tablename__ = "Annotation"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    survey_id = Column(String)
+    survey_id = Column(String, ForeignKey("Survey.id"))
     recording_id = Column(Integer)
     source_count = Column(Integer)
 
@@ -34,13 +34,13 @@ class Interaction(Base):
     __tablename__ = "Interaction"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    survey_id = Column(String, ForeignKey("Survey.id"))
+    annotation_id = Column(Integer)
     action_type = Column(String)
     value = Column(String)
     timestamp = Column(TIMESTAMP)
 
-    def __init__(self,survey_id,action_type,value,timestamp):
-        self.survey_id = survey_id
+    def __init__(self,annotation_id,action_type,value,timestamp):
+        self.annotation_id = annotation_id
         self.action_type = action_type
         self.value = value
         self.timestamp = timestamp
@@ -50,12 +50,12 @@ class Location(Base):
     __tablename__ = "Location"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    survey_id = Column(String, ForeignKey("Survey.id"))
+    annotation_id = Column(Integer)
     azimuth = Column(Integer)
     elevation = Column(Integer)
 
-    def __init__(self,survey_id,azimuth,elevation):
-        self.survey_id = survey_id
+    def __init__(self,annotation_id,azimuth,elevation):
+        self.annotation_id = annotation_id
         self.azimuth = azimuth
         self.elevation = elevation
 

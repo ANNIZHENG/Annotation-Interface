@@ -36,8 +36,7 @@ def interaction():
         action_type = data['action_type']
         value = data['value']
         timestamp= datetime.fromtimestamp(data['timestamp']/1000)
-        print([action_type, value]) # debug
-        entry = Interaction(survey_id,action_type,value,timestamp)
+        entry = Interaction(-1,action_type,value,timestamp)
         ses.add(entry)
         ses.commit()
     return 'success'
@@ -46,7 +45,7 @@ def interaction():
 def next():
     if request.method == 'POST':
         data = request.json
-        recording_id = int(data['recording_id'])
+        recording_id = int(data['recording_id'])+1
         source_count = data['source_count']
         entry1 = Annotation(survey_id,recording_id,source_count)
         ses.add(entry1)
@@ -58,10 +57,18 @@ def next():
         index = 0
         while (index < len(azimuth_list)):
             if (azimuth_list[index] != None):
-                entry2 = Location(survey_id,azimuth_list[index],elevation_list[index])
+                entry2 = Location(-1,azimuth_list[index],elevation_list[index])
                 ses.add(entry2)
                 ses.commit()
             index += 1
+
+        result = eng.execute('''select id from "Annotation" order by id desc limit 1''')
+        annotation_id = -1;
+        for r in result:
+            annotation_id = int(dict(r)['id'])
+        eng.execute('''update "Interaction" set annotation_id='''+str(annotation_id)+'''where annotation_id = -1''')
+        eng.execute('''update "Location" set annotation_id='''+str(annotation_id)+'''where annotation_id = -1''')
+        
         return 'success'
 
 @app.route('/get_survey', methods=['GET', 'POST'])
