@@ -1,17 +1,13 @@
 # Annotation Interface
 
-### Set up the virtual environment
+#### Please create a postgresql database beforehand and change the path in server/db_tables.py line 8 (the database in the current code is from postgres heroku)
 
-#### Please create a database beforehand and change the database path in server/db_tables.py line 8 to accommodate your environment.
+#### You may test the code in https://test-annotation-interface.herokuapp.com/
 
 headphone check code link: https://github.com/mcdermottLab/HeadphoneCheck
 
 1. Please create the Recording database before hand
 ```
-psql postgres
-
-\c <database_name_here>
-
 CREATE TABLE "Recording" (
 	id serial PRIMARY KEY,
 	file_name VARCHAR,
@@ -24,7 +20,7 @@ VALUES ('0.wav',0),('1.wav',0),('2.wav',0),('3.wav',0),
 ('10.wav',0),('11.wav',0),('12.wav',0),('13.wav',0),('14.wav',0);
 ```
 
-2. Please start postgresql and set up the virtual environment:
+2. Please start postgresql and set up the virtual environment (optional)
 
 ```
 virtualenv env
