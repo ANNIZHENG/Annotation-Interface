@@ -16,8 +16,6 @@ LOTTERY_TASK = 2
 NEW_TASK = 3
 AUDIO_NUMBER = 3
 
-# survey_id = uuid.uuid4()
-
 @app.route('/')
 def home():
     return render_template('/templates/index.html')
@@ -49,7 +47,7 @@ def next():
         recording_id = int(data['recording_id'])+1
         source_count = data['source_count']
 
-        survey_res = eng.execute('''select id from "Survey" order by id desc limit 1''')
+        survey_res = eng.execute('''select id from "Survey" order by id asc limit 1''')
         survey_id = '';
         for r in survey_res:
             survey_id = str(dict(r)['id'])
@@ -80,7 +78,7 @@ def next():
 
 @app.route('/get_survey', methods=['GET', 'POST'])
 def get_survey():
-    survey_res = eng.execute('''select id from "Survey" order by id desc limit 1''')
+    survey_res = eng.execute('''select id from "Survey" order by id asc limit 1''')
     survey_id = '';
     for r in survey_res:
         survey_id = str(dict(r)['id'])

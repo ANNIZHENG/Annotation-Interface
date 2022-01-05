@@ -3,9 +3,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# database should be created before hand
+# database path
 # db_path = 'postgresql://anniezheng@localhost/test'
-db_path = 'postgresql://llmchqfhvdwpop:8f6b6899b24221c36bc979822c407c31bd099e3259c5d4f6682d63d993276d3f@ec2-34-230-167-186.compute-1.amazonaws.com:5432/dcoppvn70vslf9'
+db_path = 'postgresql://eqpytyddkgzpje:589827916509690e9baa1abd869d99bd85ac3c9902c361d04c1e560c2befd624@ec2-52-54-38-229.compute-1.amazonaws.com:5432/dap64di8scvd9n'
 
 eng = create_engine(db_path)
 Base = declarative_base()
@@ -64,27 +64,8 @@ Base.metadata.bind = eng
 Session = sessionmaker(bind=eng)
 ses = Session()
 
-'''
-class Recording(Base):
-    __tablename__ = "Recording"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    file_name = Column(String)
-    number = Column(Integer)
-
-    def __init__(self,file_name,number):
-        self.file_name = file_name
-        self.number = number
-'''
-
 Base.metadata.bind = eng
 Session = sessionmaker(bind=eng)
 ses = Session()
-
-if __name__ == "__main__":
-    print("Wipe & reset database?")
-    if input("Y/n: ") == "Y":
-        print("recreating database...")
-        Base.metadata.drop_all()
 
 Base.metadata.create_all()
