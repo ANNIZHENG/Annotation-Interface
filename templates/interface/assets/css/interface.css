@@ -53,7 +53,7 @@ body{
 
 #modal {
 	display: none;
-	position: fixed;
+	position: absolute;
 	left: 0;
 	top: 0;
 	width: 100%;
@@ -110,7 +110,9 @@ body{
 
 #btn-button-next:hover,
 #btn-button-refresh:hover,
-#btn-button-submit:hover{
+#btn-button-submit:hover,
+#message:hover,
+#message:focus{
 	background-color:#c7c7c7;
 }
 
@@ -149,7 +151,7 @@ body{
 	font-size: 13px;
 	height: 180px; 
 	width: 180px;
-	background-size: cover; 
+	background-size: cover;
 }
 
 #p-azimuth, #p-elevation{

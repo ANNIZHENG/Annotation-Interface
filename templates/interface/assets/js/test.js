@@ -78,10 +78,12 @@ function move_instruction_last(e){
 
 function addSourceCount(){
 	document.getElementById('2d-question').innerHTML = "Please identify the location of each source:";
+
 	document.getElementById('head').setAttribute('style',"background-image: url('/templates/interface/img/head.png'); display:inline-block;");
 	document.getElementById('feedback').setAttribute('style',"display:inline-block;");
 	document.getElementById('front').setAttribute('style',"background-image: url('/templates/interface/img/front.png'); display: inline-block;");
 	document.getElementById('side').setAttribute('style',"background-image: url('/templates/interface/img/side.png'); display: inline-block;");
+
 	displayButton();
 	source_count = document.getElementById('count').value;
 }

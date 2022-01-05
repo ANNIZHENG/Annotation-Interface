@@ -54,11 +54,6 @@ var modal = document.getElementById("modal");
 // instruction number
 var curr_instruction = 1;
 
-// for (let i = 0; i < totalAnnotation; i++) { audio_sequence.push(i); }
-// document.getElementsByTagName('h2')[0].innerHTML='Please listen to the audio ['+ 1 +' / '+totalAnnotation+']';
-// document.getElementById('source').src = '/templates/interface/assets/audio/'+recording_id+'.wav';
-// document.getElementById('audio').load();
-
 document.getElementById('body').addEventListener("mouseup",function(){ document.getElementById('body').style.cursor = 'default'; });
 document.getElementById('message').addEventListener("click",popRules);
 document.getElementById('instruction-left').addEventListener("click",move_instruction_last);
@@ -167,31 +162,6 @@ function askProceed(){
 	return true;
 }
 
-// function setNextQuestion(){
-// 	var proceed = askProceed(); 
-// 	if (!proceed) return false;
-// 	if (!ajax_next()) return false;
-
-// 	recording_id += 1;
-
-// 	document.getElementsByTagName('h2')[0].innerHTML='Please listen to the audio ['+(recording_id+1)+' / '+totalAnnotation+']';
-// 	document.getElementById('source').src = '/templates/interface/assets/audio/'+(audio_sequence[recording_id].toString())+'.wav';
-// 	document.getElementById('audio').load();
-// 	document.getElementById('default-option').selected = true;
-
-// 	document.getElementById('2d-question').innerHTML=''; 
-// 	document.getElementById('count').style.display='none';
-// 	document.getElementById('btn-button-next').style.display='none';
-// 	document.getElementById('btn-button-refresh').style.display='none';
-
-// 	document.getElementById("feedback").style.display='none';
-// 	document.getElementById("head").style.display='none';
-// 	document.getElementById("front").style.display='none';
-// 	document.getElementById("side").style.display='none';
-// 	reloadAll();
-// 	return true;
-// }
-
 function ajax_interaction() {
 	req.open('POST', '/interaction', true);
 	req.setRequestHeader('content-type', 'application/json;charset=UTF-8');
@@ -200,12 +170,6 @@ function ajax_interaction() {
 }
 
 function ajax_next(){
-	// if (recording_id+1 == totalAnnotation){
-	// 	if (!askProceed()){
-	// 		e.preventDefault();
-	// 		return false;
-	// 	}
-	// }
 
 	if (!askProceed()){
 		event.preventDefault();
