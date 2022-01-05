@@ -1,10 +1,10 @@
 # Annotation Interface
 
-#### Please create a postgresql database beforehand and change the path in server/db_tables.py line 8 (the database in the current code is from postgres heroku)
+### Please create a postgresql database beforehand and change the path in server/db_tables.py line 8 (the database in the current code is from postgres heroku)
 
-#### You may test the code in https://annotation-interface.herokuapp.com/
+### You may test the code in https://annotation-interface.herokuapp.com/
 
-headphone check code link: https://github.com/mcdermottLab/HeadphoneCheck
+### Headphone check code link: https://github.com/mcdermottLab/HeadphoneCheck
 
 1. Please create the Recording database before hand
 ```
@@ -20,7 +20,7 @@ VALUES ('0.wav',0),('1.wav',0),('2.wav',0),('3.wav',0),
 ('10.wav',0),('11.wav',0),('12.wav',0),('13.wav',0),('14.wav',0);
 ```
 
-2. Please start postgresql and set up the virtual environment (optional)
+2. Optional: Please start postgresql and set up the virtual environment
 
 ```
 virtualenv env
@@ -35,7 +35,7 @@ pip3 install psycopg2-binary
 
 python3 server/main.py
 ```
-if you are using conda:
+or if you are using conda:
 
 ```
 conda config --append channels conda-forge
@@ -47,4 +47,4 @@ conda activate <env_name_here>
 python3 server/main.py
 ```
 
-<img src="/templates/interface/img/display.png" width="700" height=auto />
+<img src="/templates/interface/img/example.png" />
