@@ -2,7 +2,7 @@
 
 #### Please create a postgresql database beforehand and change the path in server/db_tables.py line 8 (the database in the current code is from postgres heroku)
 
-#### You may test the code in https://test-annotation-interface.herokuapp.com/
+#### You may test the code in https://annotation-interface.herokuapp.com/
 
 headphone check code link: https://github.com/mcdermottLab/HeadphoneCheck
 
