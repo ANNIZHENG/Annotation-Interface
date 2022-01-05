@@ -1,10 +1,10 @@
 # Annotation Interface
 
-### Please create a postgresql database beforehand and change the path in server/db_tables.py line 8 (the database in the current code is from postgres heroku)
+### Please create a postgresql database beforehand and change the path in server/db_tables.py line 8 (the current database used is from Postgres Heroku)
 
-### You may test the code in https://annotation-interface.herokuapp.com/
+#### You may see the demonstration here: https://annotation-interface.herokuapp.com/
 
-### Headphone check code link: https://github.com/mcdermottLab/HeadphoneCheck
+#### Headphone Check program link: https://github.com/mcdermottLab/HeadphoneCheck
 
 1. Please create the Recording database before hand
 ```
