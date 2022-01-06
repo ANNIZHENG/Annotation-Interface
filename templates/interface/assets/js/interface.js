@@ -811,7 +811,7 @@ function keyboardEvents(e){
 
 			if (enable_head){
 				if ( azimuth_item_index == -1 ){
-					window.alert("You have already enter " + source_count + " azimuth elements"); 
+					window.alert("You have already enter " + source_count + " azimuth elements. CLICK ANYWHERE to exit adding."); 
 					key_perform = false; // adding event no longer active
 					document.onmousedown = null; 
 					document.onkeydown = null;
@@ -820,7 +820,7 @@ function keyboardEvents(e){
 				}
 
 				if ((azimuth_item_index > elevation_item_index) && elevation_item_index != -1) {
-					window.alert("You must annotate an elevation"); 
+					window.alert("You must annotate an elevation. CLICK ANYWHERE to exit adding. "); 
 					key_perform = false; // adding event no longer active
 					document.onmousedown = null; 
 					document.onkeydown = null;
@@ -974,7 +974,7 @@ function keyboardEvents(e){
 			}
 			else if (enable_front){
 				if ( elevation_item_index == -1 ){
-					window.alert("You have already enter " + source_count + " elevation elements"); 
+					window.alert("You have already enter " + source_count + " elevation elements. CLICK ANYWHERE to exit adding."); 
 					key_perform = false; // adding event no longer active
 					document.onmousedown = null; 
 					document.onkeydown = null;
@@ -983,7 +983,7 @@ function keyboardEvents(e){
 				}
 
 				if ((elevation_item_index > azimuth_item_index) && azimuth_item_index != -1) {
-					window.alert("You must annotate an azimuth"); 
+					window.alert("You must annotate an azimuth. CLICK ANYWHERE to exit adding."); 
 					key_perform = false; // adding event no longer active
 					document.onmousedown = null; 
 					document.onkeydown = null;
@@ -1098,7 +1098,7 @@ function keyboardEvents(e){
 			}
 			else if (enable_side){
 				if (elevation_item_index == -1){
-					window.alert("You have already enter " + source_count + " elevation elements"); 
+					window.alert("You have already enter " + source_count + " elevation elements. CLICK ANYWHERE to exit adding."); 
 					key_perform = false; // prevent giving back undesired azimuth index
 					document.onmousedown = null; 
 					document.onkeydown = null;
@@ -1106,7 +1106,7 @@ function keyboardEvents(e){
 					return;
 				}
 				if ((elevation_item_index > azimuth_item_index) && azimuth_item_index != -1) {
-					window.alert("You must annotate an azimuth"); 
+					window.alert("You must annotate an azimuth. CLICK ANYWHERE to exit adding."); 
 					key_perform = false; // prevent giving back undesired azimuth index
 					document.onmousedown = null; 
 					document.onkeydown = null;

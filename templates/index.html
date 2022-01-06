@@ -17,10 +17,11 @@ Contact Ray Gonzalez raygon@mit.edu or Kevin J. P. Woods kwoods@mit.edu
     <style type="text/css">
       body {
         margin: auto;
-        margin-top: 15vh;
+        margin-top: 5vh;
+        margin-bottom: 5vh;
         font-size: 20px;
-        width: 65%;
-        padding:40px;
+        width: 60%;
+        padding:60px;
         border: 5px black solid;
       }
 
@@ -32,10 +33,30 @@ Contact Ray Gonzalez raygon@mit.edu or Kevin J. P. Woods kwoods@mit.edu
         cursor: pointer;
       }
 
+      input[type=radio] {
+        height:20px; 
+        width:20px;
+      }
+
+      label{
+        display: block;
+      }
+
       #message {
-        margin-top: -150px;
-        padding: 15px;
+        margin-top: -50px;
+        font-weight: bold;
+        text-align: center;
+        cursor: pointer;
+        width: 170px;
+        height: 35px;
+        background-color: #efefef;
+        border: 2px solid black;
         float: right;
+      }
+
+      #message:hover,
+      #message:focus{
+        background-color:#c7c7c7;
       }
 
       #modal {
@@ -49,7 +70,7 @@ Contact Ray Gonzalez raygon@mit.edu or Kevin J. P. Woods kwoods@mit.edu
 
       .instructions {
         font-family: Monaco;
-        font-size: 16px;
+        font-size: 15px;
 	      margin: auto;
 	      padding: 40px;
 	      width: 80%;
