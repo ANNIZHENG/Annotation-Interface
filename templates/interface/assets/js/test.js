@@ -43,6 +43,32 @@ var indicators = {
 	10: []
 };
 
+var front_indicators = {
+	1: [],
+	2: [],
+	3: [],
+	4: [],
+	5: [],
+	6: [],
+	7: [],
+	8: [],
+	9: [],
+	10: []
+};
+
+var side_indicators = {
+	1: [],
+	2: [],
+	3: [],
+	4: [],
+	5: [],
+	6: [],
+	7: [],
+	8: [],
+	9: [],
+	10: []
+};
+
 document.getElementById('source').src = '/templates/interface/assets/audio/test'+recording_id+'.wav';
 document.getElementById('audio').load();
 document.getElementById('body').addEventListener("mouseup",function(){ 
@@ -264,123 +290,332 @@ function displayBoth(hasFront, index, temp_azimuth, degree){
 }
 
 // TODO:
-function changeSize(isAzimuth, item_index){
-	if (isAzimuth){
-		const selected_azimuth = azimuth[item_index - 1];
-		let has_stacking = false;
-		let size = 15 - 6;
-		let margin_top = -12 + 6;
+function changeSize(item_index){
 
-		for ( let index = azimuth.length - 1; index > -1; index-- ){
-			if ( selected_azimuth != undefined && selected_azimuth == azimuth[index] ) {
-				has_stacking = true;
+	const selected_azimuth = azimuth[item_index - 1];
+	let size = 15 - 6;
+	let margin_top = -12 + 6;
 
-				if ( index != (item_index - 1) ){
-					indicators[item_index][index] = true;
-					indicators[index+1][item_index-1] = true;
-				}
-
-				size = size + 6;
-				margin_top = margin_top - 6;
-				document.getElementById('head-item-'+(index + 1)).style.height = size.toString() + 'px';
-				document.getElementById('head-item-'+(index + 1)).style.marginTop = margin_top.toString() + 'px';
-
+	for ( let index = azimuth.length - 1; index > -1; index-- ){
+		if ( selected_azimuth != undefined && selected_azimuth == azimuth[index] ) {
+			if ( index != (item_index - 1) ){
+				indicators[item_index][index] = true;
+				indicators[index+1][item_index-1] = true;
 			}
-			else if ( selected_azimuth == undefined || selected_azimuth != azimuth[index] ) {
-				if ( item_index == 1 && indicators[1][index] ) {
-					indicators[1][index] = undefined;
-					indicators[index+1][0] = undefined; 
-				}
-				else if ( item_index == 2 && indicators[2][index] ){
-					indicators[2][index] = undefined;
-					indicators[index+1][1] = undefined;
 
-					if (index < 1){
-			 			document.getElementById('head-item-1').style.height = (parseInt(document.getElementById('head-item-1').style.height.replace('px','')) - 6).toString() + 'px';
-						document.getElementById('head-item-1').style.marginTop = (parseInt(document.getElementById('head-item-1').style.marginTop.replace('px','')) + 6).toString() + 'px';
-					}
-				}
-				else if ( item_index == 3 && indicators[3][index] ) {
-					indicators[3][index] = undefined;
-					indicators[index+1][2] = undefined;
+			size = size + 6;
+			margin_top = margin_top - 6;
+			document.getElementById('head-item-'+(index + 1)).style.height = size.toString() + 'px';
+			document.getElementById('head-item-'+(index + 1)).style.marginTop = margin_top.toString() + 'px';
 
-					if (index < 2){
-			 			document.getElementById('head-item-'+(index + 1)).style.height = (parseInt(document.getElementById('head-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
-						document.getElementById('head-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('head-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
-					}
-				}
-				else if ( item_index == 4 && indicators[4][index] ) {
-					indicators[4][index] = undefined;
-					indicators[index+1][3] = undefined;
+		}
+		else if ( selected_azimuth == undefined || selected_azimuth != azimuth[index] ) {
+			if ( item_index == 1 && indicators[1][index] ) {
+				indicators[1][index] = undefined;
+				indicators[index+1][0] = undefined; 
+			}
+			else if ( item_index == 2 && indicators[2][index] ){
+				indicators[2][index] = undefined;
+				indicators[index+1][1] = undefined;
 
-					if (index < 3){
-			 			document.getElementById('head-item-'+(index + 1)).style.height = (parseInt(document.getElementById('head-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
-						document.getElementById('head-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('head-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
-					}
+				if (index < 1){
+					document.getElementById('head-item-1').style.height = (parseInt(document.getElementById('head-item-1').style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('head-item-1').style.marginTop = (parseInt(document.getElementById('head-item-1').style.marginTop.replace('px','')) + 6).toString() + 'px';
 				}
-				else if ( item_index == 5 && indicators[5][index] ) {
-					indicators[5][index] = undefined;
-					indicators[index+1][4] = undefined;
+			}
+			else if ( item_index == 3 && indicators[3][index] ) {
+				indicators[3][index] = undefined;
+				indicators[index+1][2] = undefined;
 
-					if (index < 4){
-			 			document.getElementById('head-item-'+(index + 1)).style.height = (parseInt(document.getElementById('head-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
-						document.getElementById('head-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('head-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
-					}
+				if (index < 2){
+					document.getElementById('head-item-'+(index + 1)).style.height = (parseInt(document.getElementById('head-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('head-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('head-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
 				}
-				else if ( item_index == 6 && indicators[6][index]) {
-					indicators[6][index] = undefined;
-					indicators[index+1][5] = undefined;
+			}
+			else if ( item_index == 4 && indicators[4][index] ) {
+				indicators[4][index] = undefined;
+				indicators[index+1][3] = undefined;
 
-					if (index < 5){
-			 			document.getElementById('head-item-'+(index + 1)).style.height = (parseInt(document.getElementById('head-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
-						document.getElementById('head-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('head-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
-					}
+				if (index < 3){
+					document.getElementById('head-item-'+(index + 1)).style.height = (parseInt(document.getElementById('head-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('head-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('head-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
 				}
-				else if ( item_index == 7 && indicators[7][index] ) {
-					indicators[7][index] = undefined;
-					indicators[index+1][6] = undefined;
+			}
+			else if ( item_index == 5 && indicators[5][index] ) {
+				indicators[5][index] = undefined;
+				indicators[index+1][4] = undefined;
 
-					if (index < 6){
-			 			document.getElementById('head-item-'+(index + 1)).style.height = (parseInt(document.getElementById('head-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
-						document.getElementById('head-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('head-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
-					}
+				if (index < 4){
+					document.getElementById('head-item-'+(index + 1)).style.height = (parseInt(document.getElementById('head-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('head-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('head-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
 				}
-				else if ( item_index == 8 && indicators[8][index] ) {
-					indicators[8][index] = undefined;
-					indicators[index+1][7] = undefined;
+			}
+			else if ( item_index == 6 && indicators[6][index]) {
+				indicators[6][index] = undefined;
+				indicators[index+1][5] = undefined;
 
-					if (index < 7){
-			 			document.getElementById('head-item-'+(index + 1)).style.height = (parseInt(document.getElementById('head-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
-						document.getElementById('head-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('head-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
-					}
+				if (index < 5){
+					document.getElementById('head-item-'+(index + 1)).style.height = (parseInt(document.getElementById('head-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('head-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('head-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
 				}
-				else if ( item_index == 9 && indicators[9][index] ) {
-					indicators[9][index] = undefined;
-					indicators[index+1][8] = undefined;
+			}
+			else if ( item_index == 7 && indicators[7][index] ) {
+				indicators[7][index] = undefined;
+				indicators[index+1][6] = undefined;
 
-					if (index < 8){
-			 			document.getElementById('head-item-'+(index + 1)).style.height = (parseInt(document.getElementById('head-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
-						document.getElementById('head-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('head-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
-					}
+				if (index < 6){
+					document.getElementById('head-item-'+(index + 1)).style.height = (parseInt(document.getElementById('head-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('head-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('head-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
 				}
-				else if ( item_index == 10 && indicators[10][index] )  {
-					indicators[10][index] = undefined;
-					indicators[index+1][9] = undefined;
+			}
+			else if ( item_index == 8 && indicators[8][index] ) {
+				indicators[8][index] = undefined;
+				indicators[index+1][7] = undefined;
 
-					if (index < 9){
-			 			document.getElementById('head-item-'+(index + 1)).style.height = (parseInt(document.getElementById('head-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
-						document.getElementById('head-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('head-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
-					}
+				if (index < 7){
+					document.getElementById('head-item-'+(index + 1)).style.height = (parseInt(document.getElementById('head-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('head-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('head-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
+				}
+			}
+			else if ( item_index == 9 && indicators[9][index] ) {
+				indicators[9][index] = undefined;
+				indicators[index+1][8] = undefined;
+
+				if (index < 8){
+					document.getElementById('head-item-'+(index + 1)).style.height = (parseInt(document.getElementById('head-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('head-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('head-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
+				}
+			}
+			else if ( item_index == 10 && indicators[10][index] )  {
+				indicators[10][index] = undefined;
+				indicators[index+1][9] = undefined;
+
+				if (index < 9){
+					document.getElementById('head-item-'+(index + 1)).style.height = (parseInt(document.getElementById('head-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('head-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('head-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
 				}
 			}
 		}
-		/* This is just an extra layer of ensurance
-		if (!has_stacking){
-			document.getElementById('head-item-'+item_index).style.width = 15 + 'px';
-			document.getElementById('head-item-'+item_index).style.height = 15 + 'px';
-			document.getElementById('head-item-'+item_index).style.marginTop = -12 + 'px';
+	}
+
+	const selected_elevation = elevation[item_index - 1];
+	const selected_elevation_degree = parseInt(document.getElementById('circularF'+item_index).style.transform.replace('rotate(','').replace('deg)',''));
+	size = 15 - 6;
+	margin_top = -12 + 6;
+
+	for ( let index = elevation.length - 1; index > -1; index-- ) {
+		const current_index_degree = parseInt(document.getElementById('circularF'+(index+1)).style.transform.replace('rotate(','').replace('deg)',''));
+
+		if ( selected_elevation != undefined && selected_elevation_degree == current_index_degree ) {
+
+			if ( index != (item_index - 1) ){
+				front_indicators[item_index][index] = true;
+				front_indicators[index+1][item_index-1] = true;
+			}
+
+			size = size + 6;
+			margin_top = margin_top - 6;
+			document.getElementById('front-item-'+(index + 1)).style.height = size.toString() + 'px';
+			document.getElementById('front-item-'+(index + 1)).style.marginTop = margin_top.toString() + 'px';
+
 		}
-		*/
+		else if ( selected_elevation == undefined || selected_elevation_degree != current_index_degree ) {
+			if ( item_index == 1 && front_indicators[1][index] ) {
+				front_indicators[1][index] = undefined;
+				front_indicators[index+1][0] = undefined; 
+			}
+			else if ( item_index == 2 && front_indicators[2][index] ){
+				front_indicators[2][index] = undefined;
+				front_indicators[index+1][1] = undefined;
+
+				if (index < 1){
+					document.getElementById('front-item-1').style.height = (parseInt(document.getElementById('front-item-1').style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('front-item-1').style.marginTop = (parseInt(document.getElementById('front-item-1').style.marginTop.replace('px','')) + 6).toString() + 'px';
+				}
+			}
+			else if ( item_index == 3 && front_indicators[3][index] ) {
+				front_indicators[3][index] = undefined;
+				front_indicators[index+1][2] = undefined;
+
+				if (index < 2){
+					document.getElementById('front-item-'+(index + 1)).style.height = (parseInt(document.getElementById('front-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('front-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('front-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
+				}
+			}
+			else if ( item_index == 4 && front_indicators[4][index] ) {
+				front_indicators[4][index] = undefined;
+				front_indicators[index+1][3] = undefined;
+
+				if (index < 3){
+					document.getElementById('front-item-'+(index + 1)).style.height = (parseInt(document.getElementById('front-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('front-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('front-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
+				}
+			}
+			else if ( item_index == 5 && front_indicators[5][index] ) {
+				front_indicators[5][index] = undefined;
+				front_indicators[index+1][4] = undefined;
+
+				if (index < 4){
+					document.getElementById('front-item-'+(index + 1)).style.height = (parseInt(document.getElementById('front-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('front-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('front-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
+				}
+			}
+			else if ( item_index == 6 && front_indicators[6][index]) {
+				front_indicators[6][index] = undefined;
+				front_indicators[index+1][5] = undefined;
+
+				if (index < 5){
+					document.getElementById('front-item-'+(index + 1)).style.height = (parseInt(document.getElementById('front-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('front-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('front-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
+				}
+			}
+			else if ( item_index == 7 && front_indicators[7][index] ) {
+				front_indicators[7][index] = undefined;
+				front_indicators[index+1][6] = undefined;
+
+				if (index < 6){
+					document.getElementById('front-item-'+(index + 1)).style.height = (parseInt(document.getElementById('front-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('front-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('front-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
+				}
+			}
+			else if ( item_index == 8 && front_indicators[8][index] ) {
+				front_indicators[8][index] = undefined;
+				front_indicators[index+1][7] = undefined;
+
+				if (index < 7){
+					document.getElementById('front-item-'+(index + 1)).style.height = (parseInt(document.getElementById('front-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('front-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('front-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
+				}
+			}
+			else if ( item_index == 9 && front_indicators[9][index] ) {
+				front_indicators[9][index] = undefined;
+				front_indicators[index+1][8] = undefined;
+
+				if (index < 8){
+					document.getElementById('front-item-'+(index + 1)).style.height = (parseInt(document.getElementById('front-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('front-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('front-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
+				}
+			}
+			else if ( item_index == 10 && front_indicators[10][index] )  {
+				front_indicators[10][index] = undefined;
+				front_indicators[index+1][9] = undefined;
+
+				if (index < 9){
+					document.getElementById('front-item-'+(index + 1)).style.height = (parseInt(document.getElementById('front-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('front-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('front-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
+				}
+			}
+		}
+	}
+
+	const selected_elevation2 = elevation[item_index - 1];
+	const selected_elevation_degree2 = parseInt(document.getElementById('circularS'+item_index).style.transform.replace('rotate(','').replace('deg)',''));
+	size = 15 - 6;
+	margin_top = -12 + 6;
+
+	for ( let index = elevation.length - 1; index > -1; index-- ) {
+		const current_index_degree2 = parseInt(document.getElementById('circularS'+(index+1)).style.transform.replace('rotate(','').replace('deg)',''));
+
+		if ( selected_elevation2 != undefined && selected_elevation_degree2 == current_index_degree2 ) {
+
+			if ( index != (item_index - 1) ){
+				side_indicators[item_index][index] = true;
+				side_indicators[index+1][item_index-1] = true;
+			}
+
+			size = size + 6;
+			margin_top = margin_top - 6;
+			document.getElementById('side-item-'+(index + 1)).style.height = size.toString() + 'px';
+			document.getElementById('side-item-'+(index + 1)).style.marginTop = margin_top.toString() + 'px';
+
+		}
+		else if ( selected_elevation2 == undefined || selected_elevation_degree2 != current_index_degree2 ) {
+			if ( item_index == 1 && side_indicators[1][index] ) {
+				side_indicators[1][index] = undefined;
+				side_indicators[index+1][0] = undefined; 
+			}
+			else if ( item_index == 2 && side_indicators[2][index] ){
+				side_indicators[2][index] = undefined;
+				side_indicators[index+1][1] = undefined;
+
+				if (index < 1){
+					document.getElementById('side-item-1').style.height = (parseInt(document.getElementById('side-item-1').style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('side-item-1').style.marginTop = (parseInt(document.getElementById('side-item-1').style.marginTop.replace('px','')) + 6).toString() + 'px';
+				}
+			}
+			else if ( item_index == 3 && side_indicators[3][index] ) {
+				side_indicators[3][index] = undefined;
+				side_indicators[index+1][2] = undefined;
+
+				if (index < 2){
+					document.getElementById('side-item-'+(index + 1)).style.height = (parseInt(document.getElementById('side-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('side-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('side-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
+				}
+			}
+			else if ( item_index == 4 && side_indicators[4][index] ) {
+				side_indicators[4][index] = undefined;
+				side_indicators[index+1][3] = undefined;
+
+				if (index < 3){
+					document.getElementById('side-item-'+(index + 1)).style.height = (parseInt(document.getElementById('side-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('side-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('side-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
+				}
+			}
+			else if ( item_index == 5 && side_indicators[5][index] ) {
+				side_indicators[5][index] = undefined;
+				side_indicators[index+1][4] = undefined;
+
+				if (index < 4){
+					document.getElementById('side-item-'+(index + 1)).style.height = (parseInt(document.getElementById('side-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('side-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('side-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
+				}
+			}
+			else if ( item_index == 6 && side_indicators[6][index]) {
+				side_indicators[6][index] = undefined;
+				side_indicators[index+1][5] = undefined;
+
+				if (index < 5){
+					document.getElementById('side-item-'+(index + 1)).style.height = (parseInt(document.getElementById('side-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('side-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('side-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
+				}
+			}
+			else if ( item_index == 7 && side_indicators[7][index] ) {
+				side_indicators[7][index] = undefined;
+				side_indicators[index+1][6] = undefined;
+
+				if (index < 6){
+					document.getElementById('side-item-'+(index + 1)).style.height = (parseInt(document.getElementById('side-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('side-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('side-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
+				}
+			}
+			else if ( item_index == 8 && side_indicators[8][index] ) {
+				side_indicators[8][index] = undefined;
+				side_indicators[index+1][7] = undefined;
+
+				if (index < 7){
+					document.getElementById('side-item-'+(index + 1)).style.height = (parseInt(document.getElementById('side-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('side-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('side-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
+				}
+			}
+			else if ( item_index == 9 && side_indicators[9][index] ) {
+				side_indicators[9][index] = undefined;
+				side_indicators[index+1][8] = undefined;
+
+				if (index < 8){
+					document.getElementById('side-item-'+(index + 1)).style.height = (parseInt(document.getElementById('side-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('side-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('side-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
+				}
+			}
+			else if ( item_index == 10 && side_indicators[10][index] )  {
+				side_indicators[10][index] = undefined;
+				side_indicators[index+1][9] = undefined;
+
+				if (index < 9){
+					document.getElementById('side-item-'+(index + 1)).style.height = (parseInt(document.getElementById('side-item-'+(index + 1)).style.height.replace('px','')) - 6).toString() + 'px';
+					document.getElementById('side-item-'+(index + 1)).style.marginTop = (parseInt(document.getElementById('side-item-'+(index + 1)).style.marginTop.replace('px','')) + 6).toString() + 'px';
+				}
+			}
+		}
 	}
 }
 
@@ -413,7 +648,7 @@ function move_azimuth_plus(e){
 	azimuth[current_colors_index] = temp_azimuth;
 	document.getElementById('circular'+(current_colors_index+1)).style.transform = 'rotate('+temp_azimuth+'deg)';
 
-	changeSize(true, current_colors_index+1);
+	changeSize(current_colors_index+1);
 
 	current_elevation = (elevation[current_colors_index] == undefined ? 0 : elevation[current_colors_index]);
 	displayBall((azimuth[current_colors_index]-180), current_elevation, (current_colors_index+1));
@@ -449,7 +684,7 @@ function move_azimuth_minus(e){
 	azimuth[current_colors_index] = temp_azimuth;
 	document.getElementById('circular'+(current_colors_index+1)).style.transform = 'rotate('+temp_azimuth+'deg)';
 
-	changeSize(true, current_colors_index+1);
+	changeSize(current_colors_index+1);
 
 	current_elevation = (elevation[current_colors_index] == undefined ? 0 : elevation[current_colors_index]);
 	displayBall((azimuth[current_colors_index]-180), current_elevation, (current_colors_index+1));
@@ -500,6 +735,8 @@ function move_elevation_plus(e){
 			displayBall((azimuth[current_colors_index]==undefined ? -180 : azimuth[current_colors_index]-180), new_elevation, (current_colors_index+1));
 		}
 	}
+
+	changeSize(current_colors_index+1);
 }
 
 function move_elevation_minus(e){
@@ -549,6 +786,8 @@ function move_elevation_minus(e){
 			displayBall((azimuth[current_colors_index]==undefined ? -180 : azimuth[current_colors_index]-180), new_elevation, (current_colors_index+1));
 		}
 	}
+
+	changeSize(current_colors_index+1);
 }
 
 function dragElement(index,indicator,add_index){
@@ -620,6 +859,9 @@ function dragElement(index,indicator,add_index){
 			}
 			displayBall( (azimuth[add_index] != undefined ? azimuth[add_index] - 180 : -180) , curr_elevation, index);
 			elevation[add_index] = curr_elevation;
+
+			changeSize(index);
+
 			document.onmouseup = null; 
 			document.onmousemove = null;
 		}
@@ -675,6 +917,9 @@ function dragElement(index,indicator,add_index){
 			}
 			displayBall( (azimuth[add_index] != undefined ? azimuth[add_index] - 180 : -180) , curr_elevation, index);
 			elevation[add_index] = curr_elevation;
+
+			changeSize(index);
+
 			document.onmouseup = null; 
 			document.onmousemove = null;
 		}
@@ -710,7 +955,7 @@ function dragElement(index,indicator,add_index){
 			curr_azimuth = temp_azimuth;
 			azimuth[add_index] = curr_azimuth;
 
-			changeSize(true, index);
+			changeSize(index);
 
 			document.onmouseup = null;
 			document.onmousemove = null;
@@ -860,6 +1105,11 @@ var add_third = false;
 document.addEventListener("keydown", keyboardEvents);
 function keyboardEvents(e){
 	e.preventDefault(); // prevent any undesired keyboard event
+
+	if (e.keyCode === 65){
+		console.log("Azimuth: "+azimuth.toString());
+		console.log("Elevation: "+elevation.toString());
+	}
 	
 	if(e.metaKey){
 		document.getElementById('body').style.cursor = "url('/templates/interface/img/minus.svg'), auto";
@@ -1044,7 +1294,7 @@ function keyboardEvents(e){
 				document.getElementById('circular'+azimuth_item_index).style.transform = 'rotate('+curr_azimuth+'deg)';
 				document.getElementById('head-item-'+azimuth_item_index).setAttribute('style','');
 
-				changeSize(true, azimuth_item_index); 
+				changeSize(azimuth_item_index); 
 
 				displayBall(curr_azimuth - 180, (elevation[azimuth_item_index-1] != undefined ? elevation[azimuth_item_index-1] : 0) , azimuth_item_index);
 
@@ -1163,6 +1413,9 @@ function keyboardEvents(e){
 				
 				elevation[elevation_item_index-1] = curr_elevation;
 				temp_azimuth = azimuth[elevation_item_index-1] != undefined ? azimuth[elevation_item_index-1] - 180 : -180;
+
+				changeSize(elevation_item_index); 
+
 				displayBall(temp_azimuth, curr_elevation, elevation_item_index);
 
 				// display azimuth and elevation
@@ -1281,6 +1534,9 @@ function keyboardEvents(e){
 
 				elevation[elevation_item_index-1] = curr_elevation;
 				temp_azimuth = azimuth[elevation_item_index-1] != undefined ? azimuth[elevation_item_index-1] - 180 : -180;
+
+				changeSize(elevation_item_index); 
+
 				displayBall(temp_azimuth, curr_elevation, elevation_item_index);
 
 				// display azimuth and elevation
@@ -1310,6 +1566,32 @@ function reloadAll(){
 	curr_azimuth = 0;
 	curr_elevation = 0;
 	indicators = {
+		1: [],
+		2: [],
+		3: [],
+		4: [],
+		5: [],
+		6: [],
+		7: [],
+		8: [],
+		9: [],
+		10: []
+	};
+
+	front_indicators = {
+		1: [],
+		2: [],
+		3: [],
+		4: [],
+		5: [],
+		6: [],
+		7: [],
+		8: [],
+		9: [],
+		10: []
+	};
+
+	side_indicators = {
 		1: [],
 		2: [],
 		3: [],
@@ -1362,7 +1644,7 @@ document.getElementById('head-item-1').addEventListener("mousedown",function(e){
 	if (delete_head){
 		azimuth[0] = undefined;
 		elevation[0] = undefined;
-		changeSize(true, 1);
+		changeSize(1);
 
 		document.getElementById('head-item-1').style.display = 'none';
 		document.getElementById('front-item-1').style.display = 'none';
@@ -1406,7 +1688,7 @@ document.getElementById('head-item-2').addEventListener("mousedown",function(e){
 	if (delete_head){
 		azimuth[1] = undefined;
 		elevation[1] = undefined;
-		changeSize(true, 2);
+		changeSize(2);
 
 		document.getElementById('head-item-2').style.display = 'none';
 		document.getElementById('front-item-2').style.display = 'none';
@@ -1449,7 +1731,7 @@ document.getElementById('head-item-3').addEventListener("mousedown",function(e){
 	if (delete_head){
 		azimuth[2] = undefined;
 		elevation[2] = undefined;
-		changeSize(true, 3);
+		changeSize(3);
 
 		document.getElementById('head-item-3').style.display = 'none';
 		document.getElementById('front-item-3').style.display = 'none';
@@ -1492,7 +1774,7 @@ document.getElementById('head-item-4').addEventListener("mousedown",function(e){
 	if (delete_head){
 		azimuth[3] = undefined;
 		elevation[3] = undefined;
-		changeSize(true, 4);
+		changeSize(4);
 
 		document.getElementById('head-item-4').style.display = 'none';
 		document.getElementById('front-item-4').style.display = 'none';
@@ -1536,7 +1818,7 @@ document.getElementById('head-item-5').addEventListener("mousedown",function(e){
 	if (delete_head){
 		azimuth[4] = undefined;
 		elevation[4] = undefined;
-		changeSize(true, 5);
+		changeSize(5);
 
 		document.getElementById('head-item-5').style.display = 'none';
 		document.getElementById('front-item-5').style.display = 'none';
@@ -1580,7 +1862,7 @@ document.getElementById('head-item-6').addEventListener("mousedown",function(e){
 	if (delete_head){
 		azimuth[5] = undefined;
 		elevation[5] = undefined;
-		changeSize(true, 6);
+		changeSize(6);
 
 		document.getElementById('head-item-6').style.display = 'none';
 		document.getElementById('front-item-6').style.display = 'none';
@@ -1624,7 +1906,7 @@ document.getElementById('head-item-7').addEventListener("mousedown",function(e){
 	if (delete_head){
 		azimuth[6] = undefined;
 		elevation[6] = undefined;
-		changeSize(true, 7);
+		changeSize(7);
 
 		document.getElementById('head-item-7').style.display = 'none';
 		document.getElementById('front-item-7').style.display = 'none';
@@ -1668,7 +1950,7 @@ document.getElementById('head-item-8').addEventListener("mousedown",function(e){
 	if (delete_head){
 		azimuth[7] = undefined;
 		elevation[7] = undefined;
-		changeSize(true, 8);
+		changeSize(8);
 
 		document.getElementById('head-item-8').style.display = 'none';
 		document.getElementById('front-item-8').style.display = 'none';
@@ -1712,7 +1994,7 @@ document.getElementById('head-item-9').addEventListener("mousedown",function(e){
 	if (delete_head){
 		azimuth[8] = undefined;
 		elevation[8] = undefined;
-		changeSize(true, 9);
+		changeSize(9);
 
 		document.getElementById('head-item-9').style.display = 'none';
 		document.getElementById('front-item-9').style.display = 'none';
@@ -1756,7 +2038,7 @@ document.getElementById('head-item-10').addEventListener("mousedown",function(e)
 	if (delete_head){
 		azimuth[9] = undefined;
 		elevation[9] = undefined;
-		changeSize(true, 10);
+		changeSize(10);
 
 		document.getElementById('head-item-10').style.display = 'none';
 		document.getElementById('front-item-10').style.display = 'none';
@@ -1801,6 +2083,8 @@ document.getElementById('front-item-1').addEventListener("mousedown",function(e)
 	if (delete_front){
 		azimuth[0] = undefined;
 		elevation[0] = undefined;
+		changeSize(1);
+
 		document.getElementById('head-item-1').style.display = 'none';
 		document.getElementById('front-item-1').style.display = 'none';
 		document.getElementById('side-item-1').style.display = 'none';
@@ -1843,6 +2127,8 @@ document.getElementById('front-item-2').addEventListener("mousedown",function(e)
 	if (delete_front){
 		azimuth[1] = undefined;
 		elevation[1] = undefined;
+		changeSize(2);
+
 		document.getElementById('head-item-2').style.display = 'none';
 		document.getElementById('front-item-2').style.display = 'none';
 		document.getElementById('side-item-2').style.display = 'none';
@@ -1885,6 +2171,8 @@ document.getElementById('front-item-3').addEventListener("mousedown",function(e)
 	if (delete_front){
 		azimuth[2] = undefined;
 		elevation[2] = undefined;
+		changeSize(3);
+
 		document.getElementById('head-item-3').style.display = 'none';
 		document.getElementById('front-item-3').style.display = 'none';
 		document.getElementById('side-item-3').style.display = 'none';
@@ -1927,6 +2215,8 @@ document.getElementById('front-item-4').addEventListener("mousedown",function(e)
 	if (delete_front){
 		azimuth[3] = undefined;
 		elevation[3] = undefined;
+		changeSize(4);
+
 		document.getElementById('head-item-4').style.display = 'none';
 		document.getElementById('front-item-4').style.display = 'none';
 		document.getElementById('side-item-4').style.display = 'none';
@@ -1969,6 +2259,8 @@ document.getElementById('front-item-5').addEventListener("mousedown",function(e)
 	if (delete_front){
 		azimuth[4] = undefined;
 		elevation[4] = undefined;
+		changeSize(5);
+
 		document.getElementById('head-item-5').style.display = 'none';
 		document.getElementById('front-item-5').style.display = 'none';
 		document.getElementById('side-item-5').style.display = 'none';
@@ -2011,6 +2303,8 @@ document.getElementById('front-item-6').addEventListener("mousedown",function(e)
 	if (delete_front){
 		azimuth[5] = undefined;
 		elevation[5] = undefined;
+		changeSize(6);
+
 		document.getElementById('head-item-6').style.display = 'none';
 		document.getElementById('front-item-6').style.display = 'none';
 		document.getElementById('side-item-6').style.display = 'none';
@@ -2053,6 +2347,8 @@ document.getElementById('front-item-7').addEventListener("mousedown",function(e)
 	if (delete_front){
 		azimuth[6] = undefined;
 		elevation[6] = undefined;
+		changeSize(7);
+
 		document.getElementById('head-item-7').style.display = 'none';
 		document.getElementById('front-item-7').style.display = 'none';
 		document.getElementById('side-item-7').style.display = 'none';
@@ -2095,6 +2391,8 @@ document.getElementById('front-item-8').addEventListener("mousedown",function(e)
 	if (delete_front){
 		azimuth[7] = undefined;
 		elevation[7] = undefined;
+		changeSize(8);
+
 		document.getElementById('head-item-8').style.display = 'none';
 		document.getElementById('front-item-8').style.display = 'none';
 		document.getElementById('side-item-8').style.display = 'none';
@@ -2137,6 +2435,8 @@ document.getElementById('front-item-9').addEventListener("mousedown",function(e)
 	if (delete_front){
 		azimuth[8] = undefined;
 		elevation[8] = undefined;
+		changeSize(9);
+
 		document.getElementById('head-item-9').style.display = 'none';
 		document.getElementById('front-item-9').style.display = 'none';
 		document.getElementById('side-item-9').style.display = 'none';
@@ -2179,6 +2479,8 @@ document.getElementById('front-item-10').addEventListener("mousedown",function(e
 	if (delete_front){
 		azimuth[9] = undefined;
 		elevation[9] = undefined;
+		changeSize(10);
+
 		document.getElementById('head-item-10').style.display = 'none';
 		document.getElementById('front-item-10').style.display = 'none';
 		document.getElementById('side-item-10').style.display = 'none';
@@ -2222,6 +2524,8 @@ document.getElementById('side-item-1').addEventListener("mousedown",function(e){
 	if (delete_side){
 		azimuth[0] = undefined;
 		elevation[0] = undefined;
+		changeSize(1);
+
 		document.getElementById('head-item-1').style.display = 'none';
 		document.getElementById('front-item-1').style.display = 'none';
 		document.getElementById('side-item-1').style.display = 'none';
@@ -2264,6 +2568,8 @@ document.getElementById('side-item-2').addEventListener("mousedown",function(e){
 	if (delete_side){
 		azimuth[1] = undefined;
 		elevation[1] = undefined;
+		changeSize(2);
+
 		document.getElementById('head-item-2').style.display = 'none';
 		document.getElementById('front-item-2').style.display = 'none';
 		document.getElementById('side-item-2').style.display = 'none';
@@ -2306,6 +2612,8 @@ document.getElementById('side-item-3').addEventListener("mousedown",function(e){
 	if (delete_side){
 		azimuth[2] = undefined;
 		elevation[2] = undefined;
+		changeSize(3);
+
 		document.getElementById('head-item-3').style.display = 'none';
 		document.getElementById('front-item-3').style.display = 'none';
 		document.getElementById('side-item-3').style.display = 'none';
@@ -2348,6 +2656,8 @@ document.getElementById('side-item-4').addEventListener("mousedown",function(e){
 	if (delete_side){
 		azimuth[3] = undefined;
 		elevation[3] = undefined;
+		changeSize(4);
+
 		document.getElementById('head-item-4').style.display = 'none';
 		document.getElementById('front-item-4').style.display = 'none';
 		document.getElementById('side-item-4').style.display = 'none';
@@ -2390,6 +2700,8 @@ document.getElementById('side-item-5').addEventListener("mousedown",function(e){
 	if (delete_side){
 		azimuth[4] = undefined;
 		elevation[4] = undefined;
+		changeSize(5);
+
 		document.getElementById('head-item-5').style.display = 'none';
 		document.getElementById('front-item-5').style.display = 'none';
 		document.getElementById('side-item-5').style.display = 'none';
@@ -2432,6 +2744,8 @@ document.getElementById('side-item-6').addEventListener("mousedown",function(e){
 	if (delete_side){
 		azimuth[5] = undefined;
 		elevation[5] = undefined;
+		changeSize(6);
+
 		document.getElementById('head-item-6').style.display = 'none';
 		document.getElementById('front-item-6').style.display = 'none';
 		document.getElementById('side-item-6').style.display = 'none';
@@ -2474,6 +2788,8 @@ document.getElementById('side-item-7').addEventListener("mousedown",function(e){
 	if (delete_side){
 		azimuth[6] = undefined;
 		elevation[6] = undefined;
+		changeSize(7);
+
 		document.getElementById('head-item-7').style.display = 'none';
 		document.getElementById('front-item-7').style.display = 'none';
 		document.getElementById('side-item-7').style.display = 'none';
@@ -2516,6 +2832,8 @@ document.getElementById('side-item-8').addEventListener("mousedown",function(e){
 	if (delete_side){
 		azimuth[7] = undefined;
 		elevation[7] = undefined;
+		changeSize(8);
+
 		document.getElementById('head-item-8').style.display = 'none';
 		document.getElementById('front-item-8').style.display = 'none';
 		document.getElementById('side-item-8').style.display = 'none';
@@ -2558,6 +2876,8 @@ document.getElementById('side-item-9').addEventListener("mousedown",function(e){
 	if (delete_side){
 		azimuth[8] = undefined;
 		elevation[8] = undefined;
+		changeSize(9);
+
 		document.getElementById('head-item-9').style.display = 'none';
 		document.getElementById('front-item-9').style.display = 'none';
 		document.getElementById('side-item-9').style.display = 'none';
@@ -2600,6 +2920,8 @@ document.getElementById('side-item-10').addEventListener("mousedown",function(e)
 	if (delete_side){
 		azimuth[9] = undefined;
 		elevation[9] = undefined;
+		changeSize(10);
+
 		document.getElementById('head-item-10').style.display = 'none';
 		document.getElementById('front-item-10').style.display = 'none';
 		document.getElementById('side-item-10').style.display = 'none';
