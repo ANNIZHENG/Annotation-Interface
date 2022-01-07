@@ -15,7 +15,7 @@ body{
 	font-size: 100px;
 }
 
-.container, .container-3D, .container-3D-confirm {
+.container, .container-3D {
 	height: 100vh;
 	width: 100%;
 	display: flex;
@@ -38,10 +38,6 @@ body{
 	flex-direction: column;
 	align-items: center;
 	background-color: #a9a9a9;
-}
-
-.container-3D-confirm{
-	background-color: lightblue;
 }
 
 #confirm-form{

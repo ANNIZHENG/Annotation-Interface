@@ -1118,7 +1118,7 @@ document.getElementById('side-item-10').addEventListener("mousedown",function(){
 
 container = document.getElementById('3d-head');
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xadd8e6);
+scene.background = new THREE.Color(0x000000);
 var light = new THREE.HemisphereLight(0xffffff, 0.8);
 scene.add(light);
 
