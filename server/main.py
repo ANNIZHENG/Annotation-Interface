@@ -48,7 +48,7 @@ def next():
         source_count = data['source_count']
 
         survey_res = eng.execute('''select id from "Survey" order by id asc limit 1''')
-        survey_id = '';
+        survey_id = ''
         for r in survey_res:
             survey_id = str(dict(r)['id'])
         
@@ -68,7 +68,7 @@ def next():
             index += 1
 
         result = eng.execute('''select id from "Annotation" order by id desc limit 1''')
-        annotation_id = -1;
+        annotation_id = -1
         for r in result:
             annotation_id = int(dict(r)['id'])
         eng.execute('''update "Interaction" set annotation_id='''+str(annotation_id)+'''where annotation_id = -1''')
@@ -79,7 +79,7 @@ def next():
 @app.route('/get_survey', methods=['GET', 'POST'])
 def get_survey():
     survey_res = eng.execute('''select id from "Survey" order by id asc limit 1''')
-    survey_id = '';
+    survey_id = ''
     for r in survey_res:
         survey_id = str(dict(r)['id'])
 
