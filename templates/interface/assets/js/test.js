@@ -1106,10 +1106,12 @@ document.addEventListener("keydown", keyboardEvents);
 function keyboardEvents(e){
 	e.preventDefault(); // prevent any undesired keyboard event
 
+	/*
 	if (e.keyCode === 65){
 		console.log("Azimuth: "+azimuth.toString());
 		console.log("Elevation: "+elevation.toString());
 	}
+	*/
 	
 	if(e.metaKey){
 		document.getElementById('body').style.cursor = "url('/templates/interface/img/minus.svg'), auto";
@@ -1294,7 +1296,7 @@ function keyboardEvents(e){
 				document.getElementById('circular'+azimuth_item_index).style.transform = 'rotate('+curr_azimuth+'deg)';
 				document.getElementById('head-item-'+azimuth_item_index).setAttribute('style','');
 
-				changeSize(azimuth_item_index); 
+				changeSize(azimuth_item_index);
 
 				displayBall(curr_azimuth - 180, (elevation[azimuth_item_index-1] != undefined ? elevation[azimuth_item_index-1] : 0) , azimuth_item_index);
 

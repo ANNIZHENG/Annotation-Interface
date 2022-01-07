@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="/templates/interface/assets/css/interface.css">
+</head>
+<body id = "body">
+	<div class="container-3D-confirm"> 
+		<div id="3d-head" style="justify-content: center;"></div>
+	</div>
+	<div class="container">
+		<div id="confirm-form" action="/" style="height: 100vh;">
+            <h3 style="margin-top: 50px;"> Please match the annotation point(s) with the corresponding sound source(s) </h3>
+            <div id="2d" style="position: absolute; display: flex; margin-top: 15px;">
+			    <div>
+				    <div id="head" style="background-image: url('/templates/interface/img/head.png');">
+                        <div class="circular" id="circular0"></div>
+                        <div class="circular" id="circular1" style="display: none;"><div class="indicator" id="head-item-1" style="display: none;"></div></div>
+                        <div class="circular" id="circular2" style="display: none;"><div class="indicator" id="head-item-2" style="display: none;"></div></div>
+                        <div class="circular" id="circular3" style="display: none;"><div class="indicator" id="head-item-3" style="display: none;"></div></div>
+                        <div class="circular" id="circular4" style="display: none;"><div class="indicator" id="head-item-4" style="display: none;"></div></div>
+                        <div class="circular" id="circular5" style="display: none;"><div class="indicator" id="head-item-5" style="display: none;"></div></div>
+                        <div class="circular" id="circular6" style="display: none;"><div class="indicator" id="head-item-6" style="display: none;"></div></div>
+                        <div class="circular" id="circular7" style="display: none;"><div class="indicator" id="head-item-7" style="display: none;"></div></div>
+                        <div class="circular" id="circular8" style="display: none;"><div class="indicator" id="head-item-8" style="display: none;"></div></div>
+                        <div class="circular" id="circular9" style="display: none;"><div class="indicator" id="head-item-9" style="display: none;"></div></div>
+                        <div class="circular" id="circular10" style="display: none;"><div class="indicator" id="head-item-10" style="display: none;"></div></div>
+                    </div>
+				    <div id="front" style="background-image: url('/templates/interface/img/front.png');">
+                        <div class="circular" id="circularF0"></div>
+                        <div class="circular" id="circularF1" style="display: none;"><div class="indicator" id="front-item-1" style="display: none;"></div></div>
+                        <div class="circular" id="circularF2" style="display: none;"><div class="indicator" id="front-item-2" style="display: none;"></div></div>
+                        <div class="circular" id="circularF3" style="display: none;"><div class="indicator" id="front-item-3" style="display: none;"></div></div>
+                        <div class="circular" id="circularF4" style="display: none;"><div class="indicator" id="front-item-4" style="display: none;"></div></div>
+                        <div class="circular" id="circularF5" style="display: none;"><div class="indicator" id="front-item-5" style="display: none;"></div></div>
+                        <div class="circular" id="circularF6" style="display: none;"><div class="indicator" id="front-item-6" style="display: none;"></div></div>
+                        <div class="circular" id="circularF7" style="display: none;"><div class="indicator" id="front-item-7" style="display: none;"></div></div>
+                        <div class="circular" id="circularF8" style="display: none;"><div class="indicator" id="front-item-8" style="display: none;"></div></div>
+                        <div class="circular" id="circularF9" style="display: none;"><div class="indicator" id="front-item-9" style="display: none;"></div></div>
+                        <div class="circular" id="circularF10" style="display: none;"><div class="indicator" id="front-item-10" style="display: none;"></div></div>
+				    </div>
+				    <div id="side" style="background-image: url('/templates/interface/img/side.png');">
+                        <div class="circular" id="circularS0"></div>
+                        <div class="circular" id="circularS1" style="display: none;"><div class="indicator" id="side-item-1" style="display: none;"></div></div>
+                        <div class="circular" id="circularS2" style="display: none;"><div class="indicator" id="side-item-2" style="display: none;"></div></div>
+                        <div class="circular" id="circularS3" style="display: none;"><div class="indicator" id="side-item-3" style="display: none;"></div></div>
+                        <div class="circular" id="circularS4" style="display: none;"><div class="indicator" id="side-item-4" style="display: none;"></div></div>
+                        <div class="circular" id="circularS5" style="display: none;"><div class="indicator" id="side-item-5" style="display: none;"></div></div>
+                        <div class="circular" id="circularS6" style="display: none;"><div class="indicator" id="side-item-6" style="display: none;"></div></div>
+                        <div class="circular" id="circularS7" style="display: none;"><div class="indicator" id="side-item-7" style="display: none;"></div></div>
+                        <div class="circular" id="circularS8" style="display: none;"><div class="indicator" id="side-item-8" style="display: none;"></div></div>
+                        <div class="circular" id="circularS9" style="display: none;"><div class="indicator" id="side-item-9" style="display: none;"></div></div>
+                        <div class="circular" id="circularS10" style="display: none;"><div class="indicator" id="side-item-10" style="display: none;"></div></div>
+				    </div>
+			    </div>
+                <div style="text-align: center; width: 60%; margin-left: 10px;">
+                    <div style="margin-bottom: 25px;">
+                            <label> <p> Which annotation indicates this sound source? </p> Please click a corresponding point </label><br>
+                            <audio id="audio" controls style="display: none;"><source id = "source" type="audio/wav"> Your browser does not support audio </audio>
+			                <button id="audio-frame-confirm">Play Audio</button>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+	<script src="//cdn.rawgit.com/mrdoob/three.js/master/build/three.js"></script>
+	<script src="//cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
+	<script src="/templates/interface/assets/js/confirm.js"></script>
+</body>
+</html>
