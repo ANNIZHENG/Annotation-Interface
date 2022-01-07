@@ -18,7 +18,14 @@ AUDIO_NUMBER = 3
 
 @app.route('/')
 def home():
-    return render_template('/templates/index.html')
+    result = eng.execute('''select number from "Recording" order by number asc limit 1''')
+    least_annotation = ''
+    for r in result:
+        least_annotation = int(dict(r)['number'])
+    if (least_annotation == 5): 
+        return render_template('/templates/finish.html')
+    else:
+        return render_template('/templates/index.html')
 
 @app.route('/annotation_interface', methods=['GET', 'POST'])
 def start():
@@ -82,7 +89,6 @@ def get_survey():
     survey_id = ''
     for r in survey_res:
         survey_id = str(dict(r)['id'])
-
     return str(survey_id)
 
 @app.route('/select_recording', methods=['GET', 'POST'])
