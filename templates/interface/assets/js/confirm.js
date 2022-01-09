@@ -176,13 +176,12 @@ function displayBoth(hasFront, index, temp_azimuth, degree){
 }
 
 function changeSize(item_index){
-
 	const selected_azimuth = azimuth[item_index - 1];
 	let size = 15 - 6;
 	let margin_top = -12 + 6;
 
 	for ( let index = azimuth.length - 1; index > -1; index-- ){
-        if ( selected_azimuth != undefined && Math.abs( selected_azimuth - azimuth[index] ) <= 3) {
+		if ( selected_azimuth != undefined && Math.abs( selected_azimuth - azimuth[index] ) <= 3) {
 			if ( index != (item_index - 1) ){
 				indicators[item_index][index] = true;
 				indicators[index+1][item_index-1] = true;
@@ -194,7 +193,7 @@ function changeSize(item_index){
 			document.getElementById('head-item-'+(index + 1)).style.marginTop = margin_top.toString() + 'px';
 
 		}
-        else if ( selected_azimuth == undefined || Math.abs( selected_azimuth - azimuth[index] ) > 3 ) {
+		else if ( selected_azimuth == undefined || Math.abs( selected_azimuth - azimuth[index] ) > 3 ) {
 			if ( item_index == 1 && indicators[1][index] ) {
 				indicators[1][index] = undefined;
 				indicators[index+1][0] = undefined; 
@@ -289,10 +288,9 @@ function changeSize(item_index){
 	margin_top = -12 + 6;
 
 	for ( let index = elevation.length - 1; index > -1; index-- ) {
-		const current_index_degree = parseInt(document.getElementById('circularF'+(index+1)).style.transform.replace('rotate(','').replace('deg)',''));
+		const current_index_degree = document.getElementById('circularF'+(index+1)).style.display != 'none' ? parseInt(document.getElementById('circularF'+(index+1)).style.transform.replace('rotate(','').replace('deg)','')) : undefined ;
 
-		if ( selected_elevation != undefined && selected_elevation_degree == current_index_degree ) {
-
+		if ( selected_elevation != undefined && Math.abs( selected_elevation_degree - current_index_degree ) <= 3 ) {
 			if ( index != (item_index - 1) ){
 				front_indicators[item_index][index] = true;
 				front_indicators[index+1][item_index-1] = true;
@@ -304,7 +302,7 @@ function changeSize(item_index){
 			document.getElementById('front-item-'+(index + 1)).style.marginTop = margin_top.toString() + 'px';
 
 		}
-		else if ( selected_elevation == undefined || selected_elevation_degree != current_index_degree ) {
+		else if ( selected_elevation == undefined || Math.abs( selected_elevation_degree - current_index_degree ) > 3 ) {
 			if ( item_index == 1 && front_indicators[1][index] ) {
 				front_indicators[1][index] = undefined;
 				front_indicators[index+1][0] = undefined; 
@@ -399,22 +397,21 @@ function changeSize(item_index){
 	margin_top = -12 + 6;
 
 	for ( let index = elevation.length - 1; index > -1; index-- ) {
-		const current_index_degree2 = parseInt(document.getElementById('circularS'+(index+1)).style.transform.replace('rotate(','').replace('deg)',''));
+		const current_index_degree2 = document.getElementById('circularS'+(index+1)).style.display != 'none' ? parseInt(document.getElementById('circularS'+(index+1)).style.transform.replace('rotate(','').replace('deg)','')) : undefined ;
 
-		if ( selected_elevation2 != undefined && selected_elevation_degree2 == current_index_degree2 ) {
-
+		if ( selected_elevation2 != undefined && Math.abs( selected_elevation_degree2 - current_index_degree2 ) <= 3 ) {
 			if ( index != (item_index - 1) ){
 				side_indicators[item_index][index] = true;
 				side_indicators[index+1][item_index-1] = true;
 			}
-
 			size = size + 6;
 			margin_top = margin_top - 6;
+
 			document.getElementById('side-item-'+(index + 1)).style.height = size.toString() + 'px';
 			document.getElementById('side-item-'+(index + 1)).style.marginTop = margin_top.toString() + 'px';
 
 		}
-		else if ( selected_elevation2 == undefined || selected_elevation_degree2 != current_index_degree2 ) {
+		else if ( selected_elevation2 == undefined || Math.abs( selected_elevation_degree2 - current_index_degree2 ) > 3 ) {
 			if ( item_index == 1 && side_indicators[1][index] ) {
 				side_indicators[1][index] = undefined;
 				side_indicators[index+1][0] = undefined; 

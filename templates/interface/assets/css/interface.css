@@ -47,9 +47,8 @@ li {
 #confirm-form{
 	position: relative;
 	overflow: scroll;
-	width: 85%;
-	margin-top: 30px;
-	margin-bottom: 30px;
+	width: 80%;
+	height: 100vh;
 }
 
 #message, #key-message{
@@ -149,7 +148,7 @@ li {
 	text-align: center;
 	font-size: 15px;
 	height: 40px;
-	width: 250px;
+	width: 180px;
 	border: 2px solid black;
 	background: linear-gradient(to right, #efefef 0%, #ffffff 0%);
 	cursor: pointer;
