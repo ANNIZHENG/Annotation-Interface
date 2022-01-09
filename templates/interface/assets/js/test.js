@@ -5,8 +5,11 @@ recording_id = 1;
 var colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
 var current_colors_index = 0;
 
-// prevent deletion and mousemove happen at the same time
+// prevent deletion and mousemove happening at the same time
 var suppress = false;
+
+// prevent moving and clicking happening at the same time
+var not_moving = true;
 
 // Location
 var curr_azimuth = 0;
@@ -74,7 +77,10 @@ document.getElementById('audio').load();
 document.getElementById('body').addEventListener("mouseup",function(){ 
 	document.getElementById('body').style.cursor = 'default'; 
 });
+
+document.getElementById('key-message').addEventListener("click",popKeyRules);
 document.getElementById('message').addEventListener("click",popRules);
+
 document.getElementById('instruction-left').addEventListener("click",move_instruction_last);
 document.getElementById('instruction-right').addEventListener("click",move_instruction_next);
 document.getElementById("sign").addEventListener("click",closeRules);
@@ -87,6 +93,11 @@ document.getElementById('azimuth-plus').addEventListener("click",move_azimuth_pl
 document.getElementById('elevation-plus').addEventListener("click",move_elevation_plus);
 document.getElementById('azimuth-minus').addEventListener("click",move_azimuth_minus);
 document.getElementById('elevation-minus').addEventListener("click",move_elevation_minus);
+
+function popKeyRules(e){
+	e.preventDefault();
+	window.alert("Press [Option] or [Alt] key to add an annotation once you see the cursor turning to '+'\n\nPress [Command] or [Win] key to delete an annotation once you see the cursor turning to '-'\n\nDeleting an annotation means to delete both its annotated azimuth and elevation(s)")
+}
 
 function popRules(e){ 
 	e.preventDefault();
@@ -119,10 +130,10 @@ function move_instruction_last(e){
 function addSourceCount(){
 	document.getElementById('2d-question').innerHTML = "Please identify the location of each source:";
 
-	document.getElementById('head').setAttribute('style',"background-image: url('/templates/interface/img/head.png'); display:inline-block;");
-	document.getElementById('feedback').setAttribute('style',"display:inline-block;");
-	document.getElementById('front').setAttribute('style',"background-image: url('/templates/interface/img/front.png'); display: inline-block;");
-	document.getElementById('side').setAttribute('style',"background-image: url('/templates/interface/img/side.png'); display: inline-block;");
+	document.getElementById('head').setAttribute('style',"background-image: url('/templates/interface/img/head.png');");
+	document.getElementById('feedback').setAttribute('style',"");
+	document.getElementById('front').setAttribute('style',"background-image: url('/templates/interface/img/front.png');");
+	document.getElementById('side').setAttribute('style',"background-image: url('/templates/interface/img/side.png');");
 
 	displayButton();
 	source_count = document.getElementById('count').value;
@@ -166,7 +177,7 @@ function askProceed(){
 	if (findUndefinedAzimuth() != findUndefinedElevation()) { window.alert("The number of annotated azimuth does not match with that of elevation"); return false; }
 	if (findUndefinedAzimuth() == -2 || findUndefinedAzimuth() == -2) { window.alert("Your annotation number is greater than the source count you entered. Please delete some of them."); return false; }
 	if (findUndefinedAzimuth() != -1 || findUndefinedElevation() != -1 ) { 
-		if (confirm("You haven't annotated all sources yet. Do you still want to proceed?")) return true;
+		if (confirm("You haven't annotated all sources yet.\n\nDo you still want to proceed?")) return true;
 		else return false;
 	}
 	return true;
@@ -289,15 +300,13 @@ function displayBoth(hasFront, index, temp_azimuth, degree){
 	}
 }
 
-// TODO:
 function changeSize(item_index){
-
 	const selected_azimuth = azimuth[item_index - 1];
 	let size = 15 - 6;
 	let margin_top = -12 + 6;
 
 	for ( let index = azimuth.length - 1; index > -1; index-- ){
-		if ( selected_azimuth != undefined && selected_azimuth == azimuth[index] ) {
+		if ( selected_azimuth != undefined && Math.abs( selected_azimuth - azimuth[index] ) <= 3) {
 			if ( index != (item_index - 1) ){
 				indicators[item_index][index] = true;
 				indicators[index+1][item_index-1] = true;
@@ -309,7 +318,7 @@ function changeSize(item_index){
 			document.getElementById('head-item-'+(index + 1)).style.marginTop = margin_top.toString() + 'px';
 
 		}
-		else if ( selected_azimuth == undefined || selected_azimuth != azimuth[index] ) {
+		else if ( selected_azimuth == undefined || Math.abs( selected_azimuth - azimuth[index] ) > 3 ) {
 			if ( item_index == 1 && indicators[1][index] ) {
 				indicators[1][index] = undefined;
 				indicators[index+1][0] = undefined; 
@@ -404,10 +413,9 @@ function changeSize(item_index){
 	margin_top = -12 + 6;
 
 	for ( let index = elevation.length - 1; index > -1; index-- ) {
-		const current_index_degree = parseInt(document.getElementById('circularF'+(index+1)).style.transform.replace('rotate(','').replace('deg)',''));
+		const current_index_degree = document.getElementById('circularF'+(index+1)).style.display != 'none' ? parseInt(document.getElementById('circularF'+(index+1)).style.transform.replace('rotate(','').replace('deg)','')) : undefined ;
 
-		if ( selected_elevation != undefined && selected_elevation_degree == current_index_degree ) {
-
+		if ( selected_elevation != undefined && Math.abs( selected_elevation_degree - current_index_degree ) <= 3 ) {
 			if ( index != (item_index - 1) ){
 				front_indicators[item_index][index] = true;
 				front_indicators[index+1][item_index-1] = true;
@@ -419,7 +427,7 @@ function changeSize(item_index){
 			document.getElementById('front-item-'+(index + 1)).style.marginTop = margin_top.toString() + 'px';
 
 		}
-		else if ( selected_elevation == undefined || selected_elevation_degree != current_index_degree ) {
+		else if ( selected_elevation == undefined || Math.abs( selected_elevation_degree - current_index_degree ) > 3 ) {
 			if ( item_index == 1 && front_indicators[1][index] ) {
 				front_indicators[1][index] = undefined;
 				front_indicators[index+1][0] = undefined; 
@@ -514,22 +522,21 @@ function changeSize(item_index){
 	margin_top = -12 + 6;
 
 	for ( let index = elevation.length - 1; index > -1; index-- ) {
-		const current_index_degree2 = parseInt(document.getElementById('circularS'+(index+1)).style.transform.replace('rotate(','').replace('deg)',''));
+		const current_index_degree2 = document.getElementById('circularS'+(index+1)).style.display != 'none' ? parseInt(document.getElementById('circularS'+(index+1)).style.transform.replace('rotate(','').replace('deg)','')) : undefined ;
 
-		if ( selected_elevation2 != undefined && selected_elevation_degree2 == current_index_degree2 ) {
-
+		if ( selected_elevation2 != undefined && Math.abs( selected_elevation_degree2 - current_index_degree2 ) <= 3 ) {
 			if ( index != (item_index - 1) ){
 				side_indicators[item_index][index] = true;
 				side_indicators[index+1][item_index-1] = true;
 			}
-
 			size = size + 6;
 			margin_top = margin_top - 6;
+
 			document.getElementById('side-item-'+(index + 1)).style.height = size.toString() + 'px';
 			document.getElementById('side-item-'+(index + 1)).style.marginTop = margin_top.toString() + 'px';
 
 		}
-		else if ( selected_elevation2 == undefined || selected_elevation_degree2 != current_index_degree2 ) {
+		else if ( selected_elevation2 == undefined || Math.abs( selected_elevation_degree2 - current_index_degree2 ) > 3 ) {
 			if ( item_index == 1 && side_indicators[1][index] ) {
 				side_indicators[1][index] = undefined;
 				side_indicators[index+1][0] = undefined; 
@@ -810,13 +817,24 @@ function dragElement(index,indicator,add_index){
 	original_side_degree = parseInt(document.getElementById('circularS'+index).style.transform.replace('rotate(','').replace('deg)',''));
 
 	itemS.onmousedown = function(){
-		if (suppress) return;
+
+		if(suppress) {
+			// prevent undesired behaviors
+			document.onmousedown = null;
+			document.onmouseup = null;
+			document.onmousemove = null;
+			return;
+		}
 
 		document.onmousemove = mouse;
-		document.onmouseup = function(e){
-			if (suppress) return; 
-			e.preventDefault();
-			suppress = true;
+		document.onmouseup = function(){
+			if(not_moving){
+				// prevent undesired behaviors
+				document.onmousedown = null;
+				document.onmouseup = null;
+				document.onmousemove = null;
+				return;
+			}
 
 			temp_azimuthS = parseInt(document.getElementById('circularS'+index).style.transform.replace('rotate(','').replace('deg)',''));
 
@@ -826,9 +844,12 @@ function dragElement(index,indicator,add_index){
 				if ( ((degree < 90 || degree > 270) && (temp_azimuthS > 180)) || ((degree > 90 && degree < 270) && (temp_azimuthS < 180)) ){
 					window.alert("Your side view annotation does not match with your azimuth");
 					itemS.style.transform = 'rotate('+original_side_degree+'deg)';
-					document.onmouseup = null; 
-					document.onmousemove = null;
 					document.getElementById('p-elevation').innerHTML = elevation[add_index];
+
+					// prevent undesired behaviors
+					document.onmousedown = null;
+					document.onmouseup = null;
+					document.onmousemove = null;
 					return;
 				}
 
@@ -862,19 +883,34 @@ function dragElement(index,indicator,add_index){
 
 			changeSize(index);
 
-			document.onmouseup = null; 
+			suppress = true;
+			not_moving = true;
+
+			// prevent undesired behaviors
+			document.onmousedown = null;
+			document.onmouseup = null;
 			document.onmousemove = null;
 		}
 	}
 
 	itemF.onmousedown = function(){
-		if (suppress) return;
+		if(suppress) {
+			// prevent undesired behaviors
+			document.onmousedown = null;
+			document.onmouseup = null;
+			document.onmousemove = null;
+			return; 
+		}
 
 		document.onmousemove = mouse;
-		document.onmouseup = function(e){
-			if (suppress) return; 
-			e.preventDefault();
-			suppress = true;
+		document.onmouseup = function() {
+			if (not_moving){
+				// prevent undesired behaviors
+				document.onmousedown = null;
+				document.onmouseup = null;
+				document.onmousemove = null;
+				return;
+			}
 
 			temp_azimuthF = parseInt(document.getElementById('circularF'+index).style.transform.replace('rotate(','').replace('deg)',''));
 
@@ -884,9 +920,11 @@ function dragElement(index,indicator,add_index){
 				if ( (degree < 180 && temp_azimuthF > 180) || (degree > 180 && temp_azimuthF < 180) ){
 					window.alert("Your back view annotation does not match with your azimuth");
 					itemF.style.transform = 'rotate('+original_front_degree+'deg)';
-					document.onmouseup = null; 
-					document.onmousemove = null;
 					document.getElementById('p-elevation').innerHTML = elevation[add_index];
+					// prevent undesired behaviors
+					document.onmousedown = null;
+					document.onmouseup = null;
+					document.onmousemove = null;
 					return;
 				}
 
@@ -920,19 +958,34 @@ function dragElement(index,indicator,add_index){
 
 			changeSize(index);
 
-			document.onmouseup = null; 
+			suppress = true;
+			not_moving = true;
+
+			// prevent undesired behaviors
+			document.onmousedown = null;
+			document.onmouseup = null;
 			document.onmousemove = null;
 		}
 	}
 
 	item.onmousedown = function() {
-		if (suppress) return;
+		if(suppress) {
+			// prevent undesired behaviors
+			document.onmousedown = null;
+			document.onmouseup = null;
+			document.onmousemove = null;
+			return;
+		}
 
    		document.onmousemove = mouse;
-		document.onmouseup = function(e) {
-			if (suppress) return; 
-			e.preventDefault();
-			suppress = true;
+		document.onmouseup = function() {
+			if (not_moving){
+				// prevent undesired behaviors
+				document.onmousedown = null;
+				document.onmouseup = null;
+				document.onmousemove = null;
+				return;
+			}
 
 			temp_azimuth = parseInt(document.getElementById('p-azimuth').innerHTML);
 
@@ -957,14 +1010,17 @@ function dragElement(index,indicator,add_index){
 
 			changeSize(index);
 
+			suppress = true;
+			not_moving = true;
+
+			// prevent undesired behaviors
+			document.onmousedown = null;
 			document.onmouseup = null;
 			document.onmousemove = null;
 		}
 	}
-	function mouse(e) {
-		if (suppress) return;
-		e.preventDefault();
 
+	function mouse(e) {
 		if (indicator == 1) {
 			var ilocationF = itemF.getBoundingClientRect();
 			var cxF = (ilocationF.right + ilocationF.left) / 2;
@@ -1004,6 +1060,8 @@ function dragElement(index,indicator,add_index){
 			document.getElementById('p-azimuth').innerHTML = temp_azimuth;
 			document.getElementById('p-elevation').innerHTML = (elevation[add_index] != undefined ? elevation[add_index] : 0);
 		}
+		suppress = false;
+		not_moving = false;
 	}
 }
 
@@ -1097,41 +1155,45 @@ function calculateRadius(mouseX, mouseY, frameX, frameY){
 var enable_head = false;
 var enable_front = false;
 var enable_side = false;
-var delete_head = false;
-var delete_front = false;
-var delete_side = false;
+var delete_annotation = false;
 var add_third = false;
 
 document.addEventListener("keydown", keyboardEvents);
-function keyboardEvents(e){
-	e.preventDefault(); // prevent any undesired keyboard event
 
-	/*
-	if (e.keyCode === 65){
-		console.log("Azimuth: "+azimuth.toString());
-		console.log("Elevation: "+elevation.toString());
+function keyboardEvents(e){
+	e.preventDefault();
+
+	if (e.keyCode == 65){
+		console.log(side_indicators);
+		console.log(parseInt(document.getElementById('circularS'+2).style.transform.replace('rotate(','').replace('deg)','')));
+		console.log(parseInt(document.getElementById('circularS'+2).style.display));
 	}
-	*/
 	
 	if(e.metaKey){
 		document.getElementById('body').style.cursor = "url('/templates/interface/img/minus.svg'), auto";
 
-		enable_head = false; enable_front = false; enable_side = false; // no adding should be allowed
-		delete_head = true; delete_front = true; delete_side = true; // deletion active
+		// disable adding events
+		enable_head = false; 
+		enable_front = false; 
+		enable_side = false;
 
-		document.onkeydown = null; // to indicate that the key was already pressed
-		suppress = true; // to prevent dragging event
+		// enable deleting events
+		delete_annotation = true;
+
+		// prevent dragging event
+		suppress = true;
+		
 		return;
 	}
 
 	// set up to get location
-	document.getElementById('circular0').setAttribute('style','');
-	document.getElementById('circularF0').setAttribute('style','');
-	document.getElementById('circularS0').setAttribute('style','');
+	document.getElementById('circular').setAttribute('style','');
+	document.getElementById('circularF').setAttribute('style','');
+	document.getElementById('circularS').setAttribute('style','');
 
-	head_frameLocation = document.getElementById('circular0').getBoundingClientRect();
-	front_frameLocation = document.getElementById('circularF0').getBoundingClientRect();
-	side_frameLocation = document.getElementById('circularS0').getBoundingClientRect();
+	head_frameLocation = document.getElementById('circular').getBoundingClientRect();
+	front_frameLocation = document.getElementById('circularF').getBoundingClientRect();
+	side_frameLocation = document.getElementById('circularS').getBoundingClientRect();
 	head_cx = ( head_frameLocation.right + head_frameLocation.left ) / 2;
 	head_cy = ( head_frameLocation.top + head_frameLocation.bottom ) / 2;
 	front_cx = ( front_frameLocation.right + front_frameLocation.left ) / 2;
@@ -1140,7 +1202,9 @@ function keyboardEvents(e){
 	side_cy = ( side_frameLocation.top + side_frameLocation.bottom ) / 2;
 
 	if (e.altKey){
-		delete_head = false; delete_front = false; delete_side = false; // prevent deletion
+		// disable deleting events
+		delete_annotation = false;
+
 		document.getElementById('body').style.cursor = 'cell';
 
 		key_perform = true;
@@ -1154,19 +1218,26 @@ function keyboardEvents(e){
 
 			if (enable_head){
 				if ( azimuth_item_index == -1 ){
-					window.alert("You have already enter " + source_count + " azimuth elements. CLICK ANYWHERE to exit adding."); 
+					window.alert("You have already enter " + source_count + " azimuth elements"); 
+					document.getElementById('body').style.cursor = 'default'; 
 					key_perform = false;
 					enable_head = false;
-					document.onmousedown = null; 
+
+					// prevent undesired events
+					document.onmousedown = null;
 					document.onkeydown = null; 
-					document.getElementById('body').style.cursor = 'default'; 
 					return;
 				}
 
 				if ((azimuth_item_index > elevation_item_index) && elevation_item_index != -1) {
-					enable_head = false;
-					window.alert("You must annotate an elevation. CLICK ANYWHERE to exit adding. "); 
+					window.alert("You must annotate an elevation"); 
+					document.getElementById('body').style.cursor = 'default'; 
 					key_perform = false;
+					enable_head = false;
+
+					// prevent undesired events
+					document.onmousedown = null;
+					document.onkeydown = null; 
 					return;
 				}
 
@@ -1179,10 +1250,13 @@ function keyboardEvents(e){
 					if ( (original_front < 180 && curr_azimuth > 180)
 					|| (original_front > 180 && curr_azimuth < 180) ) {
 						window.alert("Your head view annotation does not match with your front view annotation"); 
+						document.getElementById('body').style.cursor = 'default'; 
 						key_perform = false;
+						enable_head = false;
+
+						// prevent undesired events
 						document.onmousedown = null;
 						document.onkeydown = null;
-						document.getElementById('body').style.cursor = 'default'; 
 						return;
 					}
 
@@ -1230,17 +1304,19 @@ function keyboardEvents(e){
 							else{ document.getElementById('circularS'+azimuth_item_index).style.transform = 'rotate('+(360-degree)+'deg)';  }
 						}
 					}
-
 				}
 				else if ( document.getElementById('side-item-'+azimuth_item_index).style.display != 'none' ){
 					original_side = parseInt(document.getElementById('circularS'+azimuth_item_index).style.transform.replace('rotate(','').replace('deg)',''));
 					if ( ((curr_azimuth < 90 || curr_azimuth > 270) && (original_side > 180))
 					|| ((curr_azimuth > 90 && curr_azimuth < 270) && (original_side < 180)) ) {
 						window.alert("Your head view annotation does not match with your side view annotation");
-						key_perform = false;
-						document.onmousedown = null; 
-						document.onkeydown = null;
 						document.getElementById('body').style.cursor = 'default'; 
+						key_perform = false;
+						enable_head = false;
+
+						// prevent undesired events
+						document.onmousedown = null;
+						document.onkeydown = null;
 						return;
 					}
 
@@ -1308,26 +1384,35 @@ function keyboardEvents(e){
 				document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 				document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 
-				enable_head = false; enable_front = false; enable_side = false;
+				key_perform = false;
+				enable_head = false;
 
-				document.onmousedown = null; 
+				// prevent undesired events
+				document.onmousedown = null;
 				document.onkeydown = null;
 			}
 			else if (enable_front){
 				if ( elevation_item_index == -1 ){
-					enable_front = false;
-					window.alert("You have already enter " + source_count + " elevation elements. CLICK ANYWHERE to exit adding."); 
-					key_perform = false;
-					document.onmousedown = null; 
-					document.onkeydown = null;
+					window.alert("You have already enter " + source_count + " elevation elements"); 
 					document.getElementById('body').style.cursor = 'default'; 
+					key_perform = false;
+					enable_front = false;
+
+					// prevent undesired events
+					document.onmousedown = null;
+					document.onkeydown = null;
 					return;
 				}
 
 				if ((elevation_item_index > azimuth_item_index) && azimuth_item_index != -1) {
-					enable_front = false;
-					window.alert("You must annotate an azimuth. CLICK ANYWHERE to exit adding."); 
+					window.alert("You must annotate an azimuth"); 
+					document.getElementById('body').style.cursor = 'default'; 
 					key_perform = false;
+					enable_front = false;
+
+					// prevent undesired events
+					document.onmousedown = null;
+					document.onkeydown = null;
 					return;
 				}
 
@@ -1430,25 +1515,40 @@ function keyboardEvents(e){
 				document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 				document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 
-				enable_head = false; enable_front = false; enable_side = false; // exit adding
-				document.onmousedown = null; 
+				enable_front = false; 
+				// enable_head = false;
+				// enable_side = false;
+
+				key_perform = false;
+				enable_front = false;
+
+				// prevent undesired events
+				document.onmousedown = null;
 				document.onkeydown = null;
 			}
 			else if (enable_side){
 				if (elevation_item_index == -1){
-					window.alert("You have already enter " + source_count + " elevation elements. CLICK ANYWHERE to exit adding."); 
+					window.alert("You have already enter " + source_count + " elevation elements"); 
+					document.getElementById('body').style.cursor = 'default';
 					key_perform = false;
 					enable_side = false;
+
+					// prevent undesired events
 					document.onmousedown = null; 
 					document.onkeydown = null;
-					document.getElementById('body').style.cursor = 'default'; 
+
 					return;
 				}
 
 				if ((elevation_item_index > azimuth_item_index) && azimuth_item_index != -1) {
-					enable_side = false;
-					window.alert("You must annotate an azimuth. CLICK ANYWHERE to exit adding."); 
+					window.alert("You must annotate an azimuth"); 
+					document.getElementById('body').style.cursor = 'default';
 					key_perform = false;
+					enable_side = false;
+
+					// prevent undesired events
+					document.onmousedown = null; 
+					document.onkeydown = null;
 					return;
 				}
 
@@ -1551,11 +1651,17 @@ function keyboardEvents(e){
 				document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 				document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 
-				enable_head = false; enable_front = false; enable_side = false; // exit adding
+				enable_side = false;
+				// enable_head = false;
+				// enable_front = false; 
+
+				// prevent undesired events
 				document.onmousedown = null; 
 				document.onkeydown = null;
 			}
+
 			key_perform = false;
+
 		}, {once:true});
 	}
 	return;
@@ -1567,6 +1673,7 @@ function reloadAll(){
 	current_colors_index = 0;
 	curr_azimuth = 0;
 	curr_elevation = 0;
+
 	indicators = {
 		1: [],
 		2: [],
@@ -1620,6 +1727,10 @@ function reloadAll(){
 	document.getElementById('p-elevation').innerHTML = '';
 	document.getElementById('azimuth-dot').style.backgroundColor = '';
 	document.getElementById('elevation-dot').style.backgroundColor = '';
+
+	document.onmousedown = null; 
+	document.onkeydown = null;
+
 	removeAllBalls();
 }
 
@@ -1643,7 +1754,9 @@ function findDefinedAnnotation(flag){
 }
 
 document.getElementById('head-item-1').addEventListener("mousedown",function(e){
-	if (delete_head){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[0] = undefined;
 		elevation[0] = undefined;
 		changeSize(1);
@@ -1668,12 +1781,19 @@ document.getElementById('head-item-1').addEventListener("mousedown",function(e){
 			document.getElementById('azimuth-dot').style.backgroundColor = '';
 			document.getElementById('elevation-dot').style.backgroundColor = '';
 		}
+
 		key_perform = false;
 		current_colors_index = 0;
 
 		deleteBall(1);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[0] == undefined ? 0 : azimuth[0]);
@@ -1682,12 +1802,15 @@ document.getElementById('head-item-1').addEventListener("mousedown",function(e){
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		current_colors_index = 0;
+
 		suppress = false;
 		dragElement(1,0,0);
 	}
 });
 document.getElementById('head-item-2').addEventListener("mousedown",function(e){
-	if (delete_head){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[1] = undefined;
 		elevation[1] = undefined;
 		changeSize(2);
@@ -1715,8 +1838,14 @@ document.getElementById('head-item-2').addEventListener("mousedown",function(e){
 		current_colors_index = annotation;
 
 		deleteBall(2);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[1] == undefined ? 0 : azimuth[1]);
@@ -1725,12 +1854,15 @@ document.getElementById('head-item-2').addEventListener("mousedown",function(e){
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		current_colors_index = 1;
+
 		suppress = false;
 		dragElement(2,0,1);
 	}
 });
 document.getElementById('head-item-3').addEventListener("mousedown",function(e){
-	if (delete_head){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[2] = undefined;
 		elevation[2] = undefined;
 		changeSize(3);
@@ -1758,8 +1890,14 @@ document.getElementById('head-item-3').addEventListener("mousedown",function(e){
 		key_perform = false;
 		current_colors_index = annotation;
 		deleteBall(3);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[2] == undefined ? 0 : azimuth[2]);
@@ -1773,7 +1911,9 @@ document.getElementById('head-item-3').addEventListener("mousedown",function(e){
 	}
 });
 document.getElementById('head-item-4').addEventListener("mousedown",function(e){
-	if (delete_head){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[3] = undefined;
 		elevation[3] = undefined;
 		changeSize(4);
@@ -1802,8 +1942,14 @@ document.getElementById('head-item-4').addEventListener("mousedown",function(e){
 		current_colors_index = annotation;
 
 		deleteBall(4);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[3] == undefined ? 0 : azimuth[3]);
@@ -1817,7 +1963,9 @@ document.getElementById('head-item-4').addEventListener("mousedown",function(e){
 	}
 });
 document.getElementById('head-item-5').addEventListener("mousedown",function(e){
-	if (delete_head){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[4] = undefined;
 		elevation[4] = undefined;
 		changeSize(5);
@@ -1846,8 +1994,14 @@ document.getElementById('head-item-5').addEventListener("mousedown",function(e){
 		current_colors_index = annotation;
 
 		deleteBall(5);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[4] == undefined ? 0 : azimuth[4]);
@@ -1861,7 +2015,9 @@ document.getElementById('head-item-5').addEventListener("mousedown",function(e){
 	}
 });
 document.getElementById('head-item-6').addEventListener("mousedown",function(e){
-	if (delete_head){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[5] = undefined;
 		elevation[5] = undefined;
 		changeSize(6);
@@ -1890,8 +2046,14 @@ document.getElementById('head-item-6').addEventListener("mousedown",function(e){
 		current_colors_index = annotation;
 
 		deleteBall(6);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[5] == undefined ? 0 : azimuth[5]);
@@ -1905,7 +2067,9 @@ document.getElementById('head-item-6').addEventListener("mousedown",function(e){
 	}
 });
 document.getElementById('head-item-7').addEventListener("mousedown",function(e){
-	if (delete_head){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[6] = undefined;
 		elevation[6] = undefined;
 		changeSize(7);
@@ -1934,8 +2098,14 @@ document.getElementById('head-item-7').addEventListener("mousedown",function(e){
 		current_colors_index = annotation;
 
 		deleteBall(7);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[6] == undefined ? 0 : azimuth[6]);
@@ -1949,7 +2119,9 @@ document.getElementById('head-item-7').addEventListener("mousedown",function(e){
 	}
 });
 document.getElementById('head-item-8').addEventListener("mousedown",function(e){
-	if (delete_head){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[7] = undefined;
 		elevation[7] = undefined;
 		changeSize(8);
@@ -1978,8 +2150,14 @@ document.getElementById('head-item-8').addEventListener("mousedown",function(e){
 		current_colors_index = annotation;
 
 		deleteBall(8);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[7] == undefined ? 0 : azimuth[7]);
@@ -1993,7 +2171,9 @@ document.getElementById('head-item-8').addEventListener("mousedown",function(e){
 	}
 });
 document.getElementById('head-item-9').addEventListener("mousedown",function(e){
-	if (delete_head){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[8] = undefined;
 		elevation[8] = undefined;
 		changeSize(9);
@@ -2022,8 +2202,14 @@ document.getElementById('head-item-9').addEventListener("mousedown",function(e){
 		current_colors_index = annotation;
 
 		deleteBall(9);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[8] == undefined ? 0 : azimuth[8]);
@@ -2037,7 +2223,9 @@ document.getElementById('head-item-9').addEventListener("mousedown",function(e){
 	}
 });
 document.getElementById('head-item-10').addEventListener("mousedown",function(e){
-	if (delete_head){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[9] = undefined;
 		elevation[9] = undefined;
 		changeSize(10);
@@ -2066,8 +2254,14 @@ document.getElementById('head-item-10').addEventListener("mousedown",function(e)
 		current_colors_index = annotation;
 
 		deleteBall(10);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[9] == undefined ? 0 : azimuth[9]);
@@ -2080,9 +2274,10 @@ document.getElementById('head-item-10').addEventListener("mousedown",function(e)
 		dragElement(10,0,9);
 	}
 });
-
 document.getElementById('front-item-1').addEventListener("mousedown",function(e){
-	if (delete_front){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[0] = undefined;
 		elevation[0] = undefined;
 		changeSize(1);
@@ -2111,8 +2306,14 @@ document.getElementById('front-item-1').addEventListener("mousedown",function(e)
 		current_colors_index = 0;
 
 		deleteBall(1);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[0] == undefined ? 0 : azimuth[0]);
@@ -2126,7 +2327,9 @@ document.getElementById('front-item-1').addEventListener("mousedown",function(e)
 	}
 });
 document.getElementById('front-item-2').addEventListener("mousedown",function(e){
-	if (delete_front){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[1] = undefined;
 		elevation[1] = undefined;
 		changeSize(2);
@@ -2155,8 +2358,14 @@ document.getElementById('front-item-2').addEventListener("mousedown",function(e)
 		current_colors_index = annotation;
 
 		deleteBall(2);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[1] == undefined ? 0 : azimuth[1]);
@@ -2170,7 +2379,9 @@ document.getElementById('front-item-2').addEventListener("mousedown",function(e)
 	}
 });
 document.getElementById('front-item-3').addEventListener("mousedown",function(e){
-	if (delete_front){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[2] = undefined;
 		elevation[2] = undefined;
 		changeSize(3);
@@ -2199,8 +2410,14 @@ document.getElementById('front-item-3').addEventListener("mousedown",function(e)
 		current_colors_index = annotation;
 
 		deleteBall(3);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[2] == undefined ? 0 : azimuth[2]);
@@ -2214,7 +2431,9 @@ document.getElementById('front-item-3').addEventListener("mousedown",function(e)
 	}
 });
 document.getElementById('front-item-4').addEventListener("mousedown",function(e){
-	if (delete_front){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[3] = undefined;
 		elevation[3] = undefined;
 		changeSize(4);
@@ -2243,8 +2462,14 @@ document.getElementById('front-item-4').addEventListener("mousedown",function(e)
 		current_colors_index = annotation;
 
 		deleteBall(4);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[3] == undefined ? 0 : azimuth[3]);
@@ -2258,7 +2483,9 @@ document.getElementById('front-item-4').addEventListener("mousedown",function(e)
 	}
 });
 document.getElementById('front-item-5').addEventListener("mousedown",function(e){
-	if (delete_front){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[4] = undefined;
 		elevation[4] = undefined;
 		changeSize(5);
@@ -2287,8 +2514,14 @@ document.getElementById('front-item-5').addEventListener("mousedown",function(e)
 		current_colors_index = annotation;
 
 		deleteBall(5);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[4] == undefined ? 0 : azimuth[4]);
@@ -2302,7 +2535,9 @@ document.getElementById('front-item-5').addEventListener("mousedown",function(e)
 	}
 });
 document.getElementById('front-item-6').addEventListener("mousedown",function(e){
-	if (delete_front){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[5] = undefined;
 		elevation[5] = undefined;
 		changeSize(6);
@@ -2331,8 +2566,14 @@ document.getElementById('front-item-6').addEventListener("mousedown",function(e)
 		current_colors_index = annotation;
 
 		deleteBall(6);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[5] == undefined ? 0 : azimuth[5]);
@@ -2346,7 +2587,9 @@ document.getElementById('front-item-6').addEventListener("mousedown",function(e)
 	}
 });
 document.getElementById('front-item-7').addEventListener("mousedown",function(e){
-	if (delete_front){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[6] = undefined;
 		elevation[6] = undefined;
 		changeSize(7);
@@ -2375,8 +2618,14 @@ document.getElementById('front-item-7').addEventListener("mousedown",function(e)
 		current_colors_index = annotation;
 
 		deleteBall(7);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[6] == undefined ? 0 : azimuth[6]);
@@ -2390,7 +2639,9 @@ document.getElementById('front-item-7').addEventListener("mousedown",function(e)
 	}
 });
 document.getElementById('front-item-8').addEventListener("mousedown",function(e){
-	if (delete_front){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[7] = undefined;
 		elevation[7] = undefined;
 		changeSize(8);
@@ -2419,8 +2670,14 @@ document.getElementById('front-item-8').addEventListener("mousedown",function(e)
 		current_colors_index = annotation;
 
 		deleteBall(8);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[7] == undefined ? 0 : azimuth[7]);
@@ -2434,7 +2691,9 @@ document.getElementById('front-item-8').addEventListener("mousedown",function(e)
 	}
 });
 document.getElementById('front-item-9').addEventListener("mousedown",function(e){
-	if (delete_front){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[8] = undefined;
 		elevation[8] = undefined;
 		changeSize(9);
@@ -2463,8 +2722,14 @@ document.getElementById('front-item-9').addEventListener("mousedown",function(e)
 		current_colors_index = annotation;
 
 		deleteBall(9);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[8] == undefined ? 0 : azimuth[8]);
@@ -2478,7 +2743,9 @@ document.getElementById('front-item-9').addEventListener("mousedown",function(e)
 	}
 });
 document.getElementById('front-item-10').addEventListener("mousedown",function(e){
-	if (delete_front){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[9] = undefined;
 		elevation[9] = undefined;
 		changeSize(10);
@@ -2507,8 +2774,14 @@ document.getElementById('front-item-10').addEventListener("mousedown",function(e
 		current_colors_index = annotation;
 
 		deleteBall(10);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[9] == undefined ? 0 : azimuth[9]);
@@ -2523,7 +2796,9 @@ document.getElementById('front-item-10').addEventListener("mousedown",function(e
 });
 
 document.getElementById('side-item-1').addEventListener("mousedown",function(e){
-	if (delete_side){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[0] = undefined;
 		elevation[0] = undefined;
 		changeSize(1);
@@ -2552,8 +2827,14 @@ document.getElementById('side-item-1').addEventListener("mousedown",function(e){
 		current_colors_index = 0;
 
 		deleteBall(1);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[0] == undefined ? 0 : azimuth[0]);
@@ -2567,7 +2848,9 @@ document.getElementById('side-item-1').addEventListener("mousedown",function(e){
 	}
 });
 document.getElementById('side-item-2').addEventListener("mousedown",function(e){
-	if (delete_side){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[1] = undefined;
 		elevation[1] = undefined;
 		changeSize(2);
@@ -2596,8 +2879,14 @@ document.getElementById('side-item-2').addEventListener("mousedown",function(e){
 		current_colors_index = annotation;
 
 		deleteBall(2);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[1] == undefined ? 0 : azimuth[1]);
@@ -2611,7 +2900,9 @@ document.getElementById('side-item-2').addEventListener("mousedown",function(e){
 	}
 });
 document.getElementById('side-item-3').addEventListener("mousedown",function(e){
-	if (delete_side){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[2] = undefined;
 		elevation[2] = undefined;
 		changeSize(3);
@@ -2640,8 +2931,14 @@ document.getElementById('side-item-3').addEventListener("mousedown",function(e){
 		current_colors_index = annotation;
 
 		deleteBall(3);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[2] == undefined ? 0 : azimuth[2]);
@@ -2655,7 +2952,9 @@ document.getElementById('side-item-3').addEventListener("mousedown",function(e){
 	}
 });
 document.getElementById('side-item-4').addEventListener("mousedown",function(e){
-	if (delete_side){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[3] = undefined;
 		elevation[3] = undefined;
 		changeSize(4);
@@ -2684,8 +2983,14 @@ document.getElementById('side-item-4').addEventListener("mousedown",function(e){
 		current_colors_index = annotation;
 
 		deleteBall(4);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[3] == undefined ? 0 : azimuth[3]);
@@ -2699,7 +3004,9 @@ document.getElementById('side-item-4').addEventListener("mousedown",function(e){
 	}
 });
 document.getElementById('side-item-5').addEventListener("mousedown",function(e){
-	if (delete_side){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[4] = undefined;
 		elevation[4] = undefined;
 		changeSize(5);
@@ -2728,8 +3035,14 @@ document.getElementById('side-item-5').addEventListener("mousedown",function(e){
 		current_colors_index = annotation;
 
 		deleteBall(5);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[4] == undefined ? 0 : azimuth[4]);
@@ -2743,7 +3056,9 @@ document.getElementById('side-item-5').addEventListener("mousedown",function(e){
 	}
 });
 document.getElementById('side-item-6').addEventListener("mousedown",function(e){
-	if (delete_side){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[5] = undefined;
 		elevation[5] = undefined;
 		changeSize(6);
@@ -2772,8 +3087,14 @@ document.getElementById('side-item-6').addEventListener("mousedown",function(e){
 		current_colors_index = annotation;
 
 		deleteBall(6);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[5] == undefined ? 0 : azimuth[5]);
@@ -2787,7 +3108,9 @@ document.getElementById('side-item-6').addEventListener("mousedown",function(e){
 	}
 });
 document.getElementById('side-item-7').addEventListener("mousedown",function(e){
-	if (delete_side){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[6] = undefined;
 		elevation[6] = undefined;
 		changeSize(7);
@@ -2816,8 +3139,14 @@ document.getElementById('side-item-7').addEventListener("mousedown",function(e){
 		current_colors_index = annotation;
 
 		deleteBall(7);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[6] == undefined ? 0 : azimuth[6]);
@@ -2831,7 +3160,9 @@ document.getElementById('side-item-7').addEventListener("mousedown",function(e){
 	}
 });
 document.getElementById('side-item-8').addEventListener("mousedown",function(e){
-	if (delete_side){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[7] = undefined;
 		elevation[7] = undefined;
 		changeSize(8);
@@ -2860,8 +3191,14 @@ document.getElementById('side-item-8').addEventListener("mousedown",function(e){
 		current_colors_index = annotation;
 
 		deleteBall(8);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[7] == undefined ? 0 : azimuth[7]);
@@ -2875,7 +3212,9 @@ document.getElementById('side-item-8').addEventListener("mousedown",function(e){
 	}
 });
 document.getElementById('side-item-9').addEventListener("mousedown",function(e){
-	if (delete_side){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[8] = undefined;
 		elevation[8] = undefined;
 		changeSize(9);
@@ -2904,8 +3243,14 @@ document.getElementById('side-item-9').addEventListener("mousedown",function(e){
 		current_colors_index = annotation;
 
 		deleteBall(9);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[8] == undefined ? 0 : azimuth[8]);
@@ -2919,7 +3264,9 @@ document.getElementById('side-item-9').addEventListener("mousedown",function(e){
 	}
 });
 document.getElementById('side-item-10').addEventListener("mousedown",function(e){
-	if (delete_side){
+	if (delete_annotation){
+		suppress = true;
+
 		azimuth[9] = undefined;
 		elevation[9] = undefined;
 		changeSize(10);
@@ -2948,8 +3295,14 @@ document.getElementById('side-item-10').addEventListener("mousedown",function(e)
 		current_colors_index = annotation;
 
 		deleteBall(10);
-		delete_head = false; delete_front = false; delete_side = false; e.metaKey = false;
-		document.onmousedown = null;
+		
+		// disable further deletion
+		delete_annotation = false;
+		e.metaKey = false;
+
+		// prevent undesired events
+		document.onmousedown = null; 
+		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
 		document.getElementById('p-azimuth').innerHTML = (azimuth[9] == undefined ? 0 : azimuth[9]);

@@ -47,4 +47,4 @@ conda activate <env_name_here>
 python3 server/main.py
 ```
 
-<img src="/templates/interface/img/example.png" />
+<img src="/templates/interface/img/4.png" />

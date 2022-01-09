@@ -14,9 +14,12 @@
             <div id="2d" style="position: absolute; display: flex; margin-top: 15px;">
 			    <div>
 				    <div id="head" style="background-image: url('/templates/interface/img/head.png');">
-                        <div class="circular" id="circular0"></div>
-                        <div class="circular" id="circular1" style="display: none;"><div class="indicator" id="head-item-1" style="display: none;"></div></div>
-                        <div class="circular" id="circular2" style="display: none;"><div class="indicator" id="head-item-2" style="display: none;"></div></div>
+                        <div class="circular" id="circular"></div>
+                        <!-- style="display: none;" -->
+                        <div class="circular" id="circular1" style="transform: rotate(90deg);"><div class="indicator" id="head-item-1"></div></div>
+                        <div class="circular" id="circular2" style="transform: rotate(270deg);"><div class="indicator" id="head-item-2"></div></div>
+
+
                         <div class="circular" id="circular3" style="display: none;"><div class="indicator" id="head-item-3" style="display: none;"></div></div>
                         <div class="circular" id="circular4" style="display: none;"><div class="indicator" id="head-item-4" style="display: none;"></div></div>
                         <div class="circular" id="circular5" style="display: none;"><div class="indicator" id="head-item-5" style="display: none;"></div></div>
@@ -27,9 +30,12 @@
                         <div class="circular" id="circular10" style="display: none;"><div class="indicator" id="head-item-10" style="display: none;"></div></div>
                     </div>
 				    <div id="front" style="background-image: url('/templates/interface/img/front.png');">
-                        <div class="circular" id="circularF0"></div>
-                        <div class="circular" id="circularF1" style="display: none;"><div class="indicator" id="front-item-1" style="display: none;"></div></div>
-                        <div class="circular" id="circularF2" style="display: none;"><div class="indicator" id="front-item-2" style="display: none;"></div></div>
+                        <div class="circular" id="circularF"></div>
+                        <!-- style="display: none;" -->
+                        <div class="circular" id="circularF1" style="transform: rotate(90deg);"><div class="indicator" id="front-item-1"></div></div>
+                        <div class="circular" id="circularF2" style="transform: rotate(270deg);"><div class="indicator" id="front-item-2"></div></div>
+
+
                         <div class="circular" id="circularF3" style="display: none;"><div class="indicator" id="front-item-3" style="display: none;"></div></div>
                         <div class="circular" id="circularF4" style="display: none;"><div class="indicator" id="front-item-4" style="display: none;"></div></div>
                         <div class="circular" id="circularF5" style="display: none;"><div class="indicator" id="front-item-5" style="display: none;"></div></div>
@@ -40,7 +46,7 @@
                         <div class="circular" id="circularF10" style="display: none;"><div class="indicator" id="front-item-10" style="display: none;"></div></div>
 				    </div>
 				    <div id="side" style="background-image: url('/templates/interface/img/side.png');">
-                        <div class="circular" id="circularS0"></div>
+                        <div class="circular" id="circularS"></div>
                         <div class="circular" id="circularS1" style="display: none;"><div class="indicator" id="side-item-1" style="display: none;"></div></div>
                         <div class="circular" id="circularS2" style="display: none;"><div class="indicator" id="side-item-2" style="display: none;"></div></div>
                         <div class="circular" id="circularS3" style="display: none;"><div class="indicator" id="side-item-3" style="display: none;"></div></div>
@@ -57,7 +63,7 @@
                     <div style="margin-bottom: 25px;">
                             <label> <p> Which annotation indicates this sound source? </p> Please click a corresponding point </label><br>
                             <audio id="audio" controls style="display: none;"><source id = "source" type="audio/wav"> Your browser does not support audio </audio>
-			                <button id="audio-frame-confirm">Play Audio</button>
+			                <button id="audio-frame-confirm">Play Audio 1</button>
                     </div>
                 </div>
             </div>

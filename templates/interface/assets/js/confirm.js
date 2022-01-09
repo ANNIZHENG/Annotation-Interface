@@ -1,4 +1,4 @@
-// TODO: ajax
+// TODO: ajax here for unconfirmed annotation audio
 
 // this should be a list of names of audios for confirmation
 const unconfirmed_annotations = [1,2];
@@ -7,6 +7,8 @@ var confirm_index = 0;
 
 // check if there is any confirmation needed
 if (totalAnnotation == 0) window.location.assign('/templates/interface/submit.html');
+
+// TODO: ajax here for unconfirmed location
 
 // colors
 var colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
@@ -19,7 +21,7 @@ var suppress = false;
 var source_count = 0;
 
 // user control of audio
-var isPlaying = false;
+var isPlaying = undefined;
 
 // these are look up tables for annotation dots' size changing 
 var indicators = {
@@ -61,7 +63,6 @@ var side_indicators = {
 	10: []
 };
 
-// TODO: load audio
 document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
 document.getElementById('audio').load();
 
@@ -79,20 +80,17 @@ function audioTracker(){
 
 function addPlaying(e){
 	e.preventDefault();
-	if (!isPlaying){
+	if (!isPlaying || isPlaying == undefined){
         isPlaying = true;
 		document.getElementById('audio').play();
-		document.getElementById('audio-frame-confirm').innerHTML='Pause Audio';
+		document.getElementById('audio-frame-confirm').innerHTML='Pause Audio '+(confirm_index+1).toString();
 	}
 	else{
 		isPlaying = false
 		document.getElementById('audio').pause();
-		document.getElementById('audio-frame-confirm').innerHTML='Play Audio';
+		document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
 	}
 }
-
-/*
-// TODO:
 
 function displayBoth(hasFront, index, temp_azimuth, degree){
 	if (hasFront){
@@ -176,9 +174,7 @@ function displayBoth(hasFront, index, temp_azimuth, degree){
 		}
 	}
 }
-*/
 
-/*
 function changeSize(item_index){
 
 	const selected_azimuth = azimuth[item_index - 1];
@@ -186,7 +182,7 @@ function changeSize(item_index){
 	let margin_top = -12 + 6;
 
 	for ( let index = azimuth.length - 1; index > -1; index-- ){
-		if ( selected_azimuth != undefined && selected_azimuth == azimuth[index] ) {
+        if ( selected_azimuth != undefined && Math.abs( selected_azimuth - azimuth[index] ) <= 3) {
 			if ( index != (item_index - 1) ){
 				indicators[item_index][index] = true;
 				indicators[index+1][item_index-1] = true;
@@ -198,7 +194,7 @@ function changeSize(item_index){
 			document.getElementById('head-item-'+(index + 1)).style.marginTop = margin_top.toString() + 'px';
 
 		}
-		else if ( selected_azimuth == undefined || selected_azimuth != azimuth[index] ) {
+        else if ( selected_azimuth == undefined || Math.abs( selected_azimuth - azimuth[index] ) > 3 ) {
 			if ( item_index == 1 && indicators[1][index] ) {
 				indicators[1][index] = undefined;
 				indicators[index+1][0] = undefined; 
@@ -507,50 +503,50 @@ function changeSize(item_index){
 		}
 	}
 }
-*/
-
-/* Manipulate the annotation points */
-
-//TODO: update audios here
 
 document.getElementById('head-item-1').addEventListener("mousedown",function(){
-    confirm_index += 1;
-    if (confirm_index == totalAnnotation) window.location.assign('/templates/interface/submit.html')
+    if (isPlaying == undefined) window.alert("Please play the audio first.");
+    else{
+        confirm_index += 1;
+        if (confirm_index == totalAnnotation) window.location.assign('/templates/interface/submit.html')
 
-    document.getElementById('head-item-1').style.display = 'none';
-    document.getElementById('front-item-1').style.display = 'none';
-    document.getElementById('side-item-1').style.display = 'none';
-    document.getElementById('circular1').style.display = 'none';
-    document.getElementById('circularF1').style.display = 'none';
-    document.getElementById('circularS1').style.display = 'none';
-    deleteBall(1);
-    document.onmousedown = null;
+        document.getElementById('head-item-1').style.display = 'none';
+        document.getElementById('front-item-1').style.display = 'none';
+        document.getElementById('side-item-1').style.display = 'none';
+        document.getElementById('circular1').style.display = 'none';
+        document.getElementById('circularF1').style.display = 'none';
+        document.getElementById('circularS1').style.display = 'none';
+        deleteBall(1);
+        document.onmousedown = null;
 
-    document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
-    document.getElementById('audio').load();
-    document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
-
+        document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
+        document.getElementById('audio').load();
+        document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
+        document.getElementById('audio-frame-confirm').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
+        isPlaying = undefined;
+    }
 });
 document.getElementById('head-item-2').addEventListener("mousedown",function(){
-    confirm_index += 1;
-    if (confirm_index == totalAnnotation) window.location.assign('/templates/interface/submit.html')
+    if (isPlaying == undefined) window.alert("Please play the audio first.");
+    else{
+        confirm_index += 1;
+        if (confirm_index == totalAnnotation) window.location.assign('/templates/interface/submit.html')
 
-    document.getElementById('head-item-2').style.display = 'none';
-    document.getElementById('front-item-2').style.display = 'none';
-    document.getElementById('side-item-2').style.display = 'none';
-    document.getElementById('circular2').style.display = 'none';
-    document.getElementById('circularF2').style.display = 'none';
-    document.getElementById('circularS2').style.display = 'none';
-    deleteBall(2);
-    document.onmousedown = null;
+        document.getElementById('head-item-2').style.display = 'none';
+        document.getElementById('front-item-2').style.display = 'none';
+        document.getElementById('side-item-2').style.display = 'none';
+        document.getElementById('circular2').style.display = 'none';
+        document.getElementById('circularF2').style.display = 'none';
+        document.getElementById('circularS2').style.display = 'none';
+        deleteBall(2);
+        document.onmousedown = null;
 
-    document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
-    document.getElementById('audio').load();
-    document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
+        document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
+        document.getElementById('audio').load();
+        document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
+        document.getElementById('audio-frame-confirm').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
+        isPlaying = undefined;
+    }
 
 });
 document.getElementById('head-item-3').addEventListener("mousedown",function(){
@@ -568,9 +564,8 @@ document.getElementById('head-item-3').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('head-item-4').addEventListener("mousedown",function(){
@@ -588,9 +583,8 @@ document.getElementById('head-item-4').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('head-item-5').addEventListener("mousedown",function(){
@@ -608,9 +602,8 @@ document.getElementById('head-item-5').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('head-item-6').addEventListener("mousedown",function(){
@@ -628,9 +621,8 @@ document.getElementById('head-item-6').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('head-item-7').addEventListener("mousedown",function(){
@@ -648,9 +640,8 @@ document.getElementById('head-item-7').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('head-item-8').addEventListener("mousedown",function(){
@@ -668,9 +659,8 @@ document.getElementById('head-item-8').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('head-item-9').addEventListener("mousedown",function(){
@@ -688,9 +678,8 @@ document.getElementById('head-item-9').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('head-item-10').addEventListener("mousedown",function(){
@@ -708,9 +697,8 @@ document.getElementById('head-item-10').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('front-item-1').addEventListener("mousedown",function(){
@@ -728,9 +716,8 @@ document.getElementById('front-item-1').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('front-item-2').addEventListener("mousedown",function(){
@@ -748,9 +735,8 @@ document.getElementById('front-item-2').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('front-item-3').addEventListener("mousedown",function(){
@@ -768,9 +754,8 @@ document.getElementById('front-item-3').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('front-item-4').addEventListener("mousedown",function(){
@@ -788,9 +773,8 @@ document.getElementById('front-item-4').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('front-item-5').addEventListener("mousedown",function(){
@@ -808,9 +792,8 @@ document.getElementById('front-item-5').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('front-item-6').addEventListener("mousedown",function(){
@@ -828,9 +811,8 @@ document.getElementById('front-item-6').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('front-item-7').addEventListener("mousedown",function(){
@@ -848,9 +830,8 @@ document.getElementById('front-item-7').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('front-item-8').addEventListener("mousedown",function(){
@@ -868,9 +849,8 @@ document.getElementById('front-item-8').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('front-item-9').addEventListener("mousedown",function(){
@@ -888,9 +868,8 @@ document.getElementById('front-item-9').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('front-item-10').addEventListener("mousedown",function(){
@@ -908,9 +887,8 @@ document.getElementById('front-item-10').addEventListener("mousedown",function()
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('side-item-1').addEventListener("mousedown",function(){
@@ -928,9 +906,8 @@ document.getElementById('side-item-1').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('side-item-2').addEventListener("mousedown",function(){
@@ -948,9 +925,8 @@ document.getElementById('side-item-2').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('side-item-3').addEventListener("mousedown",function(){
@@ -968,9 +944,8 @@ document.getElementById('side-item-3').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('side-item-4').addEventListener("mousedown",function(){
@@ -988,9 +963,8 @@ document.getElementById('side-item-4').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('side-item-5').addEventListener("mousedown",function(){
@@ -1008,9 +982,8 @@ document.getElementById('side-item-5').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('side-item-6').addEventListener("mousedown",function(){
@@ -1028,9 +1001,8 @@ document.getElementById('side-item-6').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('side-item-7').addEventListener("mousedown",function(){
@@ -1048,9 +1020,8 @@ document.getElementById('side-item-7').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('side-item-8').addEventListener("mousedown",function(){
@@ -1068,9 +1039,8 @@ document.getElementById('side-item-8').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('side-item-9').addEventListener("mousedown",function(){
@@ -1088,9 +1058,8 @@ document.getElementById('side-item-9').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 document.getElementById('side-item-10').addEventListener("mousedown",function(){
@@ -1108,9 +1077,8 @@ document.getElementById('side-item-10').addEventListener("mousedown",function(){
 
     document.getElementById('source').src = '/templates/interface/assets/audio/test'+(unconfirmed_annotations[confirm_index]).toString()+'.wav';
     document.getElementById('audio').load();
+    document.getElementById('audio-frame-confirm').innerHTML='Play Audio '+(confirm_index+1).toString();
     document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
-
-    // ajax interaction here to retrieve location
 
 });
 

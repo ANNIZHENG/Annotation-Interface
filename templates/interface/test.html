@@ -11,7 +11,8 @@
 	</div>
 	<div class="container" id = "container">
 		<form action="/templates/interface/interface.html">
-			<button id="message">Instructions</button>
+			<button id="message"> Instructions </button>
+			<button id="key-message"> Keyboard Rules </button>
 			<h2>Please listen to the audio</h2>
 			<audio id="audio" controls style="display: none;"><source id = "source" type="audio/wav"> Your browser does not support audio </audio>
 			<button id="audio-frame">Play Audio</button>
@@ -29,7 +30,7 @@
 			<label id="2d-question" for="2d" style="font-size: 15px; font-weight: bold;"></label><br><br>
 			<div id="2d">
 				<div id="head" style="display: none;">
-					<div class="circular" id="circular0"></div>
+					<div class="circular" id="circular"></div>
 					<div class="circular" id="circular1" style="display: none;"><div class="indicator" id="head-item-1" style="display: none;"></div></div>
 					<div class="circular" id="circular2" style="display: none;"><div class="indicator" id="head-item-2" style="display: none;"></div></div>
 					<div class="circular" id="circular3" style="display: none;"><div class="indicator" id="head-item-3" style="display: none;"></div></div>
@@ -47,7 +48,7 @@
 				</div>
 				<br>
 				<div id="front" style="display: none;">
-					<div class="circular" id="circularF0"></div>
+					<div class="circular" id="circularF"></div>
 					<div class="circular" id="circularF1" style="display: none;"><div class="indicator" id="front-item-1" style="display: none;"></div></div>
 					<div class="circular" id="circularF2" style="display: none;"><div class="indicator" id="front-item-2" style="display: none;"></div></div>
 					<div class="circular" id="circularF3" style="display: none;"><div class="indicator" id="front-item-3" style="display: none;"></div></div>
@@ -60,7 +61,7 @@
 					<div class="circular" id="circularF10" style="display: none;"><div class="indicator" id="front-item-10" style="display: none;"></div></div>
 				</div>
 				<div id="side" style="display: none;">
-					<div class="circular" id="circularS0"></div>
+					<div class="circular" id="circularS"></div>
 					<div class="circular" id="circularS1" style="display: none;"><div class="indicator" id="side-item-1" style="display: none;"></div></div>
 					<div class="circular" id="circularS2" style="display: none;"><div class="indicator" id="side-item-2" style="display: none;"></div></div>
 					<div class="circular" id="circularS3" style="display: none;"><div class="indicator" id="side-item-3" style="display: none;"></div></div>
@@ -80,43 +81,48 @@
 			<div id="modal">
 				<div class="instructions">
 					<span id="sign" style="float: right;">&times;</span>
-					<div id="instruction1">
-						<img src="/templates/interface/img/1.png" style="width:80%;">
-						<p>&ordm; Fraction numbers inside the bracket means: [current audio number / total number of audios] </p>
-						<p>&ordm; Click 'Play Audio' to play the current audio </p>
-						<p>&ordm; You may rotate the 3D head, but you can not perform anything towards the head directly </p>
-					</div>
-					<div id="instruction2" style="display: none;">
-						<img src="/templates/interface/img/2.png" style="width:80%;">
-						<p>&ordm; Click 'Pause Audio' to pause the current audio </p>
-					</div>
-					<div id="instruction3" style="display: none;">
-						<img src="/templates/interface/img/3.png" style="width:80%;">
-						<p>&ordm; You may re-play the audio as many times as needed </p>
-						<p>&ordm; Once you have finished listening to the audio, you may see a dropdown menu in which you may select the number of sources you have heard </p>
-					</div>
-					<div id="instruction4" style="display: none;">
-						<img src="/templates/interface/img/4.png" style="width:80%;">
-						<p>&ordm; Once you have selected a number，three 2D views will automatically appeared </p>
-						<p>&ordm; These three views are where you perform the annotation </p>
-						<p>&ordm; Press 'option' or 'Alt' key to add an annotation once you see the cursor turning to '+' </p>
-						<p>&ordm; Press 'command' or 'Win' key to delete an annotation once you see the cursor turning to '-' </p>
-						<p>&ordm; Keep in mind that deleting an annotation means to delete both its annotated azimuth and elevation(s) </p>
-					</div>
-					<div id="instruction5" style="display: none;">
-						<img src="/templates/interface/img/5.png" style="width:80%;">
-						<p>&ordm; You may adjust the azimuth and the elevation(s) with [+] and [-] buttons, or by dragging the annotation dots </p>
-						<p>&ordm; At certain angles, the annotation can be seen from both the back and the side view; the system will annotate the 'second elevation' for you</p>
-						<p>&ordm; The annotation will appear automatically in the 3D view </p>
-						<p>&ordm; Keep in mind that the head view is for azimuth annotation, and the back and side views are for elevation annotation </p>
-					</div>
-					<div id="instruction6" style="display: none;">
-						<img src="/templates/interface/img/6.png" style="width:80%;">
-						<p>&ordm; You can not annotate more annotations than the number of sources you have entered;</p>
-						<p>&ordm; You may change the number of sources you have entered</p>
-						<p>&ordm; You may annotate less number of annotation(s) if you want</p>
-						<p>&ordm; Keep in mind that you must annotate at least 1 annotation (at least 1 azimuth and 1 anotation) </p>
-					</div>
+					<ul id="instruction1">
+						<p style="font-size: 17px;">Page 1 / 6</p>
+						<img src="/templates/interface/img/1.png" style="width:75%; margin-bottom: 10px;">
+						<li> Click 'Play Audio' to play the audio </li>
+						<li> Click 'Pause Audio' to pause the current audio </li>
+						<li> You may re-play the audio as many times as needed </li>
+					</ul>
+					<ul id="instruction2" style="display: none;">
+						<p style="font-size: 17px;">Page 2 / 6</p>
+						<img src="/templates/interface/img/2.png" style="width:75%; margin-bottom: 10px;">
+						<li> Once you have finished listening to the audio, you may see a dropdown menu in which you may select the number of sources you have heard </li>
+						<li> You may annotate <b>LESS</b> number of annotation points if you want, but you must annotate <b>MORE THAN</b> 1 source </li>
+					</ul>
+					<ul id="instruction3" style="display: none;">
+						<p style="font-size: 17px;">Page 3 / 6</p>
+						<img src="/templates/interface/img/3.png" style="width:75%; margin-bottom: 10px;">
+						<li> Once you have selected a number，three 2D views will automatically appear </li>
+						<li> These three views are where you perform the annotation </li>
+						<li> The head view is for azimuth annotation, and the back and side views are for elevation annotation </li>
+					</ul>
+					<ul id="instruction4" style="display: none;">
+						<p style="font-size: 17px;">Page 4 / 6</p>
+						<img src="/templates/interface/img/4.png" style="width:75%; margin-bottom: 10px;">
+						<li> <b> You may always check the keyboard rules by pressing the [Keyboard Rules] button  </b> </li>
+						<li> Press <b>[Option]</b> or <b>[Alt]</b> key to add an annotation once you see the cursor turning to '+' </li>
+						<li> Press <b>[Command]</b> or <b>[Win]</b> key to delete an annotation once you see the cursor turning to '-' </li>
+						<li> Deleting an annotation means to delete both its annotated azimuth and elevation </li>
+					</ul>
+					<ul id="instruction5" style="display: none;">
+						<p style="font-size: 17px;">Page 5 / 6</p>
+						<img src="/templates/interface/img/5.png" style="width:75%; margin-bottom: 10px;">
+						<li> You may adjust the azimuth and the elevation with [+] and [-] buttons, or by dragging the annotation dots </li>
+						<li> At certain angles where the annotation can be "seen" from both the back and the side view, the system will annotate the 'second elevation' for you</li>
+						<li> The annotation will appear automatically in the 3D view </p>
+					</ul>
+					<ul id="instruction6" style="display: none;">
+						<p style="font-size: 17px;">Page 6 / 6</p>
+						<img src="/templates/interface/img/4.png" style="width:75%; margin-bottom: 10px;">
+						<li> You may rotate the 3D head, but you can not perform anything towards the head directly </li>
+						<li> You can not annotate more annotations than the number of sources you have entered </li>
+						<li> You may change the number of sources you have entered </li>
+					</ul>
 					<div id="instruction-move">
 						<button class="move" id="instruction-left">&lt;</button>
 						<button class="move" id="instruction-right">&gt;</button>

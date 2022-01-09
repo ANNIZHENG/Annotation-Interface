@@ -7,7 +7,11 @@ body{
 	padding:0;
 	margin:0;
 	display: flex;
-	overflow: hidden;
+}
+
+li {
+	margin-bottom: 20px;
+	font-size: 17px;
 }
 
 #test{
@@ -48,7 +52,7 @@ body{
 	margin-bottom: 30px;
 }
 
-#message{
+#message, #key-message{
 	font-weight: bold;
 	text-align: center;
 	cursor: pointer;
@@ -121,7 +125,9 @@ body{
 #btn-button-refresh:hover,
 #btn-button-submit:hover,
 #message:hover,
-#message:focus{
+#message:focus,
+#key-message:hover,
+#key-message:focus{
 	background-color:#c7c7c7;
 }
 
@@ -150,6 +156,7 @@ body{
 }
 
 .indicator{
+	position: absolute;
 	margin-top: -12px;
 	border-radius: 50%; 
 	width: 15px; 
@@ -157,21 +164,23 @@ body{
 }	
 
 .circular{
-	margin-top: 12px;
 	position: absolute;
+	margin-top: 12px;
 	width: 17px;
 	height: 155px; 
 	left: 82px;
+	border: rgba(0,0,0,0) solid 0.5px;
 }
 
 #head, #front, #side, #feedback{
+	margin-bottom: 10px;
+	vertical-align: middle;
+	display:inline-block;
 	position: relative;
-	vertical-align: top;
-	margin-bottom: 8px;
-	font-size: 13px;
 	height: 180px; 
 	width: 180px;
 	background-size: cover;
+	font-size: 13px;
 }
 
 #p-azimuth, #p-elevation{
