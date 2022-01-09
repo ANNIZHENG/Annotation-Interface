@@ -1,228 +1,74 @@
-<!--
-BSD 2-Clause License
-
-Copyright (c) 2017, The HeadphoneCheck Authors (see AUTHORS)
-All rights reserved.
-
-Contact Ray Gonzalez raygon@mit.edu or Kevin J. P. Woods kwoods@mit.edu
-=======================================================================
--->
-
 <!DOCTYPE html>
-<html>
-  <head>
-    <!-- Import jQuery from Google CDN -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script type="text/javascript" src="/templates/HeadphoneCheck.js"></script> 
-    <style type="text/css">
-      *, *::before, *::after {
-        box-sizing: border-box;
-        font-family: Monaco;
-      }
-
-      div{
-        margin-bottom: 15px;
-      }
-
-      body {
-        margin-top: 0;
-        padding-left: 20vh;
-        padding-right: 20vh;
-        display: flex;
-        flex-direction: column;
-      }
-
-      li {
-        margin-bottom: 20px;
-        font-size: 17px;
-      }
-
-      input[type=radio] {
-        height:20px; 
-        width:20px;
-      }
-
-      label{
-        display: block;
-      }
-
-      #message {
-        font-weight: bold;
-        text-align: center;
-        cursor: pointer;
-        font-size: 15px;
-        width: 170px;
-        height: 40px;
-        background-color: #efefef;
-        border: 2px solid black;
-      }
-
-      #message:hover,
-      #message:focus{
-        background-color:#c7c7c7;
-      }
-
-      #modal {
-	      position: absolute;
-	      left: 0;
-	      top: 0;
-	      width: 100%;
-	      height: 100%;
-	      background-color: rgba(0,0,0,0.4);
-      }
-
-      .instructions {
-	      margin: auto;
-	      padding: 40px;
-	      width: 80%;
-	      height: 100vh;
-	      background-color: white;
-      }
-
-      #sign {
-	      font-size: 30px;
-	      font-weight: bold;
-	      color: rgba(0,0,0,0.4);
-      }
-
-      .move {
-        display: inline;
-        margin-right: 10px;
-        padding-left: 20px;
-        padding-right: 20px;
-        padding-bottom: 5px;
-        font-size: 25px;
-        cursor: pointer;
-      }
-
-      #instruction-move {
-        position: absolute;
-        right: 13%;
-        bottom: 15px;
-      }
-
-      #sign:hover,
-      #sign:focus {
-	      cursor: pointer;
-	      color: rgba(0,0,0,0.7);
-      }
-    </style>
-  </head>
-
-  <body onload="HeadphoneCheck.runHeadphoneCheck();">
-    <div style="margin-top: 20px;"> <button id="message">Instructions</button> </div>
-
-			<div id="modal">
-				<div class="instructions">
-					<span id="sign" style="float: right;">&times;</span>
-					<ul id="instruction1">
-						<p style="font-size: 17px;">Page 1 / 6</p>
-						<img src="/templates/interface/img/1.png" style="width:75%; margin-bottom: 10px;">
-						<li> Click 'Play Audio' to play the audio </li>
-						<li> Click 'Pause Audio' to pause the current audio </li>
-						<li> You may re-play the audio as many times as needed </li>
-					</ul>
-					<ul id="instruction2" style="display: none;">
-						<p style="font-size: 17px;">Page 2 / 6</p>
-						<img src="/templates/interface/img/2.png" style="width:75%; margin-bottom: 10px;">
-						<li> Once you have finished listening to the audio, you may see a dropdown menu in which you may select the number of sources you have heard </li>
-						<li> You may annotate <b>LESS</b> number of annotation points if you want, but you must annotate <b>MORE THAN</b> 1 source </li>
-					</ul>
-					<ul id="instruction3" style="display: none;">
-						<p style="font-size: 17px;">Page 3 / 6</p>
-						<img src="/templates/interface/img/3.png" style="width:75%; margin-bottom: 10px;">
-						<li> Once you have selected a number，three 2D views will automatically appear </li>
-						<li> These three views are where you perform the annotation </li>
-						<li> The head view is for azimuth annotation, and the back and side views are for elevation annotation </li>
-					</ul>
-					<ul id="instruction4" style="display: none;">
-						<p style="font-size: 17px;">Page 4 / 6</p>
-						<img src="/templates/interface/img/4.png" style="width:75%; margin-bottom: 10px;">
-						<li> <b> You may always check the keyboard rules by pressing the [Keyboard Rules] button  </b> </li>
-						<li> Press <b>[Option]</b> or <b>[Alt]</b> key to add an annotation once you see the cursor turning to '+' </li>
-						<li> Press <b>[Command]</b> or <b>[Win]</b> key to delete an annotation once you see the cursor turning to '-' </li>
-						<li> Deleting an annotation means to delete both its annotated azimuth and elevation </li>
-					</ul>
-					<ul id="instruction5" style="display: none;">
-						<p style="font-size: 17px;">Page 5 / 6</p>
-						<img src="/templates/interface/img/5.png" style="width:75%; margin-bottom: 10px;">
-						<li> You may adjust the azimuth and the elevation with [+] and [-] buttons, or by dragging the annotation dots </li>
-						<li> At certain angles where the annotation can be "seen" from both the back and the side view, the system will annotate the 'second elevation' for you</li>
-						<li> The annotation will appear automatically in the 3D view </p>
-					</ul>
-					<ul id="instruction6" style="display: none;">
-						<p style="font-size: 17px;">Page 6 / 6</p>
-						<img src="/templates/interface/img/4.png" style="width:75%; margin-bottom: 10px;">
-						<li> You may rotate the 3D head, but you can not perform anything towards the head directly </li>
-						<li> You can not annotate more annotations than the number of sources you have entered </li>
-						<li> You may change the number of sources you have entered </li>
-					</ul>
-					<div id="instruction-move">
-						<button class="move" id="instruction-left">&lt;</button>
-						<button class="move" id="instruction-right">&gt;</button>
-					</div>
-				</div>
-			</div>
-
-    <div id="hc-container"></div>
-    <script>
-      $(document).on('hcHeadphoneCheckEnd', function(event, data) {
-        var results = data.data;
-        var config = data.config;
-        var didPass = data.didPass;
-        if (didPass) ajax_start();
-        else {
-          $('<div/>', {
-            html: 'Screening task failed.<br/><br/>Total Correct: ' + results.totalCorrect + '<br/>Please re-do the head phone check tasks'
-          }).appendTo($('body'));
-        }
-      });
-
-      var curr_instruction = 1;
-  
-      document.getElementById('message').addEventListener("click",popRules);
-      document.getElementById('instruction-left').addEventListener("click",move_instruction_last);
-      document.getElementById('instruction-right').addEventListener("click",move_instruction_next);
-      document.getElementById("sign").addEventListener("click",closeRules);
-  
-      function popRules(e){ 
-        e.preventDefault();
-        modal.style.display = "block";
-      }
-  
-      function closeRules(e){ 
-        e.preventDefault();
-        modal.style.display = "none";
-      }
-  
-      function move_instruction_next(e){
-        e.preventDefault();
-        if (curr_instruction < 6) {
-          document.getElementById('instruction'+curr_instruction).style.display = 'none';
-          document.getElementById('instruction'+(curr_instruction+1)).style.display = '';
-          curr_instruction += 1;
-        }
-      }
-  
-      function move_instruction_last(e){
-        e.preventDefault();
-        if (curr_instruction > 1) {
-          document.getElementById('instruction'+curr_instruction).style.display = 'none';
-          document.getElementById('instruction'+(curr_instruction-1)).style.display = '';
-          curr_instruction -= 1;
-        }
-      }
-
-      function ajax_start(){
-        var req = new XMLHttpRequest();
-        req.open('POST', '/annotation_interface');
-        req.onreadystatechange = function() {
-          if (req.readyState == 4 && req.response != 'success') window.alert('Something went wrong');
-          if ((req.status == 200 || req.status == 304) && req.responseText == 'success') window.location = '/templates/interface/test.html';
-        }
-        req.send();
-      }
-
-    </script>
-  </body>
+<html lang="en">
+<head>
+	<title>Concent Form</title>
+	<style>
+		body{
+			margin-bottom:12vh;
+		}
+		h1{
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<h1>Concent Form</h1>
+	<form action="/templates/check.html" style="padding-left: 20%; padding-right: 20%; font-size: 18px;">
+		<p>
+			You have been invited to take part in a research study to learn more about the number of
+			sources people can identify on a complex sound scene and their localization ability. This study
+			will be conducted by Ana Elisa Mendez Mendez, STEINHARDT - Music and Audio Research
+			Laboratory (MARL), Steinhardt School of Culture, Education, and Human Development, New
+			York University, as a part of her Doctoral Dissertation. Her faculty sponsor is Professor Juan
+			Pablo Bello, Deparmtent of STEINHARDT - Music and Audio Research Laboratory (MARL),
+			Steinhardt School of Culture, Education, and Human Development, New York University.
+		</p>
+		<p>
+			If you agree to be in this study, you will be asked to do the following:
+			<ul>
+				<li>Go through a screening to make sure you're wearing headphones</li>
+				<li>Listen to audio recordings to count the number of sources present</li>
+				<li>Identify the location of each source</li>
+			</ul>
+		</p>
+		<p>
+			Participation in this study will involve 10 minutes total to complete the screening, training and
+			question. There are no known risks associated with your participation in this research beyond
+			those of everyday life.
+		</p>
+		<p>
+			Although you will receive no direct benefits, this research may help the investigator understand
+			the number of sources people can identify on a complex sound scene and their localization
+			ability. $2.5 for 10 minutes of participation
+		</p>
+		<p>
+			Confidentiality of your research records will be strictly maintained by not saving any
+			personalized data on our database. Your information from this study will not be used for future
+			research.
+		</p>
+		<p>
+			Participation in this study is voluntary. You may refuse to participate or withdraw at any time
+			without penalty. For interviews, questionnaires, or surveys, you have the right to skip or not
+			answer any questions you prefer not to answer.
+		</p>
+		<p>
+			If there is anything about the study or your participation that is unclear or that you do not
+			understand, if you have questions or wish to report a research-related problem, you may contact
+			Ana Elisa Mendez Mendez at (305) 904-5899, anaelisa.mendez@nyu.edu, 370 Jay St, 13th
+			Floor, Brooklyn, NY 11201, or the faculty sponsor, Juan Pablo Bello at , jpbello@nyu.edu, 370
+			Jay St, 13th Floor, Brooklyn, NY 11201.
+		</p>
+		<p>
+			For questions about your rights as a research participant, you may contact the University
+			Committee on Activities Involving Human Subjects (UCAIHS), New York University, 665
+			Broadway, Suite 804, New York, New York, 10012, at ask.humansubjects@nyu.edu or (212)
+			998-4808. Please reference the study # (IRB-FY2022-6117) when contacting the IRB
+			(UCAIHS).
+		</p>
+		<p> 
+			You have received a copy of this consent document to keep.
+		</p>
+		<button style="height: 40px; font-size: 15px; float: right;"> I Have Read and Agreed with the Above Consent Form </button>
+	</form>
+</body>
 </html>
