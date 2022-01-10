@@ -4,8 +4,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # database path
-db_path = 'postgresql://eqpytyddkgzpje:589827916509690e9baa1abd869d99bd85ac3c9902c361d04c1e560c2befd624@ec2-52-54-38-229.compute-1.amazonaws.com:5432/dap64di8scvd9n'
-# db_path = 'postgresql://anniezheng@localhost/test'
+# db_path = 'postgresql://eqpytyddkgzpje:589827916509690e9baa1abd869d99bd85ac3c9902c361d04c1e560c2befd624@ec2-52-54-38-229.compute-1.amazonaws.com:5432/dap64di8scvd9n'
+db_path = 'postgresql://anniezheng@localhost/test'
 
 eng = create_engine(db_path)
 Base = declarative_base()
