@@ -2,7 +2,7 @@ totalAnnotation = 2;
 recording_id = 1;
 
 // colors
-var colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
+const colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
 var current_colors_index = 0;
 
 // prevent deletion and mousemove happening at the same time
@@ -1162,12 +1162,6 @@ document.addEventListener("keydown", keyboardEvents);
 
 function keyboardEvents(e){
 	e.preventDefault();
-
-	if (e.keyCode == 65){
-		console.log(side_indicators);
-		console.log(parseInt(document.getElementById('circularS'+2).style.transform.replace('rotate(','').replace('deg)','')));
-		console.log(parseInt(document.getElementById('circularS'+2).style.display));
-	}
 	
 	if(e.metaKey){
 		document.getElementById('body').style.cursor = "url('/templates/interface/img/minus.svg'), auto";

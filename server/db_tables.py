@@ -21,12 +21,12 @@ class Annotation(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     survey_id = Column(String, ForeignKey("Survey.id"))
-    recording_id = Column(Integer)
+    recordings_id = Column(Integer)
     source_count = Column(Integer)
 
-    def __init__(self,survey_id,recording_id,source_count):
+    def __init__(self,survey_id,recordings_id,source_count):
         self.survey_id = survey_id
-        self.recording_id = recording_id
+        self.recordings_id = recordings_id
         self.source_count = source_count
 
 

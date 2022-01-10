@@ -18,7 +18,7 @@ AUDIO_NUMBER = 3
 
 @app.route('/')
 def home():
-    result = eng.execute('''select number from "Recording" order by number asc limit 1''')
+    result = eng.execute('''select number from "Recordings" order by number asc limit 1''')
     least_annotation = ''
     for r in result:
         least_annotation = int(dict(r)['number'])
@@ -51,7 +51,7 @@ def interaction():
 def next():
     if request.method == 'POST':
         data = request.json
-        recording_id = int(data['recording_id'])+1
+        recordings_id = int(data['recordings_id'])+1
         source_count = data['source_count']
 
         survey_res = eng.execute('''select id from "Survey" order by id asc limit 1''')
@@ -59,7 +59,7 @@ def next():
         for r in survey_res:
             survey_id = str(dict(r)['id'])
         
-        entry1 = Annotation(survey_id,recording_id,source_count)
+        entry1 = Annotation(survey_id,recordings_id,source_count)
         ses.add(entry1)
         ses.commit()
 
@@ -95,12 +95,16 @@ def get_survey():
 def select_recording():
     while (True):
         recording = randrange(15)
-        result = eng.execute('''select number from "Recording" where id='''+str(recording+1))
+        result = eng.execute('''select number from "Recordings" where id='''+str(recording+1))
 
         for r in result:
             if (int(dict(r)['number']) < 5):
-                eng.execute('''update "Recording" set number='''+str(int(dict(r)['number'])+1)+'''where id='''+str(recording+1))
+                eng.execute('''update "Recordings" set number='''+str(int(dict(r)['number'])+1)+'''where id='''+str(recording+1))
                 return str(recording)
+
+@app.route('/confirm_annotation', methods=['GET', 'POST'])
+def confirm_annotation():
+    return '''{"recording_dict":{"0":"0.wav", "1":"1.wav", "2":"3.wav"},"location_dict":{"0":"270,0","1":"280,0"}}'''
 
 if __name__ =='__main__':
     app.run(debug=True)
