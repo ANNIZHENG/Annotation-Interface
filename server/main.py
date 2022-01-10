@@ -104,7 +104,8 @@ def select_recording():
 
 @app.route('/confirm_annotation', methods=['GET', 'POST'])
 def confirm_annotation():
-    return '''{"recording_dict":{"0":"0.wav", "1":"1.wav", "2":"3.wav"},"location_dict":{"0":"270,0","1":"280,0"}}'''
+    return '''{"recording_dict":{"0":"0.wav", "1":"1.wav", "2":"3.wav"},"location_dict":{"0":"270,0","1":"300,0"}}'''
+    # return {"recording_dict":{},"location_dict":{}}
 
 if __name__ =='__main__':
     app.run(debug=True)

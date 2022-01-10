@@ -37,7 +37,7 @@ document.addEventListener('click', function(e){
 
 		for (let i = 0; i < audios.length; i++) {
 			if ( audios[i].id != e.target.id && document.getElementById(audios[i].id).innerHTML == 'Pause Audio'  ){
-				window.alert('Only ONE audio is allowed to be played per time');
+				window.alert('Please finish listening to the current audio');
 				e.preventDefault();
 				return;
 			}
@@ -66,7 +66,7 @@ document.addEventListener('click', function(e){
 		setNextQuestion();
 	}
 	if (e.target.className == 'btn-radio-confirm'){
-		var radios = document.getElementsByClassName('btn-radio-confirm');
+		let radios = document.getElementsByClassName('btn-radio-confirm');
 		document.getElementById(e.target.id).checked = true;
 		for (let i = 0; i < radios.length; i++) {
 			if ( radios[i].id != e.target.id && document.getElementById(radios[i].id).checked ){
@@ -78,20 +78,25 @@ document.addEventListener('click', function(e){
 
 function setNextQuestion(){
 	if (confirm == totalAnnotation){
-		// anything here
-
+		// TODO: 
 		window.location.assign('/templates/interface/submit.html');
 	}
 	else{
-		// anything here
-
-		var radios = document.getElementsByClassName('btn-radio-confirm');
+		// TODO:
+		let radios = document.getElementsByClassName('btn-radio-confirm');
+		let count = 0;
 		for (let i = 0; i < radios.length; i++) {
-			if (document.getElementById(radios[i].id).checked) document.getElementById('match-box-'+radios[i].id.replace('radio','')).style.display = 'none';
+			if (document.getElementById(radios[i].id).checked) {
+				count += 1;
+				document.getElementById('match-box-'+radios[i].id.replace('radio','')).style.display = 'none';
+			}
 		}
-
+		if (count == 0){
+			event.preventDefault();
+			window.alert('Please select one corresponding audio');
+			return false;
+		}
 		addLocation(location_dict[confirm.toString()].split(","));
-
 		document.getElementById('match-box').removeChild(document.getElementsByClassName('btn-confirm')[0]);
 		addButton();
 	}

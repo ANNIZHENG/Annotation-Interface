@@ -2,8 +2,8 @@
 var req = new XMLHttpRequest(); 
 req.onreadystatechange = function() {
 	if (req.readyState == 4 && req.response != 'success'){
-		window.alert('Something went wrong: please restart the interface!');
-		window.alert('And please make sure you did the headphone check first!');
+		window.alert('Something went wrong\nYou may try to restart the interface');
+		window.alert('Make sure you did the headphone check');
 	}
 }
 
@@ -203,10 +203,10 @@ function displayButton(){
 function askProceed(){
 	if (document.getElementById('count').value == undefined){ window.alert("You must select a response"); return false; }
 	if (findUndefinedAzimuth() == -3 && findUndefinedElevation() == -3) { window.alert("You must annotate at least one location"); return false; }
-	if (findUndefinedAzimuth() != findUndefinedElevation()) { window.alert("The number of annotated azimuth does not match with that of elevation"); return false; }
-	if (findUndefinedAzimuth() == -2 || findUndefinedAzimuth() == -2) { window.alert("Your annotation number is greater than the source count you entered. Please delete some of them."); return false; }
+	if (findUndefinedAzimuth() != findUndefinedElevation()) { window.alert("You must annotate both the azimuth and elevation"); return false; }
+	if (findUndefinedAzimuth() == -2 || findUndefinedAzimuth() == -2) { window.alert("Your annotation number is greater than the source count you entered"); return false; }
 	if (findUndefinedAzimuth() != -1 || findUndefinedElevation() != -1 ) { 
-		if (confirm("You haven't annotated all sources yet.\n\nDo you still want to submit?")) return true;
+		if (confirm("You haven't annotated all sources yet\nDo you still want to submit?")) return true;
 		else return false;
 	}
 	return true;
