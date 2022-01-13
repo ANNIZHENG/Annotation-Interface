@@ -47,7 +47,6 @@ document.addEventListener('click', function(e){
 		}
 
 		audio_id = 'audio' + e.target.id.replace('audio-frame-confirm-','');
-		console.log(audio_id);
 
 		if (document.getElementById(e.target.id).innerHTML == 'Play Audio'){
 			document.getElementById(audio_id).play();
