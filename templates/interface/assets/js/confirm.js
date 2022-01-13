@@ -1,3 +1,4 @@
+var recording;
 var recording_dict;
 var location_dict;
 var totalAnnotation;
@@ -8,6 +9,10 @@ function confirm_annotation(){
 	request.onreadystatechange = function() {
 		if (request.readyState == 4){
 			let dictionary = JSON.parse(request.response);
+
+			recording = dictionary["recording"]["0"];
+			document.getElementById('original-audio-source').src = '/templates/interface/assets/audio/'+recording+'.wav';
+			document.getElementById('audiooriginal').load();
 
 			recording_dict = dictionary["recording_dict"];
 			location_dict = dictionary["location_dict"];
@@ -28,8 +33,6 @@ function confirm_annotation(){
 // keep track of the recording_dict and location_dict
 var confirm = 0;
 
-const colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
-
 document.addEventListener('click', function(e){
 	if (e.target.className == 'audio-frame-confirm'){
 
@@ -42,7 +45,9 @@ document.addEventListener('click', function(e){
 				return;
 			}
 		}
+
 		audio_id = 'audio' + e.target.id.replace('audio-frame-confirm-','');
+		console.log(audio_id);
 
 		if (document.getElementById(e.target.id).innerHTML == 'Play Audio'){
 			document.getElementById(audio_id).play();
@@ -77,8 +82,7 @@ document.addEventListener('click', function(e){
 });
 
 function setNextQuestion(){
-	if (confirm == totalAnnotation){
-		// TODO: 
+	if(confirm == totalAnnotation){
 		window.location.assign('/templates/interface/submit.html');
 	}
 	else{
@@ -117,7 +121,6 @@ function addButton(){
 		new_button.value = 'NEXT ANNOTATION';
 	}
 	document.getElementById('match-box').appendChild(new_button);
-
 	/*
 	<input class="btn-confirm" id="btn-confirm-next" type="button" value="NEXT ANNOTATION"></input>
 	<input class="btn-confirm" id="btn-confirm-submit" type="button" value="SUBMIT"></input>
@@ -128,83 +131,83 @@ function addButton(){
 function addLocation(coordinates) {
 
 	// Azimuth Annotation Display
-	document.getElementById('head-item').style.display = '';
-	document.getElementById('circular').style.display = '';
-	document.getElementById('circular').style.transform = 'rotate('+coordinates[0]+'deg)';
+	document.getElementById('head-item-1').style.display = '';
+	document.getElementById('circular1').style.display = '';
+	document.getElementById('circular1').style.transform = 'rotate('+coordinates[0]+'deg)';
 
 	coordinates[0] = parseInt(coordinates[0]);
 	coordinates[1] = parseInt(coordinates[1]);
 
 	// Elevation Annotation Display
 	if (coordinates[0] > 337.5 || coordinates[0] < 22.5){ // show only the side view
-		document.getElementById('side-item').style.display = '';
-		document.getElementById('circularS').style.display = '';
+		document.getElementById('side-item-1').style.display = '';
+		document.getElementById('circularS1').style.display = '';
 		let e = 90 + -1 * coordinates[1];
-		document.getElementById('circularS').style.transform = 'rotate('+e+'deg)';
+		document.getElementById('circularS1').style.transform = 'rotate('+e+'deg)';
 
 	}
 	else if (coordinates[0] >= 22.5 && coordinates[0] <= 67.5){
-		document.getElementById('front-item').style.display = '';
-		document.getElementById('circularF').style.display = '';
-		document.getElementById('side-item').style.display = '';
-		document.getElementById('circularS').style.display = '';
+		document.getElementById('front-item-1').style.display = '';
+		document.getElementById('circularF1').style.display = '';
+		document.getElementById('side-item-1').style.display = '';
+		document.getElementById('circularS1').style.display = '';
 		let e = 90 + -1 * coordinates[1];
-		document.getElementById('circularF').style.transform = 'rotate('+e+'deg)';
-		document.getElementById('circularS').style.transform = 'rotate('+e+'deg)';
+		document.getElementById('circularF1').style.transform = 'rotate('+e+'deg)';
+		document.getElementById('circularS1').style.transform = 'rotate('+e+'deg)';
 	}
 	else if (coordinates[0] > 67.5 && coordinates[0] < 112.5){ // show only the front view
-		document.getElementById('front-item').style.display = '';
-		document.getElementById('circularF').style.display = '';
+		document.getElementById('front-item-1').style.display = '';
+		document.getElementById('circularF1').style.display = '';
 		let e = 90 + -1 * coordinates[1];
-		document.getElementById('circularF').style.transform = 'rotate('+e+'deg)';
+		document.getElementById('circularF1').style.transform = 'rotate('+e+'deg)';
 
 	}
 	else if (coordinates[0] >= 112.5 && coordinates[0] <= 157.5){
-		document.getElementById('front-item').style.display = '';
-		document.getElementById('circularF').style.display = '';
-		document.getElementById('side-item').style.display = '';
-		document.getElementById('circularS').style.display = '';
+		document.getElementById('front-item-1').style.display = '';
+		document.getElementById('circularF1').style.display = '';
+		document.getElementById('side-item-1').style.display = '';
+		document.getElementById('circularS1').style.display = '';
 		let e1 = 90 + -1 * coordinates[1];
 		let e2 = coordinates[1] + 270;
-		document.getElementById('circularF').style.transform = 'rotate('+e1+'deg)';
-		document.getElementById('circularS').style.transform = 'rotate('+e2+'deg)';
+		document.getElementById('circularF1').style.transform = 'rotate('+e1+'deg)';
+		document.getElementById('circularS1').style.transform = 'rotate('+e2+'deg)';
 
 	}
 	else if (coordinates[0] > 157.5 && coordinates[0] < 202.5){ // show only the side view
-		document.getElementById('side-item').style.display = '';
-		document.getElementById('circularS').style.display = '';
+		document.getElementById('side-item-1').style.display = '';
+		document.getElementById('circularS1').style.display = '';
 		let e = coordinates[1] + 270;
-		document.getElementById('circularS').style.transform = 'rotate('+e+'deg)';
+		document.getElementById('circularS1').style.transform = 'rotate('+e+'deg)';
 
 	}
 	else if (coordinates[0] >= 202.5 && coordinates[0] <= 247.5){
-		document.getElementById('front-item').style.display = '';
-		document.getElementById('circularF').style.display = '';
-		document.getElementById('side-item').style.display = '';
-		document.getElementById('circularS').style.display = '';
+		document.getElementById('front-item-1').style.display = '';
+		document.getElementById('circularF1').style.display = '';
+		document.getElementById('side-item-1').style.display = '';
+		document.getElementById('circularS1').style.display = '';
 		let e = coordinates[1] + 270;
-		document.getElementById('circularF').style.transform = 'rotate('+e+'deg)';
-		document.getElementById('circularS').style.transform = 'rotate('+e+'deg)';
+		document.getElementById('circularF1').style.transform = 'rotate('+e+'deg)';
+		document.getElementById('circularS1').style.transform = 'rotate('+e+'deg)';
 
 	}
 	else if (coordinates[0] > 247.5 && coordinates[0] < 292.5){ // show only the front view
-		document.getElementById('front-item').style.display = '';
-		document.getElementById('circularF').style.display = '';
+		document.getElementById('front-item-1').style.display = '';
+		document.getElementById('circularF1').style.display = '';
 		let e = coordinates[1] + 270;
-		document.getElementById('circularF').style.transform = 'rotate('+e+'deg)';
+		document.getElementById('circularF1').style.transform = 'rotate('+e+'deg)';
 	}
 	else {
-		document.getElementById('front-item').style.display = '';
-		document.getElementById('circularF').style.display = '';
-		document.getElementById('side-item').style.display = '';
-		document.getElementById('circularS').style.display = '';
+		document.getElementById('front-item-1').style.display = '';
+		document.getElementById('circularF1').style.display = '';
+		document.getElementById('side-item-1').style.display = '';
+		document.getElementById('circularS1').style.display = '';
 		let e1 = 90 + -1 * coordinates[1];
 		let e2 = coordinates[1] + 270;
-		document.getElementById('circularF').style.transform = 'rotate('+e2+'deg)';
-		document.getElementById('circularS').style.transform = 'rotate('+e1+'deg)';
+		document.getElementById('circularF1').style.transform = 'rotate('+e2+'deg)';
+		document.getElementById('circularS1').style.transform = 'rotate('+e1+'deg)';
 
 	}
-	displayBall(coordinates[0]-180, coordinates[1])
+	displayBall(coordinates[0]-180, coordinates[1], 1);
 }
 
 function addAudio(recording_name) {
@@ -254,6 +257,8 @@ function addAudio(recording_name) {
 }
 
 /* Three.js */
+
+const colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
 
 container = document.getElementById('3d-head');
 const scene = new THREE.Scene();
@@ -321,35 +326,29 @@ function polarToCartesian(lon, lat, radius) {
 	}
 }
 
-// function displayBall(azimuth, elevation, number){
-function displayBall(azimuth, elevation){
+function displayBall(azimuth, elevation, number){
 	var returnlist = polarToCartesian(azimuth, elevation, 15);
 	ballGeometry = new THREE.SphereGeometry(0.8,60,30);
 	ballMaterial = new THREE.MeshLambertMaterial({
-		// color: colors[number-1]
-		color: 0xffffff
+		color: colors[number-1]
 	});
 	var ball = new THREE.Mesh(ballGeometry, ballMaterial);
-	// ball.name = 'ball'+number;
-	ball.name = 'ball';
+	ball.name = 'ball'+number;
 	ball.position.set(returnlist['x'], returnlist['y'], returnlist['z']);
-	// scene.remove(scene.getObjectByName('ball'+number));
-	scene.remove(scene.getObjectByName('ball'));
+	scene.remove(scene.getObjectByName('ball'+number));
 	scene.add(ball);
 	return ball;
 }
 
-// function deleteBall(number){ scene.remove(scene.getObjectByName('ball'+number)); }
-function deleteBall(){ scene.remove(scene.getObjectByName('ball')); }
+function deleteBall(number){ scene.remove(scene.getObjectByName('ball'+number)); }
 
-// function removeAllBalls(){
-// 	var index = 0;
-// 	while (index < 10){
-// 		scene.remove(scene.getObjectByName('ball'+(index + 1)));
-// 		index += 1;
-// 	}
-// }
-
+function removeAllBalls(){
+	var index = 0;
+	while (index < 10){
+		scene.remove(scene.getObjectByName('ball'+(index + 1)));
+		index += 1;
+	}
+}
 scene.add(wireframe);
 scene.add(sphere);
 scene.add(ear1);

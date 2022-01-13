@@ -38,8 +38,9 @@ Contact Ray Gonzalez raygon@mit.edu or Kevin J. P. Woods kwoods@mit.edu
       }
 
       input[type=radio] {
-        height:20px; 
-        width:20px;
+        height:17px; 
+        width:17px;
+        cursor: pointer;
       }
 
       label{
@@ -110,8 +111,7 @@ Contact Ray Gonzalez raygon@mit.edu or Kevin J. P. Woods kwoods@mit.edu
   </head>
 
   <body onload="HeadphoneCheck.runHeadphoneCheck();">
-    <div style="margin-top: 6vh;"> <button id="message">Instructions</button> </div>
-
+    <div style="margin-top: 6vh;"> <button id="message">Instructions</button></div>
 			<div id="modal">
 				<div class="instructions">
 					<span id="sign" style="float: right;">&times;</span>
@@ -126,7 +126,7 @@ Contact Ray Gonzalez raygon@mit.edu or Kevin J. P. Woods kwoods@mit.edu
 						<p style="font-size: 17px;">Page 2 / 6</p>
 						<img src="/templates/interface/img/2.png" style="width:75%; margin-bottom: 10px;">
 						<li> Once you have finished listening to the audio, you may see a dropdown menu in which you may select the number of sources you have heard </li>
-						<li> You may annotate <b>LESS</b> number of annotation points if you want, but you must annotate <b>MORE THAN</b> 1 source </li>
+						<li> You may annotate <b>LESS</b> number of annotation points if you want, but you must annotate <b>AT LEAST</b> 1 source </li>
 					</ul>
 					<ul id="instruction3" style="display: none;">
 						<p style="font-size: 17px;">Page 3 / 6</p>

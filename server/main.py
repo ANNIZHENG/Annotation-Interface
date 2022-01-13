@@ -91,12 +91,14 @@ def get_survey():
         survey_id = str(dict(r)['id'])
     return str(survey_id)
 
+recording = -1
+
 @app.route('/select_recording', methods=['GET', 'POST'])
 def select_recording():
+    global recording
     while (True):
         recording = randrange(15)
         result = eng.execute('''select number from "Recordings" where id='''+str(recording+1))
-
         for r in result:
             if (int(dict(r)['number']) < 5):
                 eng.execute('''update "Recordings" set number='''+str(int(dict(r)['number'])+1)+'''where id='''+str(recording+1))
@@ -104,7 +106,7 @@ def select_recording():
 
 @app.route('/confirm_annotation', methods=['GET', 'POST'])
 def confirm_annotation():
-    return '''{"recording_dict":{"0":"0.wav", "1":"1.wav", "2":"3.wav"},"location_dict":{"0":"270,0","1":"300,0"}}'''
+    return '''{"recording":{"0":"'''+str(recording)+'''"},"recording_dict":{"0":"0.wav", "1":"1.wav"},"location_dict":{"0":"270,0","1":"300,0"}}'''
     # return {"recording_dict":{},"location_dict":{}}
 
 if __name__ =='__main__':
