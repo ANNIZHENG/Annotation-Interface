@@ -99,7 +99,7 @@ def select_recording():
 @app.route('/confirm_annotation', methods=['GET', 'POST'])
 def confirm_annotation():
     return '''{"recording":{"0":"'''+str(recording)+'''"},"recording_dict":{"0":"0.wav", "1":"1.wav"},"location_dict":{"0":"270,15","1":"300,0"}}'''
-    # return {"recording_dict":{},"location_dict":{}}
+    # return {"recording_dict":{},"location_dict":{}} # in this case confirm page should not be loaded
 
 if __name__ =='__main__':
     app.run(debug=True)
