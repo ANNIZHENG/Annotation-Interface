@@ -8,20 +8,12 @@ from random import randrange
 
 app = Flask(__name__,static_folder="../templates",template_folder="..")
 
-BATCH_SIZE = 12
-PAY_PER_ANNOTATION_NORMAL = 0.24
-PAY_PER_ANNOTATION_LOTTERY = 0.20
-NORMAL_TASK = 1
-LOTTERY_TASK = 2
-NEW_TASK = 3
-AUDIO_NUMBER = 3
-
 @app.route('/')
 def home():
-    result = eng.execute('''select number from "Recordings" order by number asc limit 1''')
+    result = eng.execute('''select num_annotation from "Recording" order by num_annotation asc limit 1''')
     least_annotation = ''
     for r in result:
-        least_annotation = int(dict(r)['number'])
+        least_annotation = int(dict(r)['num_annotation'])
     if (least_annotation == 5): 
         return render_template('/templates/finish.html')
     else:
@@ -41,7 +33,7 @@ def interaction():
         data = request.json
         action_type = data['action_type']
         value = data['value']
-        timestamp= datetime.fromtimestamp(data['timestamp']/1000)
+        timestamp= datetime.fromtimestamp(data['timestamp'] / 1000)
         entry = Interaction(-1,action_type,value,timestamp)
         ses.add(entry)
         ses.commit()
@@ -51,7 +43,7 @@ def interaction():
 def next():
     if request.method == 'POST':
         data = request.json
-        recordings_id = int(data['recordings_id'])+1
+        recording_id = int(data['recording_id']) + 1
         source_count = data['source_count']
 
         survey_res = eng.execute('''select id from "Survey" order by id asc limit 1''')
@@ -59,7 +51,7 @@ def next():
         for r in survey_res:
             survey_id = str(dict(r)['id'])
         
-        entry1 = Annotation(survey_id,recordings_id,source_count)
+        entry1 = Annotation(survey_id,recording_id,source_count)
         ses.add(entry1)
         ses.commit()
 
@@ -98,15 +90,15 @@ def select_recording():
     global recording
     while (True):
         recording = randrange(15)
-        result = eng.execute('''select number from "Recordings" where id='''+str(recording+1))
+        result = eng.execute('''select num_annotation from "Recording" where id='''+str(recording+1))
         for r in result:
-            if (int(dict(r)['number']) < 5):
-                eng.execute('''update "Recordings" set number='''+str(int(dict(r)['number'])+1)+'''where id='''+str(recording+1))
+            if (int(dict(r)['num_annotation']) < 5):
+                eng.execute('''update "Recording" set num_annotation='''+str(int(dict(r)['num_annotation'])+1)+'''where id='''+str(recording+1))
                 return str(recording)
 
 @app.route('/confirm_annotation', methods=['GET', 'POST'])
 def confirm_annotation():
-    return '''{"recording":{"0":"'''+str(recording)+'''"},"recording_dict":{"0":"0.wav", "1":"1.wav"},"location_dict":{"0":"270,0","1":"300,0"}}'''
+    return '''{"recording":{"0":"'''+str(recording)+'''"},"recording_dict":{"0":"0.wav", "1":"1.wav"},"location_dict":{"0":"270,15","1":"300,0"}}'''
     # return {"recording_dict":{},"location_dict":{}}
 
 if __name__ =='__main__':

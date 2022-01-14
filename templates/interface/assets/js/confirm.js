@@ -11,7 +11,7 @@ function confirm_annotation(){
 			let dictionary = JSON.parse(request.response);
 
 			recording = dictionary["recording"]["0"];
-			document.getElementById('original-audio-source').src = '/templates/interface/assets/audio/'+recording+'.wav';
+			document.getElementById('original-audio-source').src = '/templates/interface/assets/audio/recording/'+recording+'.wav';
 			document.getElementById('audiooriginal').load();
 
 			recording_dict = dictionary["recording_dict"];
@@ -228,7 +228,7 @@ function addAudio(recording_name) {
 
 	let new_source = document.createElement('source');
 	new_source.type = 'audio/wav';
-	new_source.src = '/templates/interface/assets/individual_audio/'+id+'.wav';
+	new_source.src = '/templates/interface/assets/audio/source/'+id+'.wav';
 
 	new_audio.appendChild(new_source);
 

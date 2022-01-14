@@ -8,14 +8,14 @@ req.onreadystatechange = function() {
 }
 
 // randomly choose an audio
-var recordings_id = 0;
+var recording_id = 0;
 ajax_select_recording();
 function ajax_select_recording(){
 	var request = new XMLHttpRequest(); 
 	request.open('POST', '/select_recording');
 	request.onreadystatechange = function() {
-		recordings_id = request.responseText;
-		document.getElementById('source').src = '/templates/interface/assets/audio/'+recordings_id+'.wav';
+		recording_id = request.responseText;
+		document.getElementById('source').src = '/templates/interface/assets/audio/recording/'+recording_id+'.wav';
 		document.getElementById('audio').load();
 	}
 	request.send();
@@ -226,7 +226,7 @@ function ajax_next(){
 	}
 	req.open('POST', '/next', true);
 	req.setRequestHeader('content-type', 'application/json;charset=UTF-8');
-	var data = JSON.stringify({recordings_id,azimuth,elevation,source_count});
+	var data = JSON.stringify({recording_id,azimuth,elevation,source_count});
 	req.send(data);
 	azimuth = new Array();
 	elevation = new Array();

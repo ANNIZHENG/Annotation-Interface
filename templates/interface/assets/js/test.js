@@ -72,7 +72,7 @@ var side_indicators = {
 	10: []
 };
 
-document.getElementById('source').src = '/templates/interface/assets/audio/test'+recording_id+'.wav';
+document.getElementById('source').src = '/templates/interface/assets/audio/recording/test'+recording_id+'.wav';
 document.getElementById('audio').load();
 document.getElementById('body').addEventListener("mouseup",function(){ 
 	document.getElementById('body').style.cursor = 'default'; 
@@ -187,7 +187,7 @@ function setNextQuestion(){
 	if (!next()) return false;
 
 	recording_id += 1;
-	document.getElementById('source').src = '/templates/interface/assets/audio/test'+recording_id+'.wav';
+	document.getElementById('source').src = '/templates/interface/assets/audio/recording/test'+recording_id+'.wav';
 	document.getElementById('audio').load();
 	document.getElementById('audio-frame').style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
 	document.getElementById('default-option').selected = true;
