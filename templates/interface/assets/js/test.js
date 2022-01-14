@@ -75,6 +75,7 @@ var side_indicators = {
 document.getElementById('source').src = '/templates/interface/assets/audio/recording/test'+recording_id+'.wav';
 document.getElementById('audio').load();
 document.getElementById('body').addEventListener("mouseup",function(){ 
+	delete_annotation = false; // for the case when the user deletes nothing
 	document.getElementById('body').style.cursor = 'default'; 
 });
 

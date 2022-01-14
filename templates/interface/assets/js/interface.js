@@ -97,7 +97,10 @@ var side_indicators = {
 	10: []
 };
 
-document.getElementById('body').addEventListener("mouseup",function(){ document.getElementById('body').style.cursor = 'default'; });
+document.getElementById('body').addEventListener("mouseup",function(){ 
+	delete_annotation = false; // for the case when the user deletes nothing
+	document.getElementById('body').style.cursor = 'default'; 
+});
 
 document.getElementById('key-message').addEventListener("click",popKeyRules);
 document.getElementById('message').addEventListener("click",popRules);
