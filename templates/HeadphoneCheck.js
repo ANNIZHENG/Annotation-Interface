@@ -230,11 +230,11 @@ Contact Ray Gonzalez raygon@mit.edu or Kevin J. P. Woods kwoods@mit.edu
     // render boilerplate instruction text
     $('<div/>', {
       class: 'hc-calibration-instruction',
-      html: '<p> You must be <b>wearing headphones</b> to use the annotation interface! </p>'
+      html: '<p> You must pass this <b>Headphone Check</b> to use the Annotation Interface! </p>'
     }).appendTo($('#hc-container'));
     $('<div/>', {
       class: 'hc-calibration-instruction',
-      html: '<p> Level Calibration </p>'
+      html: '<p> Please make sure <b>you are wearing headphones</b>! </p>'
     }).appendTo($('#hc-container'));
     $('<div/>', {
       class: 'hc-calibration-instruction',
@@ -242,7 +242,7 @@ Contact Ray Gonzalez raygon@mit.edu or Kevin J. P. Woods kwoods@mit.edu
     }).appendTo($('#hc-container'));
     $('<div/>', {
       class: 'hc-calibration-instruction',
-      html: '<p> Press the button, then turn up the volume on your computer until the ' +
+      html: '<p> Press the <b>[Play]</b> button, then turn up the volume on your computer until the ' +
             'calibration noise is at a loud but comfortable level. </p>'
     }).appendTo($('#hc-container'));
     $('<div/>', {
@@ -270,7 +270,7 @@ Contact Ray Gonzalez raygon@mit.edu or Kevin J. P. Woods kwoods@mit.edu
 
     $('<div/>', {
       class: 'hc-calibration-instruction',
-      html: '<p> Press <b>Continue</b> when level calibration is complete. </p>',
+      html: '<p> Press <b>[Continue]</b> when level calibration is complete. </p>',
     }).appendTo($('#hc-container'));
 
     // Add button to continue

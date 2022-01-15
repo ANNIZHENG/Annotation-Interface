@@ -62,6 +62,7 @@ def next():
         while (index < len(azimuth_list)):
             if (azimuth_list[index] != None):
                 entry2 = Location(-1,azimuth_list[index],elevation_list[index])
+                print(index+1) # THIS IS GOING TO BE THE ITEM INDEX for the confirm page
                 ses.add(entry2)
                 ses.commit()
             index += 1
@@ -97,9 +98,9 @@ def select_recording():
                 return str(recording)
 
 @app.route('/confirm_annotation', methods=['GET', 'POST'])
-def confirm_annotation():
-    return '''{"recording":{"0":"'''+str(recording)+'''"},"recording_dict":{"0":"0.wav", "1":"1.wav"},"location_dict":{"0":"270,15","1":"300,0"}}'''
-    # return {"recording_dict":{},"location_dict":{}} # in this case confirm page should not be loaded
+def confirm_annotation(): 
+    # this is just a dummy json
+    return '''{"recording":{"0":"'''+str(recording)+'''"},"recording_dict":{"0":"0.wav,2.wav","1":"1.wav,3.wav,4.wav"},"location_dict":{"0":"270,15,1;300,0,2","1":"90,15,3;95,0,4;100,-15,5"}}'''
 
 if __name__ =='__main__':
     app.run(debug=True)

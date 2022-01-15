@@ -1,43 +1,54 @@
 var recording;
-var recording_dict;
-var location_dict;
+var recording_dict = {};
+var location_dict = {};
+var matching = {};
 var totalAnnotation;
+
+var confirm_location = 0;
+var confirm_recording = 0;
+var confirm_recording_inner = 0;
 
 function confirm_annotation(){
 	var request = new XMLHttpRequest(); 
 	request.open('POST', '/confirm_annotation');
 	request.onreadystatechange = function() {
 		if (request.readyState == 4){
+
 			let dictionary = JSON.parse(request.response);
+
+			// construct location_dict
+			let index = 0;
+			for (const [key,value] of Object.entries(dictionary["location_dict"])) {
+				let inner_list = value.split(";");
+				for (const loc of inner_list) {
+					location_dict[index] = loc.split(",");
+					index += 1;
+				}
+			}
+
+			totalAnnotation = index;
+			if(totalAnnotation == 0) window.location.assign('/templates/interface/submit.html');
 
 			recording = dictionary["recording"]["0"];
 			document.getElementById('original-audio-source').src = '/templates/interface/assets/audio/recording/'+recording+'.wav';
 			document.getElementById('audiooriginal').load();
 
-			recording_dict = dictionary["recording_dict"];
-			location_dict = dictionary["location_dict"];
+			addLocation(location_dict[0]);
 
-			totalAnnotation = Object.keys(location_dict).length;
-			if (totalAnnotation == 0) window.location.assign('/templates/interface/submit.html');
+			// construct recording_dict
+			for (const [key,value] of Object.entries(dictionary["recording_dict"])) recording_dict[parseInt(key)] = value.split(',');
+			for (const [key,value] of Object.entries(recording_dict[0])) addAudio(value);
 
-			for (const [key, value] of Object.entries(recording_dict)) {
-				addAudio(value);
-			}
-			addLocation(location_dict["0"].split(","))
 			addButton();
 		}
 	}
 	request.send();
 }
 
-// keep track of the recording_dict and location_dict
-var confirm = 0;
-
+// Click Events
 document.addEventListener('click', function(e){
-	if (e.target.className == 'audio-frame-confirm'){
-
+	if (e.target.className == 'audio-frame-confirm'){ // Change between 'Pause Audio' and 'Play Audio'
 		var audios = document.getElementsByClassName('audio-frame-confirm');
-
 		for (let i = 0; i < audios.length; i++) {
 			if ( audios[i].id != e.target.id && document.getElementById(audios[i].id).innerHTML == 'Pause Audio'  ){
 				window.alert('Please finish listening to the current audio');
@@ -45,9 +56,7 @@ document.addEventListener('click', function(e){
 				return;
 			}
 		}
-
 		audio_id = 'audio' + e.target.id.replace('audio-frame-confirm-','');
-
 		if (document.getElementById(e.target.id).innerHTML == 'Play Audio'){
 			document.getElementById(audio_id).play();
 			document.getElementById(e.target.id).innerHTML = 'Pause Audio';
@@ -56,20 +65,22 @@ document.addEventListener('click', function(e){
 			document.getElementById(audio_id).pause();
 			document.getElementById(e.target.id).innerHTML = 'Play Audio';
 		}
-
 		document.getElementById(audio_id).addEventListener("ended",function(){
 			document.getElementById(e.target.id).innerHTML = 'Play Audio';
 		});
-
 		document.getElementById(audio_id).addEventListener("timeupdate",function(){
 			let track = document.getElementById(audio_id).currentTime / document.getElementById(audio_id).duration * 100;
 			document.getElementById(e.target.id).style.background = 'linear-gradient(to right, #efefef '+track+'%, #ffffff 0%)';
 		});
 	}
-	if (e.target.className == 'btn-confirm'){
-		setNextQuestion();
+	if (e.target.className == 'btn-confirm'){ // When 'Next' or 'Submit' is clicked
+		if (e.target.value == 'LAST'){
+			e.preventDefault();
+			setLastQuestion();
+		} 
+		else setNextQuestion();
 	}
-	if (e.target.className == 'btn-radio-confirm'){
+	if (e.target.className == 'btn-radio-confirm'){ // When input-radios are clicked
 		let radios = document.getElementsByClassName('btn-radio-confirm');
 		document.getElementById(e.target.id).checked = true;
 		for (let i = 0; i < radios.length; i++) {
@@ -80,136 +91,190 @@ document.addEventListener('click', function(e){
 	}
 });
 
-function setNextQuestion(){
-	if(confirm == totalAnnotation){
-		window.location.assign('/templates/interface/submit.html');
+function setLastQuestion() {
+	removeAllBalls();
+	removeAllElements();
+
+	confirm_location -= 1;
+	if (confirm_recording_inner == 0) {
+		confirm_recording_inner == recording_dict[confirm_recording-1].length;
+		confirm_recording -= 1;
 	}
+	confirm_recording_inner -= 1;
+
+	matching[confirm_location] = undefined;
+
+	addLocation(location_dict[confirm_location]);
+	for (const [key,value] of Object.entries(recording_dict[confirm_recording])) addAudio(value);
+
+	addButton();
+}
+
+function setNextQuestion() {
+	let radios = document.getElementsByClassName('btn-radio-confirm');
+	let count = 0;
+
+	for (let i = 0; i < radios.length; i++) {
+		if (document.getElementById(radios[i].id).checked) {
+			matching[confirm_location] = radios[i].id.replace('radio','');
+
+			count += 1;
+			confirm_location += 1;
+			confirm_recording_inner += 1;
+		}
+	}
+	if (count == 0){
+		event.preventDefault();
+		window.alert('Please select one corresponding audio');
+		return false;
+	}
+
+	if (confirm_location == totalAnnotation) window.location.assign('/templates/interface/submit.html');
 	else{
-		// TODO:
-		let radios = document.getElementsByClassName('btn-radio-confirm');
-		let count = 0;
-		for (let i = 0; i < radios.length; i++) {
-			if (document.getElementById(radios[i].id).checked) {
-				count += 1;
-				document.getElementById('match-box-'+radios[i].id.replace('radio','')).style.display = 'none';
-			}
+		removeAllBalls();
+		removeAllElements();
+
+		// clear current displayed 2d annotation
+		let current_item_index = location_dict[confirm_location-1][2];
+		document.getElementById('circular'+current_item_index).style.display = 'none';
+		document.getElementById('circularF'+current_item_index).style.display = 'none';
+		document.getElementById('circularS'+current_item_index).style.display = 'none';
+		document.getElementById('head-item-'+current_item_index).style.display = 'none';
+		document.getElementById('front-item-'+current_item_index).style.display = 'none';
+		document.getElementById('side-item-'+current_item_index).style.display = 'none';
+
+		// set up to display annotation
+		addLocation(location_dict[confirm_location]);
+
+		// set up to display audio choices
+		if (confirm_recording_inner == recording_dict[confirm_recording].length){
+			confirm_recording_inner = 0;
+			confirm_recording += 1;
 		}
-		if (count == 0){
-			event.preventDefault();
-			window.alert('Please select one corresponding audio');
-			return false;
-		}
-		addLocation(location_dict[confirm.toString()].split(","));
-		document.getElementById('match-box').removeChild(document.getElementsByClassName('btn-confirm')[0]);
+
+		for (const [key,value] of Object.entries(recording_dict[confirm_recording])) addAudio(value);
+
 		addButton();
 	}
 }
 
 function addButton(){
-	confirm += 1;
-
 	let new_button = document.createElement('input');
 	new_button.type = 'button';
 
-	if (confirm == totalAnnotation){
+	if (confirm_location == totalAnnotation-1){
 		new_button.className = 'btn-confirm';
 		new_button.value = 'SUBMIT';
 	}
 	else{
 		new_button.className = 'btn-confirm';
-		new_button.value = 'NEXT ANNOTATION';
+		new_button.value = 'NEXT';
 	}
+
+	new_button.style.float = 'right';
 	document.getElementById('match-box').appendChild(new_button);
-	/*
-	<input class="btn-confirm" id="btn-confirm-next" type="button" value="NEXT ANNOTATION"></input>
-	<input class="btn-confirm" id="btn-confirm-submit" type="button" value="SUBMIT"></input>
-	*/
+
+	if (confirm_location != 0){
+		let new_button_last = document.createElement('input');
+		new_button_last.type = 'button';
+		new_button_last.className = 'btn-confirm';
+		new_button_last.value = 'LAST';
+		document.getElementById('match-box').appendChild(new_button_last);
+	}
 }
 
-// TODO: determine whether or not to show colors
 function addLocation(coordinates) {
+	let new_p = document.createElement('p');
+	new_p.innerHTML = 'Sound Sources from the Full Audio:';
+	document.getElementById('match-box').appendChild(new_p);
+
+	let item_index = coordinates[2];
 
 	// Azimuth Annotation Display
-	document.getElementById('head-item-1').style.display = '';
-	document.getElementById('circular1').style.display = '';
-	document.getElementById('circular1').style.transform = 'rotate('+coordinates[0]+'deg)';
+	document.getElementById('head-item-'+item_index).style.display = '';
+	document.getElementById('circular'+item_index).style.display = '';
+	document.getElementById('circular'+item_index).style.transform = 'rotate('+coordinates[0]+'deg)';
 
 	coordinates[0] = parseInt(coordinates[0]);
 	coordinates[1] = parseInt(coordinates[1]);
 
 	// Elevation Annotation Display
-	if (coordinates[0] > 337.5 || coordinates[0] < 22.5){ // show only the side view
-		document.getElementById('side-item-1').style.display = '';
-		document.getElementById('circularS1').style.display = '';
+	if (coordinates[0] > 337.5 || coordinates[0] < 22.5){
+		document.getElementById('side-item-'+item_index).style.display = '';
+		document.getElementById('circularS'+item_index).style.display = '';
 		let e = 90 + -1 * coordinates[1];
-		document.getElementById('circularS1').style.transform = 'rotate('+e+'deg)';
+		document.getElementById('circularS'+item_index).style.transform = 'rotate('+e+'deg)';
 
 	}
 	else if (coordinates[0] >= 22.5 && coordinates[0] <= 67.5){
-		document.getElementById('front-item-1').style.display = '';
-		document.getElementById('circularF1').style.display = '';
-		document.getElementById('side-item-1').style.display = '';
-		document.getElementById('circularS1').style.display = '';
+		document.getElementById('front-item-'+item_index).style.display = '';
+		document.getElementById('circularF'+item_index).style.display = '';
+		document.getElementById('side-item-'+item_index).style.display = '';
+		document.getElementById('circularS'+item_index).style.display = '';
 		let e = 90 + -1 * coordinates[1];
-		document.getElementById('circularF1').style.transform = 'rotate('+e+'deg)';
-		document.getElementById('circularS1').style.transform = 'rotate('+e+'deg)';
+		document.getElementById('circularF'+item_index).style.transform = 'rotate('+e+'deg)';
+		document.getElementById('circularS'+item_index).style.transform = 'rotate('+e+'deg)';
+
 	}
-	else if (coordinates[0] > 67.5 && coordinates[0] < 112.5){ // show only the front view
-		document.getElementById('front-item-1').style.display = '';
-		document.getElementById('circularF1').style.display = '';
+	else if (coordinates[0] > 67.5 && coordinates[0] < 112.5){
+		document.getElementById('front-item-'+item_index).style.display = '';
+		document.getElementById('circularF'+item_index).style.display = '';
 		let e = 90 + -1 * coordinates[1];
-		document.getElementById('circularF1').style.transform = 'rotate('+e+'deg)';
+		document.getElementById('circularF'+item_index).style.transform = 'rotate('+e+'deg)';
 
 	}
 	else if (coordinates[0] >= 112.5 && coordinates[0] <= 157.5){
-		document.getElementById('front-item-1').style.display = '';
-		document.getElementById('circularF1').style.display = '';
-		document.getElementById('side-item-1').style.display = '';
-		document.getElementById('circularS1').style.display = '';
+		document.getElementById('front-item-'+item_index).style.display = '';
+		document.getElementById('circularF'+item_index).style.display = '';
+		document.getElementById('side-item-'+item_index).style.display = '';
+		document.getElementById('circularS'+item_index).style.display = '';
 		let e1 = 90 + -1 * coordinates[1];
 		let e2 = coordinates[1] + 270;
-		document.getElementById('circularF1').style.transform = 'rotate('+e1+'deg)';
-		document.getElementById('circularS1').style.transform = 'rotate('+e2+'deg)';
+		document.getElementById('circularF'+item_index).style.transform = 'rotate('+e1+'deg)';
+		document.getElementById('circularS'+item_index).style.transform = 'rotate('+e2+'deg)';
 
 	}
-	else if (coordinates[0] > 157.5 && coordinates[0] < 202.5){ // show only the side view
-		document.getElementById('side-item-1').style.display = '';
-		document.getElementById('circularS1').style.display = '';
+	else if (coordinates[0] > 157.5 && coordinates[0] < 202.5){
+		document.getElementById('side-item-'+item_index).style.display = '';
+		document.getElementById('circularS'+item_index).style.display = '';
 		let e = coordinates[1] + 270;
-		document.getElementById('circularS1').style.transform = 'rotate('+e+'deg)';
+		document.getElementById('circularS'+item_index).style.transform = 'rotate('+e+'deg)';
 
 	}
 	else if (coordinates[0] >= 202.5 && coordinates[0] <= 247.5){
-		document.getElementById('front-item-1').style.display = '';
-		document.getElementById('circularF1').style.display = '';
-		document.getElementById('side-item-1').style.display = '';
-		document.getElementById('circularS1').style.display = '';
+		document.getElementById('front-item-'+item_index).style.display = '';
+		document.getElementById('circularF'+item_index).style.display = '';
+		document.getElementById('side-item-'+item_index).style.display = '';
+		document.getElementById('circularS'+item_index).style.display = '';
 		let e = coordinates[1] + 270;
-		document.getElementById('circularF1').style.transform = 'rotate('+e+'deg)';
-		document.getElementById('circularS1').style.transform = 'rotate('+e+'deg)';
+		document.getElementById('circularF'+item_index).style.transform = 'rotate('+e+'deg)';
+		document.getElementById('circularS'+item_index).style.transform = 'rotate('+e+'deg)';
 
 	}
-	else if (coordinates[0] > 247.5 && coordinates[0] < 292.5){ // show only the front view
-		document.getElementById('front-item-1').style.display = '';
-		document.getElementById('circularF1').style.display = '';
+	else if (coordinates[0] > 247.5 && coordinates[0] < 292.5){
+		document.getElementById('front-item-'+item_index).style.display = '';
+		document.getElementById('circularF'+item_index).style.display = '';
 		let e = coordinates[1] + 270;
-		document.getElementById('circularF1').style.transform = 'rotate('+e+'deg)';
+		document.getElementById('circularF'+item_index).style.transform = 'rotate('+e+'deg)';
 	}
 	else {
-		document.getElementById('front-item-1').style.display = '';
-		document.getElementById('circularF1').style.display = '';
-		document.getElementById('side-item-1').style.display = '';
-		document.getElementById('circularS1').style.display = '';
+		document.getElementById('front-item-'+item_index).style.display = '';
+		document.getElementById('circularF'+item_index).style.display = '';
+		document.getElementById('side-item-'+item_index).style.display = '';
+		document.getElementById('circularS'+item_index).style.display = '';
 		let e1 = 90 + -1 * coordinates[1];
 		let e2 = coordinates[1] + 270;
-		document.getElementById('circularF1').style.transform = 'rotate('+e2+'deg)';
-		document.getElementById('circularS1').style.transform = 'rotate('+e1+'deg)';
+		document.getElementById('circularF'+item_index).style.transform = 'rotate('+e2+'deg)';
+		document.getElementById('circularS'+item_index).style.transform = 'rotate('+e1+'deg)';
 
 	}
-	displayBall(coordinates[0]-180, coordinates[1], 1);
+	displayBall(coordinates[0]-180, coordinates[1], item_index);
 }
 
 function addAudio(recording_name) {
+	for (const [key,value] of Object.entries(matching)) {
+		if (recording_name.replace('.wav','') == value) return;
+	}
 
 	const id = recording_name.replace('.wav','');
 
@@ -241,19 +306,25 @@ function addAudio(recording_name) {
 	new_div.appendChild(new_audio);
 	new_div.appendChild(new_button);
 
-	/* 
-	<div id="match-box-X" >
-		<input id="radioX" type="radio">
-		<audio id="audioX" controls style="display:none;">
-			<source src="/templates/interface/assets/individual_audio/X.wav" type="audio/wav">
-		</audio>
-		<button class="audio-frame-confirm" id="audio-frame-confirm-X">Play Audio</button>
-	</div>
-	*/
-
 	document.getElementById('match-box').appendChild(new_div);
 	document.getElementById(new_audio.id).load();
+
+	// <div id="match-box-X" >
+	// 	<input id="radioX" type="radio">
+	// 	<audio id="audioX" controls style="display:none;">
+	// 		<source src="/templates/interface/assets/individual_audio/X.wav" type="audio/wav">
+	// 	</audio>
+	// 	<button class="audio-frame-confirm" id="audio-frame-confirm-X">Play Audio</button>
+	// </div>
 }
+
+function removeAllElements(){
+	let parent = document.getElementById('match-box');
+	while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+}
+
 
 /* Three.js */
 

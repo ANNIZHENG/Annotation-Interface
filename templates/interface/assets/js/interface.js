@@ -99,7 +99,7 @@ var side_indicators = {
 
 document.getElementById('body').addEventListener("mouseup",function(){ 
 	delete_annotation = false; // for the case when the user deletes nothing
-	document.getElementById('body').style.cursor = 'default'; 
+	document.getElementById('body').style.cursor = 'default';
 });
 
 document.getElementById('key-message').addEventListener("click",popKeyRules);
@@ -153,7 +153,6 @@ function move_instruction_last(e){
 
 function addSourceCount(){
 	document.getElementById('2d-question').innerHTML = "Please identify the location of each source:";
-
 	document.getElementById('feedback').setAttribute('style',"display:inline-block;");
 	document.getElementById('head').setAttribute('style',"background-image: url('/templates/interface/img/head.png'); display:inline-block;");
 	document.getElementById('front').setAttribute('style',"background-image: url('/templates/interface/img/front.png'); display: inline-block;");
@@ -161,7 +160,6 @@ function addSourceCount(){
 	displayButton();
 
 	source_count = document.getElementById('count').value;
-
 	value = document.getElementById('count').value;
 	timestamp = Date.now();
 	action_type = "source count";
@@ -231,8 +229,6 @@ function ajax_next(){
 	req.setRequestHeader('content-type', 'application/json;charset=UTF-8');
 	var data = JSON.stringify({recording_id,azimuth,elevation,source_count});
 	req.send(data);
-	azimuth = new Array();
-	elevation = new Array();
 	return true;
 }
 
