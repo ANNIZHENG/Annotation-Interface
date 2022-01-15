@@ -95,6 +95,15 @@ function setLastQuestion() {
 	removeAllBalls();
 	removeAllElements();
 
+	// clear the last 2d annotation display
+	let current_item_index = location_dict[confirm_location][2];
+	document.getElementById('circular'+current_item_index).style.display = 'none';
+	document.getElementById('circularF'+current_item_index).style.display = 'none';
+	document.getElementById('circularS'+current_item_index).style.display = 'none';
+	document.getElementById('head-item-'+current_item_index).style.display = 'none';
+	document.getElementById('front-item-'+current_item_index).style.display = 'none';
+	document.getElementById('side-item-'+current_item_index).style.display = 'none';
+
 	confirm_location -= 1;
 	if (confirm_recording_inner == 0) {
 		confirm_recording_inner == recording_dict[confirm_recording-1].length;
