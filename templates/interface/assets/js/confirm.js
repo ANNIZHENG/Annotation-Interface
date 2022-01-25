@@ -74,11 +74,15 @@ document.addEventListener('click', function(e){
 		});
 	}
 	if (e.target.className == 'btn-confirm'){ // When 'Next' or 'Submit' is clicked
+		/*
 		if (e.target.value == 'LAST'){
 			e.preventDefault();
 			setLastQuestion();
 		} 
+		
 		else setNextQuestion();
+		*/
+		setNextQuestion();
 	}
 	if (e.target.className == 'btn-radio-confirm'){ // When input-radios are clicked
 		let radios = document.getElementsByClassName('btn-radio-confirm');
@@ -183,6 +187,7 @@ function addButton(){
 	new_button.style.float = 'right';
 	document.getElementById('match-box').appendChild(new_button);
 
+	/*
 	if (confirm_location != 0){
 		let new_button_last = document.createElement('input');
 		new_button_last.type = 'button';
@@ -190,6 +195,7 @@ function addButton(){
 		new_button_last.value = 'LAST';
 		document.getElementById('match-box').appendChild(new_button_last);
 	}
+	*/
 }
 
 function addLocation(coordinates) {
@@ -281,9 +287,11 @@ function addLocation(coordinates) {
 }
 
 function addAudio(recording_name) {
+	/*
 	for (const [key,value] of Object.entries(matching)) {
 		if (recording_name.replace('.wav','') == value) return;
 	}
+	*/
 
 	const id = recording_name.replace('.wav','');
 
