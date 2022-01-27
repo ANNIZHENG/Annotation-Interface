@@ -142,7 +142,7 @@ def confirm_annotation():
         json_index += 1
     user_azimuth = user_azimuth[:len(user_azimuth)-1] + "}"
     user_elevation = user_elevation[:len(user_elevation)-1] + "}"
-    user_elevation = user_elevation[:len(user_color)-1] + "}"
+    user_color = user_color[:len(user_color)-1] + "}"
     user_num_source = '''"user_num_source":{"0":"''' + str(json_index) + '"}'
 
     return "{" + '''"recording":{"0":"''' + str(recording) + ".wav" + '"}' + "," + user_file_name + "," + user_azimuth + "," + user_elevation + "," + user_color + "," + user_num_source + "," + actual_num_source + "}"
