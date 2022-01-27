@@ -5,22 +5,24 @@ from sqlalchemy.orm import sessionmaker
 
 # database path
 db_path = 'postgresql://eqpytyddkgzpje:589827916509690e9baa1abd869d99bd85ac3c9902c361d04c1e560c2befd624@ec2-52-54-38-229.compute-1.amazonaws.com:5432/dap64di8scvd9n'
+# db_path = 'postgresql://anniezheng@localhost/test'
 
 eng = create_engine(db_path)
 Base = declarative_base()
 
 class Survey(Base):
     __tablename__ = "Survey"
-    id = Column(String, primary_key=True)
-    def __init__(self,id):
-        self.id = id
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    survey_id = Column(String)
+    def __init__(self,survey_id):
+        self.survey_id = survey_id
 
 
 class Annotation(Base):
     __tablename__ = "Annotation"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    survey_id = Column(String, ForeignKey("Survey.id"))
+    survey_id = Column(String)
     recordings_id = Column(Integer)
     source_count = Column(Integer)
 
