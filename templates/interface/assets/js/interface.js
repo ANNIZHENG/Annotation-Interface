@@ -3570,6 +3570,7 @@ function displayBall(azimuth, elevation, number){
 	ball.position.set(returnlist['x'], returnlist['y'], returnlist['z']);
 	scene.remove(scene.getObjectByName('ball'+number));
 	scene.add(ball);
+
 	return ball;
 }
 
