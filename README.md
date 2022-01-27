@@ -4,7 +4,9 @@
 
 #### Please create a postgresql database beforehand and change the path in server/db_tables.py line 7 (the current database used is from Postgres Heroku)
 
-#### You may also check the database directory for postgresql commands for creating Recording, Recording_Joint_Source, Source tables before starting the program
+#### You may check the database directory for postgresql commands for creating Recording, Recording_Joint_Source, Source tables before starting the program
+
+#### database/db.ipynb is a jupyter notebook file for you to analyze the data from the default database
 
 #### Headphone Check program link: https://github.com/mcdermottLab/HeadphoneCheck
 
