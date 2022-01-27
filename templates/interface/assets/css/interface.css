@@ -14,11 +14,6 @@ li {
 	font-size: 17px;
 }
 
-#test{
-	text-align: center;
-	font-size: 100px;
-}
-
 .container, .container-3D {
 	height: 100vh;
 	width: 100%;
@@ -33,22 +28,6 @@ li {
 
 .container-3D{
 	background-color: black;
-}
-
-.container-3D-test{
-	height: 100vh;
-	width: 100%;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	background-color: #a9a9a9;
-}
-
-#confirm-form{
-	position: relative;
-	overflow: scroll;
-	width: 80%;
-	height: 100vh;
 }
 
 #message, #key-message{
@@ -108,16 +87,6 @@ li {
 	color: rgba(0,0,0,0.7);
 }
 
-.btn-confirm{
-	margin-top: 30px;
-	margin-right: 10px;
-	padding: 5px;
-	width: 70px;
-	border: 2px solid black;
-	background-color: #efefef;
-	cursor: pointer;
-}
-
 #btn-button-next,
 #btn-button-refresh,
 #btn-button-submit{
@@ -136,9 +105,7 @@ li {
 #message:hover,
 #message:focus,
 #key-message:hover,
-#key-message:focus,
-.btn-confirm:hover,
-.btn-confirm:focus{
+#key-message:focus{
 	background-color:#c7c7c7;
 }
 
@@ -149,19 +116,6 @@ li {
 	font-size: 15px;
 	height: 40px;
 	width: 350px;
-	border: 2px solid black;
-	background: linear-gradient(to right, #efefef 0%, #ffffff 0%);
-	cursor: pointer;
-}
-
-.audio-frame-confirm{
-	margin-left: 10px;
-	margin-top: 10px;
-	font-weight: bold;
-	text-align: center;
-	font-size: 15px;
-	height: 40px;
-	width: 180px;
 	border: 2px solid black;
 	background: linear-gradient(to right, #efefef 0%, #ffffff 0%);
 	cursor: pointer;
@@ -209,7 +163,26 @@ li {
 	width: 15px; 
 	height: 15px;
 	border-radius: 50%;
-}	
+	
+	/* Numberic Text */
+	font-size: 12px;
+	font-weight: 900;
+	text-align: center;
+}
+
+.confirm-indicator{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 25px; 
+	height: 25px;
+	border-radius: 50%;
+	
+	/* Numberic Text */
+	font-size: 17px;
+	font-weight: 900;
+	text-align: center;
+}
 
 .circular{
 	position: absolute;

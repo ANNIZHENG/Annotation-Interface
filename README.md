@@ -1,24 +1,12 @@
 # Annotation Interface
 
-### Please create a postgresql database beforehand and change the path in server/db_tables.py line 8 (the current database used is from Postgres Heroku)
+### Please create a postgresql database beforehand and change the path in server/db_tables.py line 7 (the current database used is from Postgres Heroku)
 
-#### You may see the demonstration here: NOT-AVAILABLE-NOW
+#### You may see the demonstration here: https://annotation-interface.herokuapp.com/
 
 #### Headphone Check program link: https://github.com/mcdermottLab/HeadphoneCheck
 
-1. Please create the Recording database before hand
-```
-CREATE TABLE "Recording" (
-	id serial PRIMARY KEY,
-	file_name VARCHAR,
-	num_annotation INTEGER
-);
-
-INSERT INTO "Recording" (file_name, num_annotation)
-VALUES ('0.wav',0),('1.wav',0),('2.wav',0),('3.wav',0),
-('4.wav',0),('5.wav',0),('6.wav',0),('7.wav',0),('8.wav',0),('9.wav',0),
-('10.wav',0),('11.wav',0),('12.wav',0),('13.wav',0),('14.wav',0);
-```
+1. Please create the Recording database before hand using the **/templates/interface/assets/database/database.sql**
 
 2. Optional: Please start postgresql and set up the virtual environment
 

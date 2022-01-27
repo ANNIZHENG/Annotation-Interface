@@ -1,12 +1,11 @@
-var recording;
-var recording_dict = {};
-var location_dict = {};
-var matching = {};
-var totalAnnotation;
-
-var confirm_location = 0;
-var confirm_recording = 0;
-var confirm_recording_inner = 0;
+var file_name = {};
+var azimuth = {};
+var elevation = {};
+var color = {};
+var user_num_source;
+var actual_num_source;
+const colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
+const css_colors = ["#009dff", "#ff7f0e", "#00ff00", "#ff0000", "#9467bd", "#d3d3d3", "#c39b77", "#e377c2", "#bcbd22", "#00ffff"];
 
 function confirm_annotation(){
 	var request = new XMLHttpRequest(); 
@@ -14,49 +13,91 @@ function confirm_annotation(){
 	request.onreadystatechange = function() {
 		if (request.readyState == 4){
 
-			let dictionary = JSON.parse(request.response);
+			color = JSON.parse(request.response)["color"];
+			azimuth = JSON.parse(request.response)["azimuth"];
+			elevation = JSON.parse(request.response)["elevation"];
 
-			// construct location_dict
-			let index = 0;
-			for (const [key,value] of Object.entries(dictionary["location_dict"])) {
-				let inner_list = value.split(";");
-				for (const loc of inner_list) {
-					location_dict[index] = loc.split(",");
-					index += 1;
-				}
+			user_num_source = parseInt(JSON.parse(request.response)["user_num_source"]["0"]);
+			actual_num_source = parseInt(JSON.parse(request.response)["actual_num_source"]["0"]);
+
+			// load full audio file
+			document.getElementById('original-audio-source').src = '/templates/interface/assets/audio/recording/'+JSON.parse(request.response)["recording"]["0"];
+			document.getElementById('audio-full').load();
+
+			for (const [key,value] of Object.entries( JSON.parse(request.response)["file_name"] )) {
+				let new_td = document.createElement('td');
+
+				let new_audio = document.createElement('audio');
+				new_audio.id = "audio-"+key;
+				new_audio.controls = true;
+				new_audio.style.display = "none";
+
+				let new_audio_source = document.createElement('source');
+				new_audio_source.id = "audio-source-"+key;
+				new_audio_source.type = "audio/wav";
+				new_audio_source.src = '/templates/interface/assets/audio/source/'+value;
+				new_audio.appendChild(new_audio_source);
+
+				let new_button = document.createElement('button');
+				new_button.id = "audio-frame-"+key;
+				new_button.className = "audio-frame";
+
+				// styling of buttons
+				new_button.style.background = "linear-gradient(to right, #efefef 0%, #ffffff 0%)";
+				new_button.style.width = "60px";
+				new_button.style.cursor = "pointer";
+				new_button.style.border = "1px black solid";
+				new_button.innerHTML = "Play Audio";
+				// end of styling
+
+				new_td.appendChild(new_audio);
+				new_td.appendChild(new_button);
+
+				document.getElementById("class-name").appendChild(new_td);
 			}
 
-			totalAnnotation = index;
-			if(totalAnnotation == 0) window.location.assign('/templates/interface/submit.html');
+			for (const [key,value] of Object.entries(color)) {
 
-			recording = dictionary["recording"]["0"];
-			document.getElementById('original-audio-source').src = '/templates/interface/assets/audio/recording/'+recording+'.wav';
-			document.getElementById('audiooriginal').load();
+				addLocation([azimuth[key], elevation[key], value]);
 
-			addLocation(location_dict[0]);
-
-			// construct recording_dict
-			for (const [key,value] of Object.entries(dictionary["recording_dict"])) recording_dict[parseInt(key)] = value.split(',');
-			for (const [key,value] of Object.entries(recording_dict[0])) addAudio(value);
-
-			addButton();
+				let new_tr =  document.createElement('tr');
+				let new_td_color = document.createElement('td');
+				let new_div = document.createElement('div');
+				new_div.className = 'confirm-indicator';
+				new_div.style.backgroundColor = css_colors[parseInt(value)-1];
+				new_div.innerHTML = value;
+				new_td_color.appendChild(new_div);
+				new_tr.appendChild(new_td_color);
+				for (let i = 0; i < actual_num_source; i++){
+					let new_td = document.createElement('td');
+					let new_radio = document.createElement('input');
+					new_radio.id = 'radio-'+key+'-'+i;
+					new_radio.className = 'radio-'+key;
+					new_radio.type = 'radio';
+					new_td.appendChild(new_radio);
+					new_tr.appendChild(new_td);
+				}
+				document.getElementById('matching-table').appendChild(new_tr);
+			}
 		}
 	}
 	request.send();
 }
 
-// Click Events
 document.addEventListener('click', function(e){
-	if (e.target.className == 'audio-frame-confirm'){ // Change between 'Pause Audio' and 'Play Audio'
-		var audios = document.getElementsByClassName('audio-frame-confirm');
+	if (e.target.id.substring(0,11) == "audio-frame") {
+		var audios = document.getElementsByClassName('audio-frame');
 		for (let i = 0; i < audios.length; i++) {
 			if ( audios[i].id != e.target.id && document.getElementById(audios[i].id).innerHTML == 'Pause Audio'  ){
-				window.alert('Please finish listening to the current audio');
+				window.alert('Please finish listening to the current audio or pause the current audio');
 				e.preventDefault();
 				return;
 			}
 		}
-		audio_id = 'audio' + e.target.id.replace('audio-frame-confirm-','');
+
+		if (e.target.id == "audio-frame") audio_id = "audio-full"
+		else audio_id = "audio-" + e.target.id.replace("audio-frame-","");
+
 		if (document.getElementById(e.target.id).innerHTML == 'Play Audio'){
 			document.getElementById(audio_id).play();
 			document.getElementById(e.target.id).innerHTML = 'Pause Audio';
@@ -65,144 +106,48 @@ document.addEventListener('click', function(e){
 			document.getElementById(audio_id).pause();
 			document.getElementById(e.target.id).innerHTML = 'Play Audio';
 		}
+
 		document.getElementById(audio_id).addEventListener("ended",function(){
 			document.getElementById(e.target.id).innerHTML = 'Play Audio';
 		});
+
 		document.getElementById(audio_id).addEventListener("timeupdate",function(){
 			let track = document.getElementById(audio_id).currentTime / document.getElementById(audio_id).duration * 100;
 			document.getElementById(e.target.id).style.background = 'linear-gradient(to right, #efefef '+track+'%, #ffffff 0%)';
 		});
 	}
-	if (e.target.className == 'btn-confirm'){ // When 'Next' or 'Submit' is clicked
-		/*
-		if (e.target.value == 'LAST'){
-			e.preventDefault();
-			setLastQuestion();
-		} 
-		
-		else setNextQuestion();
-		*/
-		setNextQuestion();
-	}
-	if (e.target.className == 'btn-radio-confirm'){ // When input-radios are clicked
-		let radios = document.getElementsByClassName('btn-radio-confirm');
-		document.getElementById(e.target.id).checked = true;
-		for (let i = 0; i < radios.length; i++) {
-			if ( radios[i].id != e.target.id && document.getElementById(radios[i].id).checked ){
-				document.getElementById(radios[i].id).checked = false;
+	else if (e.target.id.substring(0,5) =="radio"){
+
+		let radios = document.getElementsByClassName(e.target.className);
+		document.getElementById('warning').innerHTML = "";
+
+		if (user_num_source == actual_num_source || user_num_source < actual_num_source){ // desired circumstance & underestimation
+			for (let i = 0; i < radios.length; i++) {
+				if ( radios[i].id != e.target.id && document.getElementById(radios[i].id).checked ) document.getElementById(radios[i].id).checked = false;
+			}
+			let check_checked = 0;
+			for (let f = 0; f < actual_num_source; f++){
+				for (let i = 0; i < user_num_source; i++) {
+					id_name = "radio-"+i+"-"+f;
+					if (document.getElementById(id_name).checked) check_checked += 1;
+				}
+				if (check_checked > 1) {
+					document.getElementById('warning').innerHTML = "One source should not be matched with more than one annotations";
+					break;
+				}
+				check_checked = 0;
+			}
+		}
+		else{  // overestimation
+			document.getElementById(e.target.id).checked = true;
+			for (let i = 0; i < radios.length; i++) {
+				if ( radios[i].id != e.target.id && document.getElementById(radios[i].id).checked ) document.getElementById(radios[i].id).checked = false;
 			}
 		}
 	}
 });
 
-function setLastQuestion() {
-	removeAllBalls();
-	removeAllElements();
-
-	// clear the last 2d annotation display
-	let current_item_index = location_dict[confirm_location][2];
-	document.getElementById('circular'+current_item_index).style.display = 'none';
-	document.getElementById('circularF'+current_item_index).style.display = 'none';
-	document.getElementById('circularS'+current_item_index).style.display = 'none';
-	document.getElementById('head-item-'+current_item_index).style.display = 'none';
-	document.getElementById('front-item-'+current_item_index).style.display = 'none';
-	document.getElementById('side-item-'+current_item_index).style.display = 'none';
-
-	confirm_location -= 1;
-	if (confirm_recording_inner == 0) {
-		confirm_recording_inner == recording_dict[confirm_recording-1].length;
-		confirm_recording -= 1;
-	}
-	confirm_recording_inner -= 1;
-
-	matching[confirm_location] = undefined;
-
-	addLocation(location_dict[confirm_location]);
-	for (const [key,value] of Object.entries(recording_dict[confirm_recording])) addAudio(value);
-
-	addButton();
-}
-
-function setNextQuestion() {
-	let radios = document.getElementsByClassName('btn-radio-confirm');
-	let count = 0;
-
-	for (let i = 0; i < radios.length; i++) {
-		if (document.getElementById(radios[i].id).checked) {
-			matching[confirm_location] = radios[i].id.replace('radio','');
-
-			count += 1;
-			confirm_location += 1;
-			confirm_recording_inner += 1;
-		}
-	}
-	if (count == 0){
-		event.preventDefault();
-		window.alert('Please select one corresponding audio');
-		return false;
-	}
-
-	if (confirm_location == totalAnnotation) window.location.assign('/templates/interface/submit.html');
-	else{
-		removeAllBalls();
-		removeAllElements();
-
-		// clear current displayed 2d annotation
-		let current_item_index = location_dict[confirm_location-1][2];
-		document.getElementById('circular'+current_item_index).style.display = 'none';
-		document.getElementById('circularF'+current_item_index).style.display = 'none';
-		document.getElementById('circularS'+current_item_index).style.display = 'none';
-		document.getElementById('head-item-'+current_item_index).style.display = 'none';
-		document.getElementById('front-item-'+current_item_index).style.display = 'none';
-		document.getElementById('side-item-'+current_item_index).style.display = 'none';
-
-		// set up to display annotation
-		addLocation(location_dict[confirm_location]);
-
-		// set up to display audio choices
-		if (confirm_recording_inner == recording_dict[confirm_recording].length){
-			confirm_recording_inner = 0;
-			confirm_recording += 1;
-		}
-
-		for (const [key,value] of Object.entries(recording_dict[confirm_recording])) addAudio(value);
-
-		addButton();
-	}
-}
-
-function addButton(){
-	let new_button = document.createElement('input');
-	new_button.type = 'button';
-
-	if (confirm_location == totalAnnotation-1){
-		new_button.className = 'btn-confirm';
-		new_button.value = 'SUBMIT';
-	}
-	else{
-		new_button.className = 'btn-confirm';
-		new_button.value = 'NEXT';
-	}
-
-	new_button.style.float = 'right';
-	document.getElementById('match-box').appendChild(new_button);
-
-	/*
-	if (confirm_location != 0){
-		let new_button_last = document.createElement('input');
-		new_button_last.type = 'button';
-		new_button_last.className = 'btn-confirm';
-		new_button_last.value = 'LAST';
-		document.getElementById('match-box').appendChild(new_button_last);
-	}
-	*/
-}
-
 function addLocation(coordinates) {
-	let new_p = document.createElement('p');
-	new_p.innerHTML = 'Sound Sources from the Full Audio:';
-	document.getElementById('match-box').appendChild(new_p);
-
 	let item_index = coordinates[2];
 
 	// Azimuth Annotation Display
@@ -286,66 +231,43 @@ function addLocation(coordinates) {
 	displayBall(coordinates[0]-180, coordinates[1], item_index);
 }
 
-function addAudio(recording_name) {
-	/*
-	for (const [key,value] of Object.entries(matching)) {
-		if (recording_name.replace('.wav','') == value) return;
+function submit_confirmation(){
+	if (document.getElementById('warning').innerHTML != ""){
+		window.alert("One source should not be matched with more than one annotations");
+		event.preventDefault();
+		return;
 	}
-	*/
 
-	const id = recording_name.replace('.wav','');
+	let num_checked = 0;
+	let found_column_index = document.getElementsByTagName("input")[0].id.substring(8,9);
+	let total_found_column_index = 1;
 
-	let new_div = document.createElement('div');
-	new_div.id = 'match-box-'+id;
+	for (let i = 0; i < document.getElementsByTagName("input").length; i++){
+		if (document.getElementsByTagName("input")[i].checked) {
+			num_checked += 1;
+			if (document.getElementsByTagName("input")[i].id.substring(8,9) != found_column_index){
+				found_column_index = document.getElementsByTagName("input")[i].id.substring(8,9);
+				total_found_column_index += 1;
+			}
+		}
+	}
 
-	let new_input = document.createElement('input');
-	new_input.className = 'btn-radio-confirm';
-	new_input.id = 'radio'+id;
-	new_input.type = 'radio'
+	if (user_num_source > num_checked){
+		window.alert("You must match all of the Annotation points with their corresponding Sound Sources")
+		event.preventDefault();
+		return;
+	}
 
-	let new_audio = document.createElement('audio');
-	new_audio.id = 'audio'+id;
-	new_audio.controls = true;
-	new_audio.style.display = 'none';
+	if (user_num_source >= actual_num_source && total_found_column_index < actual_num_source) { // This restriction is only for the case of overestimation and normal circumstance
+		window.alert("You must match all of the Sound Sources with their corresponding Annotation points")
+		event.preventDefault();
+		return;
+	}
 
-	let new_source = document.createElement('source');
-	new_source.type = 'audio/wav';
-	new_source.src = '/templates/interface/assets/audio/source/'+id+'.wav';
-
-	new_audio.appendChild(new_source);
-
-	let new_button = document.createElement('button');
-	new_button.innerHTML = 'Play Audio';
-	new_button.className = 'audio-frame-confirm'
-	new_button.id = 'audio-frame-confirm-'+id;
-
-	new_div.appendChild(new_input);
-	new_div.appendChild(new_audio);
-	new_div.appendChild(new_button);
-
-	document.getElementById('match-box').appendChild(new_div);
-	document.getElementById(new_audio.id).load();
-
-	// <div id="match-box-X" >
-	// 	<input id="radioX" type="radio">
-	// 	<audio id="audioX" controls style="display:none;">
-	// 		<source src="/templates/interface/assets/individual_audio/X.wav" type="audio/wav">
-	// 	</audio>
-	// 	<button class="audio-frame-confirm" id="audio-frame-confirm-X">Play Audio</button>
-	// </div>
+	window.location = '/templates/interface/submit.html';
 }
-
-function removeAllElements(){
-	let parent = document.getElementById('match-box');
-	while (parent.firstChild) {
-        parent.removeChild(parent.firstChild);
-    }
-}
-
 
 /* Three.js */
-
-const colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
 
 container = document.getElementById('3d-head');
 const scene = new THREE.Scene();
@@ -420,22 +342,11 @@ function displayBall(azimuth, elevation, number){
 		color: colors[number-1]
 	});
 	var ball = new THREE.Mesh(ballGeometry, ballMaterial);
-	ball.name = 'ball'+number;
 	ball.position.set(returnlist['x'], returnlist['y'], returnlist['z']);
-	scene.remove(scene.getObjectByName('ball'+number));
 	scene.add(ball);
 	return ball;
 }
 
-function deleteBall(number){ scene.remove(scene.getObjectByName('ball'+number)); }
-
-function removeAllBalls(){
-	var index = 0;
-	while (index < 10){
-		scene.remove(scene.getObjectByName('ball'+(index + 1)));
-		index += 1;
-	}
-}
 scene.add(wireframe);
 scene.add(sphere);
 scene.add(ear1);
