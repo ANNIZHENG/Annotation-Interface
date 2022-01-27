@@ -20,17 +20,19 @@ CREATE TABLE "Source" (
 	specific_class VARCHAR
 );
 
-COPY "Recording"(recording_name, file_name, num_annotation, num_source)
+-- PLEASE CHANGE THE PATH TO ACCOMODATE YOUR ENV.
+
+\COPY "Recording"(recording_name, file_name, num_annotation, num_source)
 FROM '/Users/anniezheng/Desktop/Annotation-Interface/templates/interface/assets/database/recording.csv'
 DELIMITER ','
 CSV HEADER;
 
-COPY "Recording_Joint_Source"(recording_id, source_id, azimuth, elevation)
+\COPY "Recording_Joint_Source"(recording_id, source_id, azimuth, elevation)
 FROM '/Users/anniezheng/Desktop/Annotation-Interface/templates/interface/assets/database/recording_joint_source.csv'
 DELIMITER ','
 CSV HEADER;
 
-COPY "Source"(file_name, coarse_class, specific_class)
+\COPY "Source"(file_name, coarse_class, specific_class)
 FROM '/Users/anniezheng/Desktop/Annotation-Interface/templates/interface/assets/database/source.csv'
 DELIMITER ','
 CSV HEADER;
