@@ -57,9 +57,14 @@ def next():
         ses.commit()
 
         recording_id = int(data['recording_id']) + 1
+
+        # Extra Layer to Ensure Storage w/ Heroku
+        # global recording
+        # recording = recording_id - 1
+
         source_count = data['source_count']
 
-        survey_res = eng.execute('''select id from "Survey" order by id asc limit 1''')
+        survey_res = eng.execute('''select id from "Survey" order by id desc limit 1''')
         survey_id = ''
         for r in survey_res:
             survey_id = str(dict(r)['id'])
@@ -72,6 +77,7 @@ def next():
         elevation_list = data['elevation']
 
         index = 0
+
         global json_index 
         json_index = 0
 
@@ -107,7 +113,7 @@ def next():
 
 @app.route('/get_survey', methods=['GET', 'POST'])
 def get_survey():
-    survey_res = eng.execute('''select id from "Survey" order by id asc limit 1''')
+    survey_res = eng.execute('''select id from "Survey" order by id desc limit 1''')
     survey_id = ''
     for r in survey_res:
         survey_id = str(dict(r)['id'])
@@ -115,8 +121,8 @@ def get_survey():
 
 @app.route('/select_recording', methods=['GET', 'POST'])
 def select_recording():
+    global recording
     while (True):
-        global recording
         recording = randrange(30)
         result = eng.execute('''select num_annotation from "Recording" where id='''+str(recording+1))
         for r in result:
@@ -130,8 +136,9 @@ def confirm_annotation():
     global user_azimuth
     global user_elevation
     global user_color
-    global recording
-    global json_index
+
+    global recording # bug here
+    global json_index # bug here
 
     result_file_name = eng.execute(
         '''with cte as (select "Recording".id as recording_id, "Recording_Joint_Source".source_id as source_id from "Recording" inner join "Recording_Joint_Source" on "Recording".id = "Recording_Joint_Source".recording_id) select "Source".file_name as file_name from "Source" inner join cte on "Source".id = cte.source_id where recording_id ='''+str(recording+1)
