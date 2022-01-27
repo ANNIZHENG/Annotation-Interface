@@ -8,7 +8,7 @@
 
 #### Headphone Check program link: https://github.com/mcdermottLab/HeadphoneCheck
 
-1. Please create the Recording database before hand using the **/templates/interface/assets/database/database.sql**
+1. Please create the Recording database before hand using database/database.sql
 
 2. Optional: Please start postgresql and set up the virtual environment
 
