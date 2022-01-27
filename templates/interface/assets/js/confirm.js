@@ -13,6 +13,8 @@ function confirm_annotation(){
 	request.onreadystatechange = function() {
 		if (request.readyState == 4){
 
+			console.log(request.response);
+
 			color = JSON.parse(request.response)["color"];
 			azimuth = JSON.parse(request.response)["azimuth"];
 			elevation = JSON.parse(request.response)["elevation"];
