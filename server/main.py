@@ -115,8 +115,8 @@ def get_survey():
 
 @app.route('/select_recording', methods=['GET', 'POST'])
 def select_recording():
-    global recording
     while (True):
+        global recording
         recording = randrange(30)
         result = eng.execute('''select num_annotation from "Recording" where id='''+str(recording+1))
         for r in result:
@@ -125,21 +125,20 @@ def select_recording():
                 return str(recording)
 
 @app.route('/confirm_annotation', methods=['GET', 'POST'])
-def confirm_annotation(): 
+def confirm_annotation():
+
     global user_azimuth
     global user_elevation
     global user_color
     global recording
+    global json_index
 
     result_file_name = eng.execute(
-        '''
-        with cte as (select "Recording".id as recording_id, "Recording_Joint_Source".source_id as source_id from "Recording" inner join
-        "Recording_Joint_Source" on "Recording".id = "Recording_Joint_Source".recording_id)
-        select "Source".file_name from "Source" inner join cte on "Source".id = cte.source_id where recording_id ='''+str(recording+1))
-
-    user_file_name = '''"file_name":{'''
+        '''with cte as (select "Recording".id as recording_id, "Recording_Joint_Source".source_id as source_id from "Recording" inner join "Recording_Joint_Source" on "Recording".id = "Recording_Joint_Source".recording_id) select "Source".file_name as file_name from "Source" inner join cte on "Source".id = cte.source_id where recording_id ='''+str(recording+1)
+    )
 
     filename_json_index = 0
+    user_file_name = '''"file_name":{'''
 
     for r in result_file_name:
         user_file_name = user_file_name + '"' + str(filename_json_index) + '":' + '"' + dict(r)['file_name'] + '",'
@@ -147,23 +146,10 @@ def confirm_annotation():
 
     user_file_name = user_file_name[:len(user_file_name)-1] + "}"
 
-    global json_index
     user_num_source = '''"user_num_source":{"0":"''' + str(json_index) + '"}'
     actual_num_source = '''"actual_num_source":{"0":"''' + str(filename_json_index) + '"}'
 
-    # these are used to prevent heroku from re-using varaibles
-    temp_recording = recording
-    temp_user_azimuth = user_azimuth
-    temp_user_elevation = user_elevation
-    temp_user_color = user_color
-
-    recording = -1
-    json_index = 0
-    user_azimuth = '''"azimuth":{'''
-    user_elevation = '''"elevation":{'''
-    user_color = '''"color":{'''
-
-    return "{" + '''"recording":{"0":"''' + str(temp_recording) + ".wav" + '"}' + "," + user_file_name + "," + temp_user_azimuth + "," + temp_user_elevation + "," + temp_user_color + "," + user_num_source + "," + actual_num_source + "}"
+    return "{" + '''"recording":{"0":"''' + str(recording) + ".wav" + '"}' + "," + user_file_name + "," + user_azimuth + "," + user_elevation + "," + user_color + "," + user_num_source + "," + actual_num_source + "}"
 
 if __name__ =='__main__':
     app.run(debug=True)
