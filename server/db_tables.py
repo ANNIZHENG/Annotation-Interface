@@ -55,11 +55,13 @@ class Location(Base):
     annotation_id = Column(Integer)
     azimuth = Column(Integer)
     elevation = Column(Integer)
+    color = Column(Integer)
 
-    def __init__(self,annotation_id,azimuth,elevation):
+    def __init__(self,annotation_id,azimuth,elevation,color):
         self.annotation_id = annotation_id
         self.azimuth = azimuth
         self.elevation = elevation
+        self.color = color
 
 Base.metadata.bind = eng
 Session = sessionmaker(bind=eng)
