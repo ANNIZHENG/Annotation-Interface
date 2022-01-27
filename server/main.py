@@ -5,13 +5,9 @@ from datetime import datetime
 from flask import *
 from db_tables import ses,eng,Annotation,Survey,Location,Interaction
 from random import randrange
+app = Flask(__name__,static_folder="../templates",template_folder="..")
 
 # global variables
-app = Flask(__name__,static_folder="../templates",template_folder="..")
-recording = -1
-json_index = 0
-user_azimuth = '''"azimuth":{'''
-user_elevation = '''"elevation":{'''
 user_color = '''"color":{'''
 
 # server side ajaxes
@@ -30,16 +26,7 @@ def home():
 @app.route('/annotation_interface', methods=['GET', 'POST'])
 def start():
     # reset everything for the case when user reloads
-    global recording
-    global json_index
-    global user_azimuth
-    global user_elevation
     global user_color
-
-    recording = -1
-    json_index = 0
-    user_azimuth = '''"azimuth":{'''
-    user_elevation = '''"elevation":{'''
     user_color = '''"color":{'''
     
     # generate new survey id
@@ -90,10 +77,7 @@ def next():
         azimuth_list = data['azimuth']
         elevation_list = data['elevation']
 
-        global user_azimuth
-        global user_elevation
         global user_color
-        global json_index
 
         json_index = 0
         index = 0
@@ -102,19 +86,12 @@ def next():
                 entry2 = Location(-1,azimuth_list[index],elevation_list[index])
                 ses.add(entry2)
                 ses.commit()
-                
-                user_azimuth = user_azimuth + '"' + str(json_index) + '":"' + str(azimuth_list[index]) + '",'
-
-                user_elevation = user_elevation + '"' + str(json_index) + '":"' + str(elevation_list[index]) + '",'
 
                 user_color = user_color + '"' + str(json_index) + '":"' + str(index+1) + '",'
 
                 json_index += 1
                 
             index += 1
-
-        user_azimuth = user_azimuth[:len(user_azimuth)-1] + "}"
-        user_elevation = user_elevation[:len(user_elevation)-1] + "}"
         user_color = user_color[:len(user_color)-1] + "}"
 
         result = eng.execute('''select id from "Annotation" order by id desc limit 1''')
@@ -136,7 +113,6 @@ def get_survey():
 
 @app.route('/select_recording', methods=['GET', 'POST'])
 def select_recording():
-    global recording
     while (True):
         recording = randrange(30)
         result = eng.execute('''select num_annotation from "Recording" where id='''+str(recording+1))
@@ -147,25 +123,38 @@ def select_recording():
 
 @app.route('/confirm_annotation', methods=['GET', 'POST'])
 def confirm_annotation():
-
-    global user_azimuth
-    global user_elevation
     global user_color
-    global recording
-    global json_index
+
+    # global recording
+    recording = 0
+    annotation_id = 0
+    result_get_recording = eng.execute('''select id, recording_id from "Annotation" order by id desc limit 1''')
+    for r1 in result_get_recording:
+        recording = int(dict(r1)['recording_id'])-1
+        annotation_id = dict(r1)['id']
 
     result_file_name = eng.execute( '''with cte as (select "Recording".id as recording_id, "Recording_Joint_Source".source_id as source_id from "Recording" inner join "Recording_Joint_Source" on "Recording".id = "Recording_Joint_Source".recording_id) select "Source".file_name as file_name from "Source" inner join cte on "Source".id = cte.source_id where recording_id ='''+str(recording+1) )
-
     filename_json_index = 0
     user_file_name = '''"file_name":{'''
-
     for r in result_file_name:
         filename_json_index += 1
         user_file_name = user_file_name + '"' + str(filename_json_index) + '":' + '"' + dict(r)['file_name'] + '",'
-
     user_file_name = user_file_name[:len(user_file_name)-1] + "}"
-    user_num_source = '''"user_num_source":{"0":"''' + str(json_index) + '"}'
     actual_num_source = '''"actual_num_source":{"0":"''' + str(filename_json_index) + '"}'
+
+    # global azimuth && global elevation && global json_index
+    user_azimuth = '''"azimuth":{'''
+    user_elevation = '''"elevation":{'''
+    json_index = 0
+    result_get_location = eng.execute('''select azimuth, elevation from "Location" where annotation_id='''+str(annotation_id))
+
+    for r2 in result_get_location:
+        user_azimuth = user_azimuth + '"' + str(json_index) + '":"' + str(dict(r2)['azimuth']) + '",'
+        user_elevation = user_elevation + '"' + str(json_index) + '":"' + str(dict(r2)['elevation']) + '",'
+        json_index += 1
+    user_azimuth = user_azimuth[:len(user_azimuth)-1] + "}"
+    user_elevation = user_elevation[:len(user_elevation)-1] + "}"
+    user_num_source = '''"user_num_source":{"0":"''' + str(json_index) + '"}'
 
     return "{" + '''"recording":{"0":"''' + str(recording) + ".wav" + '"}' + "," + user_file_name + "," + user_azimuth + "," + user_elevation + "," + user_color + "," + user_num_source + "," + actual_num_source + "}"
 
