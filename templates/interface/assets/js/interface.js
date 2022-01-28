@@ -21,6 +21,9 @@ function ajax_select_recording(){
 	request.send();
 }
 
+// check if the user goes through the whole instruction
+var read_all_rules = false;
+
 // colors
 const colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
 var current_colors_index = 0;
@@ -107,7 +110,9 @@ document.getElementById('message').addEventListener("click",popRules);
 
 document.getElementById('instruction-left').addEventListener("click",move_instruction_last);
 document.getElementById('instruction-right').addEventListener("click",move_instruction_next);
-document.getElementById("sign").addEventListener("click",closeRules);
+document.getElementById('instruction-proceed').addEventListener("click",closeRules);
+document.getElementById('sign').addEventListener("click",closeRules);
+
 document.getElementById('audio-frame').addEventListener("click",addPlaying);
 document.getElementById('audio').addEventListener("ended",displaySelection);
 document.getElementById('audio').addEventListener("timeupdate",audioTracker);
@@ -126,11 +131,18 @@ function popKeyRules(e){
 function popRules(e){ 
 	e.preventDefault();
 	modal.style.display = "block";
+	if (read_all_rules) document.getElementById('sign').style.display = '';
+	document.getElementById('instruction-proceed').style.display = 'none';
+	document.getElementById('instruction-right').style.display = '';
+	document.getElementById('instruction'+curr_instruction).style.display = 'none';
+	document.getElementById('instruction1').style.display = '';
+	curr_instruction = 1;
 }
 
 function closeRules(e){ 
 	e.preventDefault();
-	modal.style.display = "none";
+	if (read_all_rules) modal.style.display = "none";
+	else window.alert("Please read all of the instructions first");
 }
 
 function move_instruction_next(e){
@@ -140,11 +152,18 @@ function move_instruction_next(e){
 		document.getElementById('instruction'+(curr_instruction+1)).style.display = '';
 		curr_instruction += 1;
 	}
+	if (curr_instruction == 6) {
+		document.getElementById("instruction-right").style.display = 'none';
+		document.getElementById("instruction-proceed").style.display = '';
+		read_all_rules = true;
+	}
 }
 
 function move_instruction_last(e){
 	e.preventDefault();
 	if (curr_instruction > 1) {
+		document.getElementById("instruction-right").style.display = '';
+		document.getElementById("instruction-proceed").style.display = 'none';
 		document.getElementById('instruction'+curr_instruction).style.display = 'none';
 		document.getElementById('instruction'+(curr_instruction-1)).style.display = '';
 		curr_instruction -= 1;
@@ -3496,12 +3515,18 @@ document.getElementById('side-item-10').addEventListener("mousedown",function(e)
 container = document.getElementById('3d-head');
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000000);
-var light = new THREE.HemisphereLight(0xffffff, 0.8);
+var light = new THREE.HemisphereLight(0xffffff, 1);
 scene.add(light);
 
-var pointLight = new THREE.PointLight(0xffffff, 0.7);
-pointLight.position.set(50, 30, 200);
+// front light
+var pointLight = new THREE.PointLight(0xffffff, 0.8, 0);
+pointLight.position.set(30, 30, 250);
 scene.add(pointLight);
+
+// back light
+var pointLight2 = new THREE.PointLight(0xffffff, 0.8, 0);
+pointLight2.position.set(30, 30, -250);
+scene.add(pointLight2);
 
 const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
 camera.position.z = 30;
@@ -3559,11 +3584,13 @@ function polarToCartesian(lon, lat, radius) {
 	}
 }
 
+const clock = new THREE.Clock()
+
 function displayBall(azimuth, elevation, number){
 	var returnlist = polarToCartesian(azimuth, elevation, 15);
 	ballGeometry = new THREE.SphereGeometry(0.8,60,30);
 	ballMaterial = new THREE.MeshLambertMaterial({
-		color: colors[number-1]
+		map: new THREE.TextureLoader().load('/templates/interface/img/item-'+number+'.jpg')
 	});
 	var ball = new THREE.Mesh(ballGeometry, ballMaterial);
 	ball.name = 'ball'+number;
@@ -3601,6 +3628,10 @@ controls.maxDistance = 500;
 
 function animate(){
 	requestAnimationFrame(animate);
+	// create rotation to all 3D annotations
+	for (let i=0 ; i<10; i++){
+		if (scene.getObjectByName('ball'+(i + 1)) != null) scene.getObjectByName('ball'+(i + 1)).rotation.y += 0.05;
+	}
 	controls.update();
 	renderer.render(scene,camera); 
 }

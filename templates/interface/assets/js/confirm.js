@@ -277,9 +277,15 @@ scene.background = new THREE.Color(0x000000);
 var light = new THREE.HemisphereLight(0xffffff, 0.8);
 scene.add(light);
 
-var pointLight = new THREE.PointLight(0xffffff, 0.7);
-pointLight.position.set(50, 30, 200);
+// front light
+var pointLight = new THREE.PointLight(0xffffff, 0.8, 0);
+pointLight.position.set(30, 30, 250);
 scene.add(pointLight);
+
+// back light
+var pointLight2 = new THREE.PointLight(0xffffff, 0.8, 0);
+pointLight2.position.set(30, 30, -250);
+scene.add(pointLight2);
 
 const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
 camera.position.z = 30;
@@ -341,11 +347,14 @@ function displayBall(azimuth, elevation, number){
 	var returnlist = polarToCartesian(azimuth, elevation, 15);
 	ballGeometry = new THREE.SphereGeometry(0.8,60,30);
 	ballMaterial = new THREE.MeshLambertMaterial({
-		color: colors[number-1]
+		map: new THREE.TextureLoader().load('/templates/interface/img/item-'+number+'.jpg')
 	});
 	var ball = new THREE.Mesh(ballGeometry, ballMaterial);
+	ball.name = 'ball'+number;
 	ball.position.set(returnlist['x'], returnlist['y'], returnlist['z']);
+	scene.remove(scene.getObjectByName('ball'+number));
 	scene.add(ball);
+
 	return ball;
 }
 
@@ -367,6 +376,10 @@ controls.maxDistance = 500;
 
 function animate(){
 	requestAnimationFrame(animate);
+	// create rotation to all 3D annotations
+	for (let i=0 ; i<10; i++){
+		if (scene.getObjectByName('ball'+(i + 1)) != null) scene.getObjectByName('ball'+(i + 1)).rotation.y += 0.05;
+	}
 	controls.update();
 	renderer.render(scene,camera); 
 }
