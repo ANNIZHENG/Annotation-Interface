@@ -1,20 +1,21 @@
+var recording = 0;
 var file_name = {};
 var azimuth = {};
 var elevation = {};
 var color = {};
 var user_num_source;
 var actual_num_source;
+
 const colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
 const css_colors = ["#009dff", "#ff7f0e", "#00ff00", "#ff0000", "#9467bd", "#d3d3d3", "#c39b77", "#e377c2", "#bcbd22", "#00ffff"];
+var request = new XMLHttpRequest(); 
 
 function confirm_annotation(){
-	var request = new XMLHttpRequest(); 
 	request.open('POST', '/confirm_annotation');
 	request.onreadystatechange = function() {
 		if (request.readyState == 4){
 
-			console.log(request.response);
-
+			document.getElementById("user_note").value = localStorage.getItem("user_note");
 			color = JSON.parse(request.response)["color"];
 			azimuth = JSON.parse(request.response)["azimuth"];
 			elevation = JSON.parse(request.response)["elevation"];
@@ -23,7 +24,8 @@ function confirm_annotation(){
 			actual_num_source = parseInt(JSON.parse(request.response)["actual_num_source"]["0"]);
 
 			// load full audio file
-			document.getElementById('original-audio-source').src = '/templates/interface/assets/audio/recording/'+JSON.parse(request.response)["recording"]["0"];
+			recording = JSON.parse(request.response)["recording"]["0"];
+			document.getElementById('original-audio-source').src = '/templates/interface/assets/audio/recording/'+recording;
 			document.getElementById('audio-full').load();
 
 			for (const [key,value] of Object.entries( JSON.parse(request.response)["file_name"] )) {
@@ -72,11 +74,11 @@ function confirm_annotation(){
 				new_tr.appendChild(new_td_color);
 				for (let i = 0; i < actual_num_source; i++){
 					let new_td = document.createElement('td');
-					let new_radio = document.createElement('input');
-					new_radio.id = 'radio-'+key+'-'+i;
-					new_radio.className = 'radio-'+key;
-					new_radio.type = 'radio';
-					new_td.appendChild(new_radio);
+					let new_checkbox = document.createElement('input');
+					new_checkbox.id = 'checkbox-'+key+'-'+i;
+					new_checkbox.className = 'checkbox-'+key;
+					new_checkbox.type = 'checkbox';
+					new_td.appendChild(new_checkbox);
 					new_tr.appendChild(new_td);
 				}
 				document.getElementById('matching-table').appendChild(new_tr);
@@ -89,62 +91,53 @@ function confirm_annotation(){
 document.addEventListener('click', function(e){
 	if (e.target.id.substring(0,11) == "audio-frame") {
 		var audios = document.getElementsByClassName('audio-frame');
-		for (let i = 0; i < audios.length; i++) {
-			if ( audios[i].id != e.target.id && document.getElementById(audios[i].id).innerHTML == 'Pause Audio'  ){
-				window.alert('Please finish listening to the current audio or pause the current audio');
+
+		playing_id = ''
+
+		for(let i = 0; i < audios.length; i++) {
+			audio_id = ''
+
+			if (audios[i].id == "audio-frame") audio_id = "audio-frame-full"
+			else audio_id = "audio-" + audios[i].id.replace("audio-frame-","");
+
+			if (audios[i].id != e.target.id) {
+				document.getElementById(audio_id).pause();
+				document.getElementById(audios[i].id ).innerHTML = 'Play Audio';
+			}
+			else {
+				playing_id = audio_id;
+				document.getElementById(audios[i].id).innerHTML = document.getElementById(audios[i].id).innerHTML == 'Play Audio' ? 'Pause Audio' : 'Play Audio';
+				document.getElementById(audios[i].id).innerHTML == 'Play Audio' ? document.getElementById(audio_id).pause() : document.getElementById(audio_id).play();
+			}
+		}
+
+		document.getElementById(playing_id).addEventListener("timeupdate",function(){
+			if (playing_id.replace('audio-','') == e.target.id.replace('audio-frame-','')) {
+				let track = document.getElementById(playing_id).currentTime / document.getElementById(playing_id).duration * 100;
+				document.getElementById(e.target.id).style.background = 'linear-gradient(to right, #efefef '+ track +'%, #ffffff 0%)';
+			}
+		});
+
+		document.getElementById(playing_id).addEventListener("ended",function(){
+			document.getElementById(e.target.id).innerHTML = 'Play Audio';
+		});
+	}
+	else if (e.target.id.substring(0,8) =="checkbox"){
+		tail = e.target.id.substring(e.target.id.length-1, e.target.id.length);
+		for (let i = 0; i < user_num_source; i++) {
+			id_name = "checkbox-"+i+"-"+tail;
+
+			if ( e.target.id != id_name && document.getElementById(id_name).checked ) {
+				window.alert("You are only allowed to match one source with one annotation");
 				e.preventDefault();
 				return;
 			}
 		}
 
-		if (e.target.id == "audio-frame") audio_id = "audio-full"
-		else audio_id = "audio-" + e.target.id.replace("audio-frame-","");
+		let checkboxes = document.getElementsByClassName(e.target.className);
 
-		if (document.getElementById(e.target.id).innerHTML == 'Play Audio'){
-			document.getElementById(audio_id).play();
-			document.getElementById(e.target.id).innerHTML = 'Pause Audio';
-		}
-		else{
-			document.getElementById(audio_id).pause();
-			document.getElementById(e.target.id).innerHTML = 'Play Audio';
-		}
-
-		document.getElementById(audio_id).addEventListener("ended",function(){
-			document.getElementById(e.target.id).innerHTML = 'Play Audio';
-		});
-
-		document.getElementById(audio_id).addEventListener("timeupdate",function(){
-			let track = document.getElementById(audio_id).currentTime / document.getElementById(audio_id).duration * 100;
-			document.getElementById(e.target.id).style.background = 'linear-gradient(to right, #efefef '+track+'%, #ffffff 0%)';
-		});
-	}
-	else if (e.target.id.substring(0,5) =="radio"){
-
-		let radios = document.getElementsByClassName(e.target.className);
-		document.getElementById('warning').innerHTML = "";
-
-		if (user_num_source == actual_num_source || user_num_source < actual_num_source){ // desired circumstance & underestimation
-			for (let i = 0; i < radios.length; i++) {
-				if ( radios[i].id != e.target.id && document.getElementById(radios[i].id).checked ) document.getElementById(radios[i].id).checked = false;
-			}
-			let check_checked = 0;
-			for (let f = 0; f < actual_num_source; f++){
-				for (let i = 0; i < user_num_source; i++) {
-					id_name = "radio-"+i+"-"+f;
-					if (document.getElementById(id_name).checked) check_checked += 1;
-				}
-				if (check_checked > 1) {
-					document.getElementById('warning').innerHTML = "One source should not be matched with more than one annotations";
-					break;
-				}
-				check_checked = 0;
-			}
-		}
-		else{  // overestimation
-			document.getElementById(e.target.id).checked = true;
-			for (let i = 0; i < radios.length; i++) {
-				if ( radios[i].id != e.target.id && document.getElementById(radios[i].id).checked ) document.getElementById(radios[i].id).checked = false;
-			}
+		for (let i = 0; i < checkboxes.length; i++) {
+			if ( checkboxes[i].id != e.target.id && document.getElementById(checkboxes[i].id).checked ) document.getElementById(checkboxes[i].id).checked = false;
 		}
 	}
 });
@@ -234,12 +227,6 @@ function addLocation(coordinates) {
 }
 
 function submit_confirmation(){
-	if (document.getElementById('warning').innerHTML != ""){
-		window.alert("One source should not be matched with more than one annotations");
-		event.preventDefault();
-		return;
-	}
-
 	let num_checked = 0;
 	let found_column_index = document.getElementsByTagName("input")[0].id.substring(8,9);
 	let total_found_column_index = 1;
@@ -260,14 +247,35 @@ function submit_confirmation(){
 		return;
 	}
 
-	if (user_num_source >= actual_num_source && total_found_column_index < actual_num_source) { // This restriction is only for the case of overestimation and normal circumstance
+	if (user_num_source >= actual_num_source && total_found_column_index < actual_num_source) { 
+		// This restriction only applies for overestimation and normal circumstance
 		window.alert("You must match all of the Sound Sources with their corresponding Annotation points")
 		event.preventDefault();
 		return;
 	}
 
+	let recording_id = parseInt(recording.replace('.wav','')) + 1;
+	let location_id = '';
+	let source_id = ''
+
+	for (const [key,value] of Object.entries( JSON.parse(request.response)["location_id"])) {
+		location_id += value + ',';
+	}
+	for (const [key,value] of Object.entries( JSON.parse(request.response)["source_id"] )) {
+		source_id += value + ',';
+	}
+
+	location_id = location_id.substring(0,location_id.length-1);
+	source_id = source_id.substring(0,source_id.length-1);
+
+	request.open('POST', '/submit_confirmation', true);
+	request.setRequestHeader('content-type', 'application/json;charset=UTF-8');
+	var data = JSON.stringify({recording_id, location_id, source_id});
+	request.send(data);
+
 	window.location = '/templates/interface/submit.html';
 }
+
 
 /* Three.js */
 

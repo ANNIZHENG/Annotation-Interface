@@ -1,9 +1,10 @@
+from operator import methodcaller
 import uuid
 from sqlalchemy import *
 from sqlalchemy.sql import *
 from datetime import datetime
 from flask import *
-from db_tables import ses,eng,Annotation,Survey,Location,Interaction
+from db_tables import ses,eng,Annotation,Survey,Location,Interaction,Confirmation
 from random import randrange
 app = Flask(__name__,static_folder="../templates",template_folder="..")
 
@@ -15,19 +16,18 @@ def home():
     for r in result:
         least_annotation = int(dict(r)['num_annotation'])
     if (least_annotation == 5):
-        return render_template('/templates/finish.html')
+        return render_template('/templates/interface/finish.html')
     else:
         return render_template('/templates/index.html')
 
 
 @app.route('/annotation_interface', methods=['GET', 'POST'])
 def start():
-    # generate new survey id
     survey_id = uuid.uuid4()
     entry = Survey(survey_id)
     ses.add(entry)
     ses.commit()
-    return 'success'
+    return str(survey_id)
 
 
 @app.route('/interaction', methods=['GET', 'POST'])
@@ -36,8 +36,9 @@ def interaction():
         data = request.json
         action_type = data['action_type']
         value = data['value']
+        survey_id = data['survey_id']
         timestamp= datetime.fromtimestamp(data['timestamp'] / 1000)
-        entry = Interaction(-1,action_type,value,timestamp)
+        entry = Interaction(survey_id,action_type,value,timestamp,False)
         ses.add(entry)
         ses.commit()
     return 'success'
@@ -48,25 +49,22 @@ def next():
     if request.method == 'POST':
         data = request.json
 
-        # add submit interaction
+        survey_id = data['survey_id']
+        recording_id = int(data['recording_id']) + 1
+        source_count = data['source_count']
+        user_note = data['user_note']
+
+        # insert into Interaction table
         timestamp= datetime.fromtimestamp(data['timestamp'] / 1000)
-        entry = Interaction(-1,"submit",None,timestamp)
+        entry = Interaction(survey_id,"submit",None,timestamp,False)
         ses.add(entry)
         ses.commit()
 
-        # add user's annotation (final submission)
-        survey_res = eng.execute('''select survey_id from "Survey" order by id desc limit 1''')
-        survey_id = ''
-        for r in survey_res:
-            survey_id = str(dict(r)['survey_id'])
-        recording_id = int(data['recording_id']) + 1
-        source_count = data['source_count']
-
-        entry1 = Annotation(survey_id,recording_id,source_count)
+        # insert into Annotation table
+        entry1 = Annotation(survey_id,recording_id,source_count,user_note,False)
         ses.add(entry1)
         ses.commit()
 
-        # add location(s) of the annotations
         azimuth_list = data['azimuth']
         elevation_list = data['elevation']
 
@@ -74,29 +72,21 @@ def next():
         index = 0
         while (index < len(azimuth_list)):
             if (azimuth_list[index] != None):
-                entry2 = Location(-1,azimuth_list[index],elevation_list[index],index+1)
+                # insert into Location table
+                entry2 = Location(survey_id,azimuth_list[index],elevation_list[index],index+1,False)
                 ses.add(entry2)
                 ses.commit()
                 json_index += 1
-                
             index += 1
 
-        result = eng.execute('''select id from "Annotation" order by id desc limit 1''')
-        annotation_id = -1
+        result = eng.execute('''select id from "Annotation" where survey_id = ''' + "'" + survey_id + "'")
         for r in result:
-            annotation_id = int(dict(r)['id'])
-        eng.execute('''update "Interaction" set annotation_id='''+str(annotation_id)+'''where annotation_id = -1''')
-        eng.execute('''update "Location" set annotation_id='''+str(annotation_id)+'''where annotation_id = -1''')
+            annotation_id = str(dict(r)['id'])
+        
+        eng.execute('''update "Interaction" set annotation_id='''+annotation_id+'''where annotation_id = '''  + "'" + survey_id + "'")
+        eng.execute('''update "Location" set annotation_id='''+annotation_id+'''where annotation_id = '''  + "'" + survey_id + "'")
         
         return 'success'
-
-@app.route('/get_survey', methods=['GET', 'POST'])
-def get_survey():
-    survey_res = eng.execute('''select survey_id from "Survey" order by id desc limit 1''')
-    survey_id = ''
-    for r in survey_res:
-        survey_id = str(dict(r)['survey_id'])
-    return str(survey_id)
 
 @app.route('/select_recording', methods=['GET', 'POST'])
 def select_recording():
@@ -108,44 +98,71 @@ def select_recording():
                 eng.execute('''update "Recording" set num_annotation='''+str(int(dict(r)['num_annotation'])+1)+'''where id='''+str(recording+1))
                 return str(recording)
 
+
+@app.route('/submit_confirmation', methods=['GET', 'POST'])
+def submit_confirmation():
+    if (request.method == 'POST'):
+        data = request.json
+        recording_id = data['recording_id']
+        source_id = data['source_id'].split(',')
+        location_id = data['location_id'].split(',')
+        
+        for i in range (len(source_id)):
+            if (i < len(location_id)):
+                entry = Confirmation(int(recording_id), source_id[i], location_id[i])
+            else:
+                entry = Confirmation(int(recording_id), source_id[i], None)
+            ses.add(entry)
+            ses.commit()
+
+        return 'success'
+
+
 @app.route('/confirm_annotation', methods=['GET', 'POST'])
 def confirm_annotation():
-
-    # global recording
     recording = 0
-    annotation_id = 0
+    annotation_id = ''
     result_get_recording = eng.execute('''select id, recording_id from "Annotation" order by id desc limit 1''')
     for r1 in result_get_recording:
         recording = int(dict(r1)['recording_id'])-1
-        annotation_id = dict(r1)['id']
+        annotation_id = str(dict(r1)['id'])
 
-    result_file_name = eng.execute( '''with cte as (select "Recording".id as recording_id, "Recording_Joint_Source".source_id as source_id from "Recording" inner join "Recording_Joint_Source" on "Recording".id = "Recording_Joint_Source".recording_id) select "Source".file_name as file_name from "Source" inner join cte on "Source".id = cte.source_id where recording_id ='''+str(recording+1) )
+    file_name = '''"file_name":{'''
+    source_id = '''"source_id":{'''
     filename_json_index = 0
-    user_file_name = '''"file_name":{'''
+    result_file_name = eng.execute( '''with cte as (select "Recording".id as recording_id, "Recording_Joint_Source".source_id as source_id from "Recording" inner join "Recording_Joint_Source" on "Recording".id = "Recording_Joint_Source".recording_id) select "Source".id as source_id, "Source".file_name as file_name from "Source" inner join cte on "Source".id = cte.source_id where recording_id ='''+str(recording+1) )
+
     for r in result_file_name:
+        file_name = file_name + '"' + str(filename_json_index) + '":' + '"' + dict(r)['file_name'] + '",'
+        source_id = source_id + '"' + str(filename_json_index) + '":' + '"' + str(dict(r)['source_id']) + '",'
         filename_json_index += 1
-        user_file_name = user_file_name + '"' + str(filename_json_index) + '":' + '"' + dict(r)['file_name'] + '",'
-    user_file_name = user_file_name[:len(user_file_name)-1] + "}"
+    
+    file_name = file_name[:len(file_name)-1] + "}"
+    source_id = source_id[:len(source_id)-1] + "}"
     actual_num_source = '''"actual_num_source":{"0":"''' + str(filename_json_index) + '"}'
 
-    # global azimuth && global elevation && global json_index && global user_color
-    user_azimuth = '''"azimuth":{'''
-    user_elevation = '''"elevation":{'''
-    user_color = '''"color":{'''
+    azimuth = '''"azimuth":{'''
+    elevation = '''"elevation":{'''
+    color = '''"color":{'''
+    location_id = '''"location_id":{'''
     json_index = 0
-    result_get_location = eng.execute('''select azimuth, elevation, color from "Location" where annotation_id='''+str(annotation_id))
+    result_get_location = eng.execute('''select id, azimuth, elevation, color from "Location" where annotation_id = '''+ "'" + annotation_id + "'")
 
     for r2 in result_get_location:
-        user_azimuth = user_azimuth + '"' + str(json_index) + '":"' + str(dict(r2)['azimuth']) + '",'
-        user_elevation = user_elevation + '"' + str(json_index) + '":"' + str(dict(r2)['elevation']) + '",'
-        user_color = user_color + '"' + str(json_index) + '":"' + str(dict(r2)['color']) + '",'
+        azimuth = azimuth + '"' + str(json_index) + '":"' + str(dict(r2)['azimuth']) + '",'
+        elevation = elevation + '"' + str(json_index) + '":"' + str(dict(r2)['elevation']) + '",'
+        color = color + '"' + str(json_index) + '":"' + str(dict(r2)['color']) + '",'
+        location_id = location_id + '"' + str(json_index) + '":"' + str(dict(r2)['id']) + '",'
         json_index += 1
-    user_azimuth = user_azimuth[:len(user_azimuth)-1] + "}"
-    user_elevation = user_elevation[:len(user_elevation)-1] + "}"
-    user_color = user_color[:len(user_color)-1] + "}"
+    
+    azimuth = azimuth[:len(azimuth)-1] + "}"
+    elevation = elevation[:len(elevation)-1] + "}"
+    color = color[:len(color)-1] + "}"
+    location_id = location_id[:len(location_id)-1] + "}"
     user_num_source = '''"user_num_source":{"0":"''' + str(json_index) + '"}'
 
-    return "{" + '''"recording":{"0":"''' + str(recording) + ".wav" + '"}' + "," + user_file_name + "," + user_azimuth + "," + user_elevation + "," + user_color + "," + user_num_source + "," + actual_num_source + "}"
+    return "{" + '''"recording":{"0":"''' + str(recording) + ".wav" + '"}' + "," + file_name + "," + azimuth + "," + elevation + "," + color + "," + user_num_source + "," + actual_num_source + "," + source_id + "," + location_id + "}"
+
 
 if __name__ =='__main__':
     app.run(debug=True)

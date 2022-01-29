@@ -3,13 +3,19 @@
 <head>
 	<title>Annotation Interface</title>
 	<link rel="stylesheet" type="text/css" href="/templates/interface/assets/css/interface.css">
+	<style>
+	td{
+		background-color: #eeeeee;
+		padding: 3px;
+	}
+	</style>
 </head>
-<body id = "body">
+<body id = "body" onload="ajax_start()">
 	<div class="container-3D"> 
 		<div id="3d-head" width="400"></div>
 	</div>
 	<div class="container" id = "container">
-		<form action="/templates/interface/confirm.html">
+		<div>
 			<button id="message">Instructions</button>
 			<button id="key-message">Keyboard Rules</button>
 			<h2>Please listen to the audio</h2>
@@ -26,51 +32,59 @@
 				<option id="option9" value=9>9</option> <option id="option10" value=10>10</option>
 			</select>
 			<br><br>
-			<label id="2d-question" for="2d" style="font-size: 15px; font-weight: bold;"></label><br><br>
-			<div id="2d">
-				<div id="head" style="display: none;">
-					<div class="circular" id="circular"></div>
-					<div class="circular" id="circular1" style="display: none;"><div class="indicator" id="head-item-1" style="display: none;">1</div></div>
-					<div class="circular" id="circular2" style="display: none;"><div class="indicator" id="head-item-2" style="display: none;">2</div></div>
-					<div class="circular" id="circular3" style="display: none;"><div class="indicator" id="head-item-3" style="display: none;">3</div></div>
-					<div class="circular" id="circular4" style="display: none;"><div class="indicator" id="head-item-4" style="display: none;">4</div></div>
-					<div class="circular" id="circular5" style="display: none;"><div class="indicator" id="head-item-5" style="display: none;">5</div></div>
-					<div class="circular" id="circular6" style="display: none;"><div class="indicator" id="head-item-6" style="display: none;">6</div></div>
-					<div class="circular" id="circular7" style="display: none;"><div class="indicator" id="head-item-7" style="display: none;">7</div></div>
-					<div class="circular" id="circular8" style="display: none;"><div class="indicator" id="head-item-8" style="display: none;">8</div></div>
-					<div class="circular" id="circular9" style="display: none;"><div class="indicator" id="head-item-9" style="display: none;">9</div></div>
-					<div class="circular" id="circular10" style="display: none;"><div class="indicator" id="head-item-10" style="display: none;">10</div></div>
+			<label id="2d-question" for="2d" style="font-size: 15px; font-weight: bold;"></label>
+			<div id="2d" style="margin-top: 5px;">
+				<div id="head-wrapper" style="display: none;"><div style="font-weight:bold; font-size:13px; color:blue; text-align: center;">Head View</div>
+					<div id="head" style="background-image: url('/templates/interface/img/head.png');">
+						<div class="circular" id="circular"></div>
+						<div class="circular" id="circular1" style="display: none;"><div class="indicator" id="head-item-1" style="display: none;">1</div></div>
+						<div class="circular" id="circular2" style="display: none;"><div class="indicator" id="head-item-2" style="display: none;">2</div></div>
+						<div class="circular" id="circular3" style="display: none;"><div class="indicator" id="head-item-3" style="display: none;">3</div></div>
+						<div class="circular" id="circular4" style="display: none;"><div class="indicator" id="head-item-4" style="display: none;">4</div></div>
+						<div class="circular" id="circular5" style="display: none;"><div class="indicator" id="head-item-5" style="display: none;">5</div></div>
+						<div class="circular" id="circular6" style="display: none;"><div class="indicator" id="head-item-6" style="display: none;">6</div></div>
+						<div class="circular" id="circular7" style="display: none;"><div class="indicator" id="head-item-7" style="display: none;">7</div></div>
+						<div class="circular" id="circular8" style="display: none;"><div class="indicator" id="head-item-8" style="display: none;">8</div></div>
+						<div class="circular" id="circular9" style="display: none;"><div class="indicator" id="head-item-9" style="display: none;">9</div></div>
+						<div class="circular" id="circular10" style="display: none;"><div class="indicator" id="head-item-10" style="display: none;">10</div></div>
+					</div>
 				</div>
 				<div id="feedback" style="display: none;">
 					<div id='azimuth-dot'></div>azimuth: <button id='azimuth-minus'>-</button><div id='p-azimuth'"></div><button id='azimuth-plus'>+</button><br><br>
 					<div id='elevation-dot'></div>elevation: <button id='elevation-minus'>-</button><div id='p-elevation'"></div><button id='elevation-plus'>+</button>
+					<div style="margin-top:10px; font-size: 11px; color:blue; text-align:center; font-weight:bold;">You May Take Notes Here</div>
+					<textarea id="user_note" style="font-size: 11px; width: 100%; height: 90px; background-color:#f0f8ff; z-index:2;"></textarea>
 				</div>
 				<br>
-				<div id="front" style="display: none;">
-					<div class="circular" id="circularF"></div>
-					<div class="circular" id="circularF1" style="display: none;"><div class="indicator" id="front-item-1" style="display: none;">1</div></div>
-					<div class="circular" id="circularF2" style="display: none;"><div class="indicator" id="front-item-2" style="display: none;">2</div></div>
-					<div class="circular" id="circularF3" style="display: none;"><div class="indicator" id="front-item-3" style="display: none;">3</div></div>
-					<div class="circular" id="circularF4" style="display: none;"><div class="indicator" id="front-item-4" style="display: none;">4</div></div>
-					<div class="circular" id="circularF5" style="display: none;"><div class="indicator" id="front-item-5" style="display: none;">5</div></div>
-					<div class="circular" id="circularF6" style="display: none;"><div class="indicator" id="front-item-6" style="display: none;">6</div></div>
-					<div class="circular" id="circularF7" style="display: none;"><div class="indicator" id="front-item-7" style="display: none;">7</div></div>
-					<div class="circular" id="circularF8" style="display: none;"><div class="indicator" id="front-item-8" style="display: none;">8</div></div>
-					<div class="circular" id="circularF9" style="display: none;"><div class="indicator" id="front-item-9" style="display: none;">9</div></div>
-					<div class="circular" id="circularF10" style="display: none;"><div class="indicator" id="front-item-10" style="display: none;">10</div></div>
+				<div id="front-wrapper" style="display: none;"><div style="font-weight:bold; font-size:13px; color:blue; text-align: center;">Back View</div>
+					<div id="front" style="background-image: url('/templates/interface/img/front.png');">
+						<div class="circular" id="circularF"></div>
+						<div class="circular" id="circularF1" style="display: none;"><div class="indicator" id="front-item-1" style="display: none;">1</div></div>
+						<div class="circular" id="circularF2" style="display: none;"><div class="indicator" id="front-item-2" style="display: none;">2</div></div>
+						<div class="circular" id="circularF3" style="display: none;"><div class="indicator" id="front-item-3" style="display: none;">3</div></div>
+						<div class="circular" id="circularF4" style="display: none;"><div class="indicator" id="front-item-4" style="display: none;">4</div></div>
+						<div class="circular" id="circularF5" style="display: none;"><div class="indicator" id="front-item-5" style="display: none;">5</div></div>
+						<div class="circular" id="circularF6" style="display: none;"><div class="indicator" id="front-item-6" style="display: none;">6</div></div>
+						<div class="circular" id="circularF7" style="display: none;"><div class="indicator" id="front-item-7" style="display: none;">7</div></div>
+						<div class="circular" id="circularF8" style="display: none;"><div class="indicator" id="front-item-8" style="display: none;">8</div></div>
+						<div class="circular" id="circularF9" style="display: none;"><div class="indicator" id="front-item-9" style="display: none;">9</div></div>
+						<div class="circular" id="circularF10" style="display: none;"><div class="indicator" id="front-item-10" style="display: none;">10</div></div>
+					</div>
 				</div>
-				<div id="side" style="display: none;">
-					<div class="circular" id="circularS"></div>
-					<div class="circular" id="circularS1" style="display: none;"><div class="indicator" id="side-item-1" style="display: none;">1</div></div>
-					<div class="circular" id="circularS2" style="display: none;"><div class="indicator" id="side-item-2" style="display: none;">2</div></div>
-					<div class="circular" id="circularS3" style="display: none;"><div class="indicator" id="side-item-3" style="display: none;">3</div></div>
-					<div class="circular" id="circularS4" style="display: none;"><div class="indicator" id="side-item-4" style="display: none;">4</div></div>
-					<div class="circular" id="circularS5" style="display: none;"><div class="indicator" id="side-item-5" style="display: none;">5</div></div>
-					<div class="circular" id="circularS6" style="display: none;"><div class="indicator" id="side-item-6" style="display: none;">6</div></div>
-					<div class="circular" id="circularS7" style="display: none;"><div class="indicator" id="side-item-7" style="display: none;">7</div></div>
-					<div class="circular" id="circularS8" style="display: none;"><div class="indicator" id="side-item-8" style="display: none;">8</div></div>
-					<div class="circular" id="circularS9" style="display: none;"><div class="indicator" id="side-item-9" style="display: none;">9</div></div>
-					<div class="circular" id="circularS10" style="display: none;"><div class="indicator" id="side-item-10" style="display: none;">10</div></div>
+				<div id="side-wrapper" style="display: none;"><div style="font-weight:bold; font-size:13px; color:blue; text-align: center; z-index:1;">Side View</div>
+					<div id="side" style="background-image: url('/templates/interface/img/side.png');">
+						<div class="circular" id="circularS"></div>
+						<div class="circular" id="circularS1" style="display: none;"><div class="indicator" id="side-item-1" style="display: none;">1</div></div>
+						<div class="circular" id="circularS2" style="display: none;"><div class="indicator" id="side-item-2" style="display: none;">2</div></div>
+						<div class="circular" id="circularS3" style="display: none;"><div class="indicator" id="side-item-3" style="display: none;">3</div></div>
+						<div class="circular" id="circularS4" style="display: none;"><div class="indicator" id="side-item-4" style="display: none;">4</div></div>
+						<div class="circular" id="circularS5" style="display: none;"><div class="indicator" id="side-item-5" style="display: none;">5</div></div>
+						<div class="circular" id="circularS6" style="display: none;"><div class="indicator" id="side-item-6" style="display: none;">6</div></div>
+						<div class="circular" id="circularS7" style="display: none;"><div class="indicator" id="side-item-7" style="display: none;">7</div></div>
+						<div class="circular" id="circularS8" style="display: none;"><div class="indicator" id="side-item-8" style="display: none;">8</div></div>
+						<div class="circular" id="circularS9" style="display: none;"><div class="indicator" id="side-item-9" style="display: none;">9</div></div>
+						<div class="circular" id="circularS10" style="display: none;"><div class="indicator" id="side-item-10" style="display: none;">10</div></div>
+					</div>
 				</div>
 			</div>
 
@@ -80,35 +94,58 @@
 			<div id="modal">
 				<div class="instructions">
 					<button class="move" id="instruction-left" style="margin-right: 20px;">&#8249;</button>
+					
 					<div id="instruction1">
-						<p style="font-size: 17px;">Page 1 / 6</p>
-						<h3 style="text-align: center; color: blue;"> Annotation Interface Instructions <!--<br>You may exit the instructions by pressing 'x' on the top right corner--></h3>
+						<p style="font-size: 17px;">Page 1 / 7</p>
+						<h3 style="text-align: center; color: blue; margin-top: 3vh;">Annotation Interface Instructions</h3>
 						<img src="/templates/interface/img/1.png" style="width:70%; display: block; margin: auto;">
 						<p>You will be asked to identify the number of sources in an audio recording and localize each source.</p>
 						<p>1. To play the audio click "Play Audio".</p>
 						<p>2. If you want to pause the audio click "Pause Audio".</p>
 						<p>You may listen to the audio as many times as you want.</p>
 					</div>
-					<div id="instruction2" style="display: none;">
-						<p style="font-size: 17px;">Page 2 / 6</p>
-						<h3 style="text-align: center; color: blue;"> Annotation Interface Instructions</h3>
-						<img src="/templates/interface/img/2.png" style="width:70%; display: block; margin: auto;">
-						<p>Once you've finished listening to the audio, you'll see a dropdown menu to select the number of sources heard in the recroding.</p>
-						<p>You may change this number at any point.</p>
-						<p>You may also remove the annotation.</p>
-						<p>You may annotate less, but you must annotate at least 1 source.</p>
+					<div id="instruction2" style="display: none; margin-right: auto;">
+						<p style="font-size: 17px;">Page 2 / 7</p>
+						<h3 style="text-align: center; color: blue;">Annotation Interface Instructions</h3>
+						<p style="text-align: center; margin-top: 3vh;">Below are the classes of the sound source you are going to be exposed in the audio</p>
+						<table style="margin-left: auto; margin-right: auto;">
+							<tr>
+								<th style="border: 1px solid black;">Coarse Class</th>
+								<th style="border: 1px solid black;">Specific Class</th>
+							</tr>
+							<tr><td>Large Transportation Methods</td><td>Airplane</td></tr>
+							<tr><td>Domestic Sounds</td><td>Boiling Liquids</td></tr>
+							<tr><td>Alarms</td><td>Car Alarm</td></tr>
+							<tr><td>Animals</td><td>Cat Meowing</td></tr>
+							<tr><td>Music</td><td>Cello</td></tr>
+							<tr><td>Saw Type Sounds</td><td>Chainsaw</td></tr>
+							<tr><td>Impact Sounds</td><td>Clarinet</td></tr>
+							<tr><td>Human Voice</td><td>Dog Barking</td></tr>
+							<tr><td>Engines</td><td>Dryer</td></tr>
+							<tr><td>Natural Sounds</td><td>Electric Saw-Type</td></tr>
+						</table>
+						<br>
+						<audio id="audio-instruction"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/recording/test.wav">Your browser does not support audio</audio>
+						<button id="audio-frame-instruction" style="display: block; margin-left: auto; margin-right: auto;">Click to Play Sample Audio</button>
 					</div>
 					<div id="instruction3" style="display: none;">
-						<p style="font-size: 17px;">Page 3 / 6</p>
+						<p style="font-size: 17px;">Page 3 / 7</p>
+						<h3 style="text-align: center; color: blue;"> Annotation Interface Instructions</h3>
+						<img src="/templates/interface/img/2.png"  style="width:70%; display: block; margin: auto;">
+						<p>Once you've finished listening to the audio, you'll see a dropdown menu to select the number of sources heard in the recording.</p>
+						<p>You may change this number at any point.</p>
+					</div>
+					<div id="instruction4" style="display: none;">
+						<p style="font-size: 17px;">Page 4 / 7</p>
 						<h3 style="text-align: center; color: blue;"> Annotation Interface Instructions</h3>
 						<img src="/templates/interface/img/3.png" style="width:70%; display: block; margin: auto;">
 						<p>Once you have selected the number of sources, you will see a 2D representation of the space, with 3 views. Please localize each of the sources identified.</p>
-						<p>The "top view" allows yo uto annotate azimuth or horizontal location.</p>
+						<p>The "top view" allows you to annotate azimuth or horizontal location.</p>
 						<p>The "back view" and "side view" allow you to annotate the elvation of the source.</p>
 						<p>You will see your annotation updated in real time in the 3D view to the left of your screen. You can rotate this view and zoom in or out but not annotate in it.</p>
 					</div>
-					<div id="instruction4" style="display: none;">
-						<p style="font-size: 17px;">Page 4 / 6</p>
+					<div id="instruction5" style="display: none;">
+						<p style="font-size: 17px;">Page 5 / 7</p>
 						<h3 style="text-align: center; color: blue;"> Annotation Interface Instructions</h3>
 						<img src="/templates/interface/img/4.png" style="width:70%; display: block; margin: auto;">
 						<p>To add a new view source press "Option" or "Alt" + click.</p>
@@ -116,17 +153,17 @@
 						<p>You can always see the roles in the "Keyboard Rules" button.</p>
 						<p>To create a successful annotation, you must place the source in the "top view" and at least one of the "back" or "side" view.</p>
 					</div>
-					<div id="instruction5" style="display: none;">
-						<p style="font-size: 17px;">Page 5 / 6</p>
+					<div id="instruction6" style="display: none;">
+						<p style="font-size: 17px;">Page 6 / 7</p>
 						<h3 style="text-align: center; color: blue;"> Annotation Interface Instructions</h3>
 						<img src="/templates/interface/img/5.png" style="width:70%; display: block; margin: auto;">
-						<p>If you need to adjust the location of the sources you may click on the desired point and move it, or use the [+] and [-] buttons.</p>
+						<p>If you need to adjust the location of the sources, you may click on the desired point and move it, or use the [+] and [-] buttons.</p>
 						<p>Click submit once you have completed your annotation.</p>
 					</div>
-					<div id="instruction6" style="display: none;">
-						<p style="font-size: 17px;">Page 6 / 6</p>
+					<div id="instruction7" style="display: none;">
+						<p style="font-size: 17px;">Page 7 / 7</p>
 						<h3 style="text-align: center; color: blue;"> Annotation Interface Instructions</h3>
-						<img src="/templates/interface/img/6.png" style="width:70%; display: block; margin: auto;">
+						<img src="/templates/interface/img/6.png" style="width:70%; display:block; margin:auto;">
 						<p>Once you've completed the annotation task, you'll be asked to confirm which source corresponds to each location.</p>
 						<p>The number of source recordings shown corresponds to the true number of sources present in the recording.</p>
 						<p>Please listen to the source recordings.</p>
@@ -140,7 +177,7 @@
 					<button class="move" id="instruction-right" style="margin-left: 20px;">&#8250;</button>
 				</div>
 			</div>
-		</form>
+		</div>
 	</div>
 	<script src="//cdn.rawgit.com/mrdoob/three.js/master/build/three.js"></script>
 	<script src="//cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>

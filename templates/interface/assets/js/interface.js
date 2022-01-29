@@ -1,24 +1,29 @@
 // request to server
-var req = new XMLHttpRequest(); 
-req.onreadystatechange = function() {
-	if (req.readyState == 4 && req.response != 'success'){
-		window.alert('Something went wrong\nYou may try to restart the interface');
-		window.alert('Make sure you did the headphone check');
+var request = new XMLHttpRequest();
+var survey_id = '';
+
+function ajax_start(){
+	var request_start = new XMLHttpRequest();
+	request_start.open('POST', '/annotation_interface');
+	request_start.onreadystatechange = function() {
+		survey_id = request_start.response;
+		localStorage.setItem("survey_id", survey_id);
 	}
+	request_start.send();
 }
 
-// randomly choose an audio
 var recording_id = 0;
 ajax_select_recording();
+
 function ajax_select_recording(){
-	var request = new XMLHttpRequest(); 
-	request.open('POST', '/select_recording');
-	request.onreadystatechange = function() {
-		recording_id = request.responseText;
+	var request_recording = new XMLHttpRequest(); 
+	request_recording.open('POST', '/select_recording');
+	request_recording.onreadystatechange = function() {
+		recording_id = request_recording.responseText;
 		document.getElementById('source').src = '/templates/interface/assets/audio/recording/'+recording_id+'.wav';
 		document.getElementById('audio').load();
 	}
-	request.send();
+	request_recording.send();
 }
 
 // check if the user goes through the whole instruction
@@ -100,8 +105,8 @@ var side_indicators = {
 	10: []
 };
 
-document.getElementById('body').addEventListener("mouseup",function(){ 
-	delete_annotation = false; // for the case when the user deletes nothing
+document.getElementById('body').addEventListener("mouseup",function(){ // for the case when the user deletes nothing
+	delete_annotation = false;
 	document.getElementById('body').style.cursor = 'default';
 });
 
@@ -113,9 +118,14 @@ document.getElementById('instruction-right').addEventListener("click",move_instr
 document.getElementById('instruction-proceed').addEventListener("click",closeRules);
 document.getElementById('sign').addEventListener("click",closeRules);
 
+document.getElementById('audio-frame-instruction').addEventListener("click",addSamplePlaying);
+document.getElementById('audio-instruction').addEventListener("ended",endSamplePlaying);
+document.getElementById('audio-instruction').addEventListener("timeupdate",audioSampleTracker);
+
 document.getElementById('audio-frame').addEventListener("click",addPlaying);
 document.getElementById('audio').addEventListener("ended",displaySelection);
 document.getElementById('audio').addEventListener("timeupdate",audioTracker);
+
 document.getElementById('count').addEventListener("change",addSourceCount);
 
 document.getElementById('azimuth-plus').addEventListener("click",move_azimuth_plus);
@@ -147,12 +157,12 @@ function closeRules(e){
 
 function move_instruction_next(e){
 	e.preventDefault();
-	if (curr_instruction < 6) {
+	if (curr_instruction < 7) {
 		document.getElementById('instruction'+curr_instruction).style.display = 'none';
 		document.getElementById('instruction'+(curr_instruction+1)).style.display = '';
 		curr_instruction += 1;
 	}
-	if (curr_instruction == 6) {
+	if (curr_instruction == 7) {
 		document.getElementById("instruction-right").style.display = 'none';
 		document.getElementById("instruction-proceed").style.display = '';
 		read_all_rules = true;
@@ -173,9 +183,11 @@ function move_instruction_last(e){
 function addSourceCount(){
 	document.getElementById('2d-question').innerHTML = "Please identify the location of each source:";
 	document.getElementById('feedback').setAttribute('style',"display:inline-block;");
-	document.getElementById('head').setAttribute('style',"background-image: url('/templates/interface/img/head.png'); display:inline-block;");
-	document.getElementById('front').setAttribute('style',"background-image: url('/templates/interface/img/front.png'); display: inline-block;");
-	document.getElementById('side').setAttribute('style',"background-image: url('/templates/interface/img/side.png'); display: inline-block;");
+
+	document.getElementById('head-wrapper').style.display = 'inline-block';
+	document.getElementById('front-wrapper').style.display = 'inline-block';
+	document.getElementById('side-wrapper').style.display = 'inline-block';
+
 	displayButton();
 
 	source_count = document.getElementById('count').value;
@@ -188,6 +200,11 @@ function addSourceCount(){
 function audioTracker(){
 	let track = document.getElementById('audio').currentTime / document.getElementById('audio').duration * 100;
 	document.getElementById('audio-frame').style.background = 'linear-gradient(to right, #efefef '+track+'%, #ffffff 0%)';
+}
+
+function audioSampleTracker(){
+	let track = document.getElementById('audio-instruction').currentTime / document.getElementById('audio-instruction').duration * 100;
+	document.getElementById('audio-frame-instruction').style.background = 'linear-gradient(to right, #efefef '+track+'%, #ffffff 0%)';
 }
 
 function addPlaying(e){
@@ -207,6 +224,25 @@ function addPlaying(e){
 		document.getElementById('audio').pause();
 		document.getElementById('audio-frame').innerHTML='Play Audio';
 	}
+}
+
+function addSamplePlaying(e){
+	e.preventDefault();
+	if (!isPlaying){
+		document.getElementById('audio-instruction').play();
+		document.getElementById('audio-frame-instruction').innerHTML='Click to Pause Sample Audio';
+		isPlaying = true;
+	}
+	else{
+		isPlaying = false
+		document.getElementById('audio-instruction').pause();
+		document.getElementById('audio-frame-instruction').innerHTML='Click Again to Play Sample Audio';
+	}
+}
+
+function endSamplePlaying(){
+	isPlaying = false;
+	document.getElementById('audio-frame-instruction').innerHTML='Click Again to Play Sample Audio';
 }
 
 function displaySelection(){ 
@@ -233,10 +269,10 @@ function askProceed(){
 }
 
 function ajax_interaction() {
-	req.open('POST', '/interaction', true);
-	req.setRequestHeader('content-type', 'application/json;charset=UTF-8');
-	var data = JSON.stringify({action_type,value,timestamp});
-	req.send(data);
+	request.open('POST', '/interaction', true);
+	request.setRequestHeader('content-type', 'application/json;charset=UTF-8');
+	var data = JSON.stringify({survey_id,action_type,value,timestamp});
+	request.send(data);
 }
 
 function ajax_next(){
@@ -244,13 +280,18 @@ function ajax_next(){
 		event.preventDefault();
 		return false;
 	}
-
-	timestamp = Date.now();
 	
-	req.open('POST', '/next', true);
-	req.setRequestHeader('content-type', 'application/json;charset=UTF-8');
-	var data = JSON.stringify({recording_id,azimuth,elevation,source_count,timestamp});
-	req.send(data);
+	let user_note = document.getElementById("user_note").value;
+	localStorage.setItem("user_note", user_note);
+	timestamp = Date.now();
+
+	request.open('POST', '/next', true);
+	request.setRequestHeader('content-type', 'application/json;charset=UTF-8');
+	var data = JSON.stringify({survey_id,recording_id,azimuth,elevation,source_count,timestamp,user_note});
+	request.send(data);
+
+	window.location = '/templates/interface/confirm.html';
+
 	return true;
 }
 
@@ -1320,7 +1361,6 @@ var add_third = false;
 
 document.addEventListener("keydown", keyboardEvents);
 function keyboardEvents(e){
-	e.preventDefault();
 	
 	if(e.metaKey){
 		document.getElementById('body').style.cursor = "url('/templates/interface/img/minus.svg'), auto";
@@ -1832,6 +1872,8 @@ function keyboardEvents(e){
 }
 
 function reloadAll(){
+	document.getElementById("user_note").value = "";
+
 	azimuth = new Array();
 	elevation = new Array();
 	current_colors_index = 0;
