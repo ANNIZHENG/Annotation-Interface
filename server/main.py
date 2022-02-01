@@ -1,4 +1,3 @@
-from operator import methodcaller
 import uuid
 from sqlalchemy import *
 from sqlalchemy.sql import *
@@ -37,8 +36,9 @@ def interaction():
         action_type = data['action_type']
         value = data['value']
         survey_id = data['survey_id']
-        timestamp= datetime.fromtimestamp(data['timestamp'] / 1000)
-        entry = Interaction(survey_id,action_type,value,timestamp,False)
+        practice = bool(int(data['practice']))
+        timestamp = datetime.fromtimestamp(data['timestamp'] / 1000)
+        entry = Interaction(survey_id,action_type,value,timestamp,practice)
         ses.add(entry)
         ses.commit()
     return 'success'
@@ -53,6 +53,7 @@ def next():
         recording_id = int(data['recording_id']) + 1
         source_count = data['source_count']
         user_note = data['user_note']
+        practice = bool(int(data['practice']))
 
         # update number of annotation in Recording table
         eng.execute('''update "Recording" set num_annotation= num_annotation + 1 where id='''+ str(recording_id))
@@ -60,13 +61,13 @@ def next():
 
         # insert into Interaction table
         timestamp= datetime.fromtimestamp(data['timestamp'] / 1000)
-        entry = Interaction(survey_id,"submit",None,timestamp,False)
+        entry = Interaction(survey_id,"submit",None,timestamp,practice)
         ses.add(entry)
         ses.commit()
 
 
         # insert into Annotation table
-        entry1 = Annotation(survey_id,recording_id,source_count,user_note,False)
+        entry1 = Annotation(survey_id,recording_id,source_count,user_note,practice)
         ses.add(entry1)
         ses.commit()
 
@@ -80,7 +81,7 @@ def next():
         while (index < len(azimuth_list)):
             if (azimuth_list[index] != None):
                 # insert into Location table
-                entry2 = Location(survey_id,azimuth_list[index],elevation_list[index],index+1,False)
+                entry2 = Location(survey_id,azimuth_list[index],elevation_list[index],index+1,practice)
                 ses.add(entry2)
                 ses.commit()
                 json_index += 1

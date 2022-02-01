@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Annotation Interface</title>
+	<title>Practice Round | Annotation Interface</title>
 	<link rel="stylesheet" type="text/css" href="/templates/interface/assets/css/interface.css">
 	<style>
 	li{
@@ -14,8 +14,9 @@
 	}
 	</style>
 </head>
-<body id = "body">
+<body id = "body" onload="ajax_start()">
 	<div class="container-3D"> 
+		<div style="position:absolute; color:#eeeeee; top:0px; font-size:60px;">Practice Round</div>
 		<div id="3d-head" width="400"></div>
 	</div>
 	<div class="container" id = "container">
@@ -94,13 +95,13 @@
 				</div>
 			</div>
 
-			<input id="btn-button-refresh" type="button" name="btn-button-refresh" value="REFRESH" onclick="reloadAll()" style="display: none;">
-			<input id="btn-button-submit" type="submit" name="btn-button-submit" value="SUBMIT" onclick="ajax_next()" style="display: none;">
+			<input id="btn-button-submit" type="submit" name="btn-button-submit" value="START ANNOTATION" onclick="ajax_next(false, true)" style="display:none;">
+			<input id="btn-button-next" type="submit" name="btn-button-next" value="NEXT" onclick="ajax_next(false, false)" style="display: none;">
+			<input id="btn-button-again" type="submit" name="btn-button-again" value="PRACTICE AGAIN" onclick="ajax_next(true, false)" style="display: none;">
 
-			<div id="modal" style="display: none;">
+			<div id="modal">
 				<div class="instructions">
 					<button class="move" id="instruction-left" style="margin-right: 20px;">&#8249;</button>
-					
 					<div id="instruction1">
 						<p style="font-size: 17px;">Page 1 / 7</p>
 						<h3 style="text-align: center; color: blue; margin-top: 3vh;">Annotation Interface Instructions</h3>
@@ -336,7 +337,7 @@
 						<p>Please match the source recordings to the annotated points.</p>
 						<p>Each source recording can be matched only once. Please do your best matching.</p>
 					</div>
-					<span id="sign">&times;</span>
+					<span id="sign" style="visibility: hidden;">&times;</span>
 					<button class="move" id="instruction-proceed" style="margin-left: 20px; font-size: 30px; padding:11px; display: none;">
 						C<br>L<br>I<br>C<br>K<br><br>T<br>O<br><br>S<br>T<br>A<br>R<br>T
 					</button>
@@ -347,6 +348,6 @@
 	</div>
 	<script src="//cdn.rawgit.com/mrdoob/three.js/master/build/three.js"></script>
 	<script src="//cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
-	<script src="/templates/interface/assets/js/interface.js"></script>
+	<script src="/templates/interface/assets/js/practice.js"></script>
 </body>
 </html>

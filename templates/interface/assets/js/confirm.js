@@ -5,10 +5,81 @@ var color = {};
 var user_num_source;
 var actual_num_source;
 var recording_id = '';
+var curr_instruction = 1;
+var modal = document.getElementById("modal");
 
 const colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
 const css_colors = ["#009dff", "#ff7f0e", "#00ff00", "#ff0000", "#9467bd", "#d3d3d3", "#c39b77", "#e377c2", "#bcbd22", "#00ffff"];
 var request = new XMLHttpRequest(); 
+
+
+document.getElementById('message').addEventListener("click",popRules);
+document.getElementById('instruction-left').addEventListener("click",move_instruction_last);
+document.getElementById('instruction-right').addEventListener("click",move_instruction_next);
+document.getElementById('instruction-proceed').addEventListener("click",closeRules);
+document.getElementById('sign').addEventListener("click",closeRules);
+
+
+function popRules(e){ 
+	e.preventDefault();
+	modal.style.display = "block";
+	document.getElementById('instruction-proceed').style.display = 'none';
+	document.getElementById('instruction-right').style.display = '';
+	document.getElementById('instruction'+curr_instruction).style.display = 'none';
+	document.getElementById('instruction1').style.display = '';
+	curr_instruction = 1;
+}
+
+function closeRules(e){ 
+	e.preventDefault();
+	let audios = document.getElementsByClassName('audio-frame-instruction');
+	for (let i = 0; i < audios.length; i++) {
+		audio_id = "audio" + audios[i].id.replace("audio-frame-instruction","");
+		document.getElementById(audio_id).pause();
+		document.getElementById(audios[i].id ).innerHTML = 'Click to Play Sample Audio';
+	}
+	modal.style.display = "none";
+}
+
+function move_instruction_next(e){
+	e.preventDefault();
+	if (curr_instruction == 2){ // pause all audios
+		let audios = document.getElementsByClassName('audio-frame-instruction');
+		for (let i = 0; i < audios.length; i++) {
+			audio_id = "audio" + audios[i].id.replace("audio-frame-instruction","");
+			document.getElementById(audio_id).pause();
+			document.getElementById(audios[i].id ).innerHTML = 'Click to Play Sample Audio';
+		}
+	}
+	if (curr_instruction < 7) {
+		document.getElementById('instruction'+curr_instruction).style.display = 'none';
+		document.getElementById('instruction'+(curr_instruction+1)).style.display = '';
+		curr_instruction += 1;
+	}
+	if (curr_instruction == 7) {
+		document.getElementById("instruction-right").style.display = 'none';
+		document.getElementById("instruction-proceed").style.display = '';
+	}
+}
+
+function move_instruction_last(e){
+	e.preventDefault();
+	if (curr_instruction > 1) {
+		if (curr_instruction == 2){ // pause all audios
+			let audios = document.getElementsByClassName('audio-frame-instruction');
+			for (let i = 0; i < audios.length; i++) {
+				audio_id = "audio" + audios[i].id.replace("audio-frame-instruction","");
+				document.getElementById(audio_id).pause();
+				document.getElementById(audios[i].id ).innerHTML = 'Click to Play Sample Audio';
+			}
+		}
+		document.getElementById("instruction-right").style.display = '';
+		document.getElementById("instruction-proceed").style.display = 'none';
+		document.getElementById('instruction'+curr_instruction).style.display = 'none';
+		document.getElementById('instruction'+(curr_instruction-1)).style.display = '';
+		curr_instruction -= 1;
+	}
+}
 
 function confirm_annotation(){
 	request.open('POST', '/confirm_annotation');
@@ -91,13 +162,52 @@ function confirm_annotation(){
 }
 
 document.addEventListener('click', function(e){
-	if (e.target.id.substring(0,11) == "audio-frame") {
-		var audios = document.getElementsByClassName('audio-frame');
 
-		playing_id = '' // initialize
+	if (e.target.id.substring(0,23) == "audio-frame-instruction") {
+		let audios = document.getElementsByClassName('audio-frame');
 		for(let i = 0; i < audios.length; i++) {
-			audio_id = '' // initialize
-			if (audios[i].id == "audio-frame") audio_id = "audio-frame-full"
+			let audio_id = '';
+			if (audios[i].id == "audio-frame") audio_id = "audio-frame-full";
+			else audio_id = "audio-" + audios[i].id.replace("audio-frame-","");
+			document.getElementById(audio_id).pause();
+			document.getElementById(audios[i].id ).innerHTML = 'Play Audio';
+		}
+
+		audios = document.getElementsByClassName('audio-frame-instruction');
+
+		let playing_id = '';
+		for(let i = 0; i < audios.length; i++) {
+			let audio_id = "audio" + audios[i].id.replace("audio-frame-instruction","");
+			if (audios[i].id != e.target.id) {
+				document.getElementById(audio_id).pause();
+				document.getElementById(audios[i].id ).innerHTML = 'Click to Play Sample Audio';
+			}
+			else {
+				playing_id = audio_id;
+				document.getElementById(audios[i].id).innerHTML = document.getElementById(audios[i].id).innerHTML == 'Click to Play Sample Audio' ? 'Click to Pause Sample Audio' : 'Click to Play Sample Audio';
+				document.getElementById(audios[i].id).innerHTML == 'Click to Play Sample Audio' ? document.getElementById(audio_id).pause() : document.getElementById(audio_id).play();
+			}
+		}
+
+		if (playing_id != ''){
+			document.getElementById(playing_id).addEventListener("timeupdate",function(){
+				if (playing_id.replace('audio-','') == e.target.id.replace('audio-frame-instruction-','')) {
+					let track = document.getElementById(playing_id).currentTime / document.getElementById(playing_id).duration * 100;
+					document.getElementById(e.target.id).style.background = 'linear-gradient(to right, #efefef '+ track +'%, #ffffff 0%)';
+				}
+			});
+			document.getElementById(playing_id).addEventListener("ended",function(){
+				document.getElementById(e.target.id).innerHTML = 'Click to Play Sample Audio';
+			});
+		}
+	}
+	if (e.target.id.substring(0,11) == "audio-frame") {
+		let audios = document.getElementsByClassName('audio-frame');
+
+		let playing_id = '';
+		for(let i = 0; i < audios.length; i++) {
+			let audio_id = '';
+			if (audios[i].id == "audio-frame") audio_id = "audio-frame-full";
 			else audio_id = "audio-" + audios[i].id.replace("audio-frame-","");
 
 			if (audios[i].id != e.target.id) {
@@ -110,28 +220,24 @@ document.addEventListener('click', function(e){
 				document.getElementById(audios[i].id).innerHTML == 'Play Audio' ? document.getElementById(audio_id).pause() : document.getElementById(audio_id).play();
 			}
 		}
+		if (playing_id != '') {
+			document.getElementById(playing_id).addEventListener("timeupdate",function(){
+				if (playing_id.replace('audio-','') == e.target.id.replace('audio-frame-','')){
+					let track = document.getElementById(playing_id).currentTime / document.getElementById(playing_id).duration * 100;
+					document.getElementById(e.target.id).style.background = 'linear-gradient(to right, #efefef '+ track +'%, #ffffff 0%)';
+				}
+			});
+			document.getElementById(playing_id).addEventListener("ended",function(){
+				document.getElementById(e.target.id).innerHTML = 'Play Audio';
+			});
 
-		document.getElementById(playing_id).addEventListener("timeupdate",function(){
-			if (playing_id.replace('audio-','') == e.target.id.replace('audio-frame-','')) {
-				let track = document.getElementById(playing_id).currentTime / document.getElementById(playing_id).duration * 100;
-				document.getElementById(e.target.id).style.background = 'linear-gradient(to right, #efefef '+ track +'%, #ffffff 0%)';
-			}
-		});
-
-		document.getElementById(playing_id).addEventListener("ended",function(){
-			document.getElementById(e.target.id).innerHTML = 'Play Audio';
-		});
+		}
 	}
 	else if (e.target.id.substring(0,8) =="checkbox"){
 		tail = e.target.id.substring(e.target.id.length-1, e.target.id.length);
 		for (let i = 0; i < user_num_source; i++) {
 			id_name = "checkbox-"+i+"-"+tail;
-
-			if ( e.target.id != id_name && document.getElementById(id_name).checked ) {
-				window.alert("You are only allowed to match one source with one annotation");
-				e.preventDefault();
-				return;
-			}
+			if ( e.target.id != id_name && document.getElementById(id_name).checked ) document.getElementById(id_name).checked = false;
 		}
 
 		let checkboxes = document.getElementsByClassName(e.target.className);
@@ -347,14 +453,14 @@ scene.add(ear2);
 scene.add(nose);
 
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize(500,500);
+renderer.setSize(400,400); //! this is different from the size of the ball at annotation interface
 container.appendChild(renderer.domElement);
 
 camera.lookAt(sphere.position);
 
 controls = new THREE.OrbitControls(camera,renderer.domElement);
 controls.minDistance = 1;
-controls.maxDistance = 500;
+controls.maxDistance = 400; //! this is different from the size of the ball at annotation interface
 
 function animate(){
 	requestAnimationFrame(animate);

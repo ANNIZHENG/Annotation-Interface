@@ -1,35 +1,28 @@
 // request to server
 var request = new XMLHttpRequest();
-var survey_id = localStorage.getItem('survey_id');
-var practice = 0;
+var survey_id = '';
+var practice = 1;
+const totalPractice = 2;
+var recording_ids = [0,2,23];
+var curr_recording = 0;
+var exit = false;
 
-// function ajax_start(){
-// 	var request_start = new XMLHttpRequest();
-// 	request_start.open('POST', '/annotation_interface');
-// 	request_start.onreadystatechange = function() {
-// 		survey_id = request_start.response;
-// 		localStorage.setItem("survey_id", survey_id);
-// 	}
-// 	request_start.send();
-// }
+// load the first audio for practice round
+document.getElementById('source').src = '/templates/interface/assets/audio/recording/'+recording_ids[curr_recording]+'.wav';
+document.getElementById('audio').load();
 
-var recording_id = 0;
-ajax_select_recording();
-
-function ajax_select_recording(){
-	var request_recording = new XMLHttpRequest(); 
-	request_recording.open('POST', '/select_recording');
-	request_recording.onreadystatechange = function() {
-		recording_id = request_recording.responseText;
-		document.getElementById('source').src = '/templates/interface/assets/audio/recording/'+recording_id+'.wav';
-		document.getElementById('audio').load();
-		localStorage.setItem('recording',(recording_id+'.wav'));
+function ajax_start(){
+	var request_start = new XMLHttpRequest();
+	request_start.open('POST', '/annotation_interface');
+	request_start.onreadystatechange = function() {
+		survey_id = request_start.response;
+		localStorage.setItem("survey_id", survey_id);
 	}
-	request_recording.send();
+	request_start.send();
 }
 
 // check if the user goes through the whole instruction
-// var read_all_rules = false;
+var read_all_rules = false;
 
 // colors
 const colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
@@ -175,7 +168,7 @@ function popKeyRules(e){
 function popRules(e){ 
 	e.preventDefault();
 	modal.style.display = "block";
-	// if (read_all_rules) document.getElementById('sign').style.display = '';
+	if (read_all_rules) document.getElementById('sign').style.display = '';
 	document.getElementById('instruction-proceed').style.display = 'none';
 	document.getElementById('instruction-right').style.display = '';
 	document.getElementById('instruction'+curr_instruction).style.display = 'none';
@@ -185,8 +178,8 @@ function popRules(e){
 
 function closeRules(e){ 
 	e.preventDefault();
-	// if (read_all_rules) modal.style.display = "none";
-	// else window.alert("Please read all of the instructions first");
+	if (read_all_rules) modal.style.display = "none";
+	else window.alert("Please read all of the instructions first");
 	let audios = document.getElementsByClassName('audio-frame-instruction');
 	for (let i = 0; i < audios.length; i++) {
 		audio_id = "audio" + audios[i].id.replace("audio-frame-instruction","");
@@ -214,7 +207,7 @@ function move_instruction_next(e){
 	if (curr_instruction == 7) {
 		document.getElementById("instruction-right").style.display = 'none';
 		document.getElementById("instruction-proceed").style.display = '';
-		// read_all_rules = true;
+		read_all_rules = true;
 	}
 }
 
@@ -284,8 +277,9 @@ function displaySelection(){
 }
 
 function displayButton(){
-	document.getElementById('btn-button-refresh').setAttribute('style','float:left;');
-	document.getElementById('btn-button-submit').setAttribute('style','float:right;');
+	if (exit) document.getElementById('btn-button-submit').setAttribute('style','float:left;');
+    if (curr_recording < totalPractice) document.getElementById('btn-button-next').setAttribute('style','float:right;');
+    else document.getElementById('btn-button-again').setAttribute('style','float:right;');
 }
 
 function askProceed(){
@@ -307,20 +301,46 @@ function ajax_interaction() {
 	request.send(data);
 }
 
-function ajax_next(){
+function ajax_next(again,start){
 	if (!askProceed()){
 		event.preventDefault();
 		return false;
 	}
+	
 	let user_note = document.getElementById("user_note").value;
 	localStorage.setItem("user_note", user_note);
 	timestamp = Date.now();
+
 	request.open('POST', '/next', true);
 	request.setRequestHeader('content-type', 'application/json;charset=UTF-8');
+    let recording_id = recording_ids[curr_recording];
 	var data = JSON.stringify({survey_id,recording_id,azimuth,elevation,source_count,timestamp,user_note,practice});
 	request.send(data);
-	window.location = '/templates/interface/confirm.html';
-	return true;
+
+    curr_recording = curr_recording + 1;
+    exit = true;
+
+    if ((curr_recording > totalPractice && !again) || (start)) {
+        window.location = '/templates/interface/interface.html';
+    }
+    else{
+        if (curr_recording > totalPractice) curr_recording = 0;
+        reloadAll();
+        document.getElementById('count').style.display = 'none';
+        document.getElementById('2d-question').innerHTML = '';
+        document.getElementById('head-wrapper').style.display = 'none';
+        document.getElementById('front-wrapper').style.display = 'none';
+        document.getElementById('side-wrapper').style.display = 'none';
+        document.getElementById('feedback').style.visibility = 'hidden';
+        document.getElementById('dot-tracker').style.display = 'none';
+        document.getElementById('btn-button-next').style.display = 'none';
+        document.getElementById('btn-button-submit').style.display = 'none';
+        document.getElementById('btn-button-again').style.display = 'none';
+        document.getElementById('audio-frame').style.background = 'linear-gradient(to right, #efefef 0%, #ffffff 0%)';
+        document.getElementById('count').value = "";
+        document.getElementById('source').src = '/templates/interface/assets/audio/recording/'+recording_ids[curr_recording]+'.wav';
+        document.getElementById('audio').load();
+    }
 }
 
 function displayBoth(hasFront, index, temp_azimuth, degree){
@@ -1961,10 +1981,8 @@ function reloadAll(){
 	document.getElementById('p-elevation').innerHTML = '';
 	document.getElementById('azimuth-dot').style.backgroundColor = '';
 	document.getElementById('elevation-dot').style.backgroundColor = '';
-
 	document.onmousedown = null; 
 	document.onkeydown = null;
-
 	removeAllBalls();
 }
 
