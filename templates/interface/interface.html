@@ -38,7 +38,7 @@
 			<br><br>
 			<label id="2d-question" for="2d" style="font-size: 15px; font-weight: bold;"></label>
 			<div id="2d" style="margin-top: 5px;">
-				<div id="head-wrapper" style="display: none;"><div style="font-weight:bold; font-size:13px; color:blue; text-align: center;">Head View</div>
+				<div id="head-wrapper" style="display: none;"><div style="font-weight:bold; font-size:13px; color:blue; text-align: center;">Top View</div>
 					<div id="head" style="background-image: url('/templates/interface/img/head.png');">
 						<div class="circular" id="circular"></div>
 						<div class="circular" id="circular1" style="display: none;"><div class="indicator" id="head-item-1" style="display: none;">1</div></div>
@@ -103,12 +103,13 @@
 					
 					<div id="instruction1">
 						<p style="font-size: 17px;">Page 1 / 7</p>
-						<h3 style="text-align: center; color: blue; margin-top: 3vh;">Annotation Interface Instructions (Will Update Images Later)</h3>
+						<h3 style="text-align: center; color: blue; margin-top: 3vh;">Annotation Interface Instructions</h3>
 						<img src="/templates/interface/img/1.png" style="width:70%; display: block; margin: auto;">
 						<p>You will be asked to identify the number of sources in an audio recording and localize each source.</p>
 						<p>1. To play the audio click "Play Audio".</p>
 						<p>2. If you want to pause the audio click "Pause Audio".</p>
 						<p>You may listen to the audio as many times as you want.</p>
+						<p>You can use the text box to take notes about what you hear and where you hear them. It might help you when localizing the sounds.</p>
 					</div>
 					<div id="instruction2" style="display: none; width: 100%;">
 						<p style="font-size: 17px;">Page 2 / 7</p>
@@ -196,7 +197,7 @@
 							<ol type="a">
 								<li>
 									Person talking
-									<audio id="audio-person"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/source/small_crowd_7_norm.wav">Your browser does not support audio</audio>
+									<audio id="audio-person"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/person_talking_5_norm.wav">Your browser does not support audio</audio>
 									<button class="audio-frame-instruction" id="audio-frame-instruction-person" style="display: inline-block; margin-left: auto; margin-right: auto;">Click to Play Sample Audio</button>
 								</li>
 							</ol>
@@ -332,8 +333,8 @@
 						<p>Once you've completed the annotation task, you'll be asked to confirm which source corresponds to each location.</p>
 						<p>The number of source recordings shown corresponds to the true number of sources present in the recording.</p>
 						<p>Please listen to the source recordings.</p>
-						<p>For each annotated source, please select one source recording.</p>
-						<p>Please note that if you have more annotated sources than source recordings, each source recording must appear at least once.</p>
+						<p>Please match the source recordings to the annotated points.</p>
+						<p>Each source recording can be matched only once. Please do your best matching.</p>
 					</div>
 					<span id="sign" style="display: none;">&times;</span>
 					<button class="move" id="instruction-proceed" style="margin-left: 20px; font-size: 30px; padding:11px; display: none;">

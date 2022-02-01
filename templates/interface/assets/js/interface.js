@@ -249,34 +249,6 @@ function addPlaying(e){
 	}
 }
 
-// function addSamplePlaying(e,){
-// 	e.preventDefault();
-// 	if (!isPlaying){
-// 		document.getElementById('audio-instruction').play();
-// 		document.getElementById('audio-frame-instruction').innerHTML='Click to Pause Sample Audio';
-// 		isPlaying = true;
-// 	}
-// 	else{
-// 		isPlaying = false
-// 		document.getElementById('audio-instruction').pause();
-// 		document.getElementById('audio-frame-instruction').innerHTML='Click to Play Sample Audio';
-// 	}
-// }
-
-// function endSamplePlaying(){
-// 	isPlaying = false;
-// 	document.getElementById('audio-frame-instruction').innerHTML='Click to Play Sample Audio';
-// }
-
-// function audioSampleTracker(){
-// 	let track = document.getElementById('audio-instruction').currentTime / document.getElementById('audio-instruction').duration * 100;
-// 	document.getElementById('audio-frame-instruction').style.background = 'linear-gradient(to right, #efefef '+track+'%, #ffffff 0%)';
-// }
-
-// document.getElementById('audio-frame-instruction').addEventListener("click",addSamplePlaying);
-// document.getElementById('audio-instruction').addEventListener("ended",endSamplePlaying);
-// document.getElementById('audio-instruction').addEventListener("timeupdate",audioSampleTracker);
-
 function displaySelection(){ 
 	isPlaying = false;
 	document.getElementById('audio-frame').innerHTML='Play Audio';
