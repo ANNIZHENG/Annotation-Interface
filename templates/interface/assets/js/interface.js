@@ -105,6 +105,39 @@ var side_indicators = {
 	10: []
 };
 
+document.addEventListener('click', function(e){
+	if (e.target.id.substring(0,23) == "audio-frame-instruction") {
+		var audios = document.getElementsByClassName('audio-frame-instruction');
+
+		playing_id = ''
+
+		for(let i = 0; i < audios.length; i++) {
+			audio_id = "audio" + audios[i].id.replace("audio-frame-instruction","");
+
+			if (audios[i].id != e.target.id) {
+				document.getElementById(audio_id).pause();
+				document.getElementById(audios[i].id ).innerHTML = 'Click to Play Sample Audio';
+			}
+			else {
+				playing_id = audio_id;
+				document.getElementById(audios[i].id).innerHTML = document.getElementById(audios[i].id).innerHTML == 'Click to Play Sample Audio' ? 'Click to Pause Sample Audio' : 'Click to Play Sample Audio';
+				document.getElementById(audios[i].id).innerHTML == 'Click to Play Sample Audio' ? document.getElementById(audio_id).pause() : document.getElementById(audio_id).play();
+			}
+		}
+
+		document.getElementById(playing_id).addEventListener("timeupdate",function(){
+			if (playing_id.replace('audio-','') == e.target.id.replace('audio-frame-instruction-','')) {
+				let track = document.getElementById(playing_id).currentTime / document.getElementById(playing_id).duration * 100;
+				document.getElementById(e.target.id).style.background = 'linear-gradient(to right, #efefef '+ track +'%, #ffffff 0%)';
+			}
+		});
+
+		document.getElementById(playing_id).addEventListener("ended",function(){
+			document.getElementById(e.target.id).innerHTML = 'Click to Play Sample Audio';
+		});
+	}
+});
+
 document.getElementById('body').addEventListener("mouseup",function(){ // for the case when the user deletes nothing
 	delete_annotation = false;
 	document.getElementById('body').style.cursor = 'default';
@@ -117,10 +150,6 @@ document.getElementById('instruction-left').addEventListener("click",move_instru
 document.getElementById('instruction-right').addEventListener("click",move_instruction_next);
 document.getElementById('instruction-proceed').addEventListener("click",closeRules);
 document.getElementById('sign').addEventListener("click",closeRules);
-
-document.getElementById('audio-frame-instruction').addEventListener("click",addSamplePlaying);
-document.getElementById('audio-instruction').addEventListener("ended",endSamplePlaying);
-document.getElementById('audio-instruction').addEventListener("timeupdate",audioSampleTracker);
 
 document.getElementById('audio-frame').addEventListener("click",addPlaying);
 document.getElementById('audio').addEventListener("ended",displaySelection);
@@ -183,11 +212,10 @@ function move_instruction_last(e){
 function addSourceCount(){
 	document.getElementById('2d-question').innerHTML = "Please identify the location of each source:";
 	document.getElementById('feedback').setAttribute('style',"display:inline-block;");
-
+	document.getElementById('dot-tracker').style.display = '';
 	document.getElementById('head-wrapper').style.display = 'inline-block';
 	document.getElementById('front-wrapper').style.display = 'inline-block';
 	document.getElementById('side-wrapper').style.display = 'inline-block';
-
 	displayButton();
 
 	source_count = document.getElementById('count').value;
@@ -200,11 +228,6 @@ function addSourceCount(){
 function audioTracker(){
 	let track = document.getElementById('audio').currentTime / document.getElementById('audio').duration * 100;
 	document.getElementById('audio-frame').style.background = 'linear-gradient(to right, #efefef '+track+'%, #ffffff 0%)';
-}
-
-function audioSampleTracker(){
-	let track = document.getElementById('audio-instruction').currentTime / document.getElementById('audio-instruction').duration * 100;
-	document.getElementById('audio-frame-instruction').style.background = 'linear-gradient(to right, #efefef '+track+'%, #ffffff 0%)';
 }
 
 function addPlaying(e){
@@ -226,24 +249,33 @@ function addPlaying(e){
 	}
 }
 
-function addSamplePlaying(e){
-	e.preventDefault();
-	if (!isPlaying){
-		document.getElementById('audio-instruction').play();
-		document.getElementById('audio-frame-instruction').innerHTML='Click to Pause Sample Audio';
-		isPlaying = true;
-	}
-	else{
-		isPlaying = false
-		document.getElementById('audio-instruction').pause();
-		document.getElementById('audio-frame-instruction').innerHTML='Click Again to Play Sample Audio';
-	}
-}
+// function addSamplePlaying(e,){
+// 	e.preventDefault();
+// 	if (!isPlaying){
+// 		document.getElementById('audio-instruction').play();
+// 		document.getElementById('audio-frame-instruction').innerHTML='Click to Pause Sample Audio';
+// 		isPlaying = true;
+// 	}
+// 	else{
+// 		isPlaying = false
+// 		document.getElementById('audio-instruction').pause();
+// 		document.getElementById('audio-frame-instruction').innerHTML='Click to Play Sample Audio';
+// 	}
+// }
 
-function endSamplePlaying(){
-	isPlaying = false;
-	document.getElementById('audio-frame-instruction').innerHTML='Click Again to Play Sample Audio';
-}
+// function endSamplePlaying(){
+// 	isPlaying = false;
+// 	document.getElementById('audio-frame-instruction').innerHTML='Click to Play Sample Audio';
+// }
+
+// function audioSampleTracker(){
+// 	let track = document.getElementById('audio-instruction').currentTime / document.getElementById('audio-instruction').duration * 100;
+// 	document.getElementById('audio-frame-instruction').style.background = 'linear-gradient(to right, #efefef '+track+'%, #ffffff 0%)';
+// }
+
+// document.getElementById('audio-frame-instruction').addEventListener("click",addSamplePlaying);
+// document.getElementById('audio-instruction').addEventListener("ended",endSamplePlaying);
+// document.getElementById('audio-instruction').addEventListener("timeupdate",audioSampleTracker);
 
 function displaySelection(){ 
 	isPlaying = false;

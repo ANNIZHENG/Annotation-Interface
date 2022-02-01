@@ -92,11 +92,9 @@ document.addEventListener('click', function(e){
 	if (e.target.id.substring(0,11) == "audio-frame") {
 		var audios = document.getElementsByClassName('audio-frame');
 
-		playing_id = ''
-
+		playing_id = '' // initialize
 		for(let i = 0; i < audios.length; i++) {
-			audio_id = ''
-
+			audio_id = '' // initialize
 			if (audios[i].id == "audio-frame") audio_id = "audio-frame-full"
 			else audio_id = "audio-" + audios[i].id.replace("audio-frame-","");
 
@@ -241,18 +239,17 @@ function submit_confirmation(){
 		}
 	}
 
-	if (user_num_source > num_checked){
-		window.alert("You must match all of the Annotation points with their corresponding Sound Sources")
-		event.preventDefault();
-		return;
-	}
-
-	if (user_num_source >= actual_num_source && total_found_column_index < actual_num_source) { 
-		// This restriction only applies for overestimation and normal circumstance
-		window.alert("You must match all of the Sound Sources with their corresponding Annotation points")
-		event.preventDefault();
-		return;
-	}
+	// if (user_num_source > num_checked){
+	// 	window.alert("You must match all of the Annotation points with their corresponding Sound Sources")
+	// 	event.preventDefault();
+	// 	return;
+	// }
+	
+	// if (user_num_source >= actual_num_source && total_found_column_index < actual_num_source) { 
+	// 	window.alert("You must match all of the Sound Sources with their corresponding Annotation points")
+	// 	event.preventDefault();
+	// 	return;
+	// }
 
 	let recording_id = parseInt(recording.replace('.wav','')) + 1;
 	let location_id = '';
