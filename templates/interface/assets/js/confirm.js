@@ -242,7 +242,7 @@ function submit_confirmation(){
 	}
 	*/
 
-	let recording_id = parseInt(recording_id) + 1;
+	recording_id = parseInt(recording_id) + 1;
 	let location_id = '';
 	let source_id = ''
 
