@@ -12,6 +12,7 @@ var request = new XMLHttpRequest();
 
 function confirm_annotation(){
 	request.open('POST', '/confirm_annotation');
+	recording_id = localStorage.getItem('recording').replace('.wav','');
 	request.onreadystatechange = function() {
 		if (request.readyState == 4){
 
@@ -23,9 +24,7 @@ function confirm_annotation(){
 			user_num_source = parseInt(JSON.parse(request.response)["user_num_source"]["0"]);
 			actual_num_source = parseInt(JSON.parse(request.response)["actual_num_source"]["0"]);
 
-			// load full audio file
-			recording = JSON.parse(request.response)["recording"]["0"];
-			document.getElementById('original-audio-source').src = '/templates/interface/assets/audio/recording/'+recording;
+			document.getElementById('original-audio-source').src = '/templates/interface/assets/audio/recording/'+localStorage.getItem('recording');
 			document.getElementById('audio-full').load();
 
 			for (const [key,value] of Object.entries( JSON.parse(request.response)["file_name"] )) {
@@ -85,7 +84,10 @@ function confirm_annotation(){
 			}
 		}
 	}
-	request.send();
+ 	let survey_id = localStorage.getItem('survey_id');
+	request.setRequestHeader('content-type', 'application/json;charset=UTF-8');
+	var data = JSON.stringify({recording_id, survey_id});
+	request.send(data);
 }
 
 document.addEventListener('click', function(e){
@@ -238,18 +240,6 @@ function submit_confirmation(){
 			}
 		}
 	}
-
-	// if (user_num_source > num_checked){
-	// 	window.alert("You must match all of the Annotation points with their corresponding Sound Sources")
-	// 	event.preventDefault();
-	// 	return;
-	// }
-	
-	// if (user_num_source >= actual_num_source && total_found_column_index < actual_num_source) { 
-	// 	window.alert("You must match all of the Sound Sources with their corresponding Annotation points")
-	// 	event.preventDefault();
-	// 	return;
-	// }
 
 	let recording_id = parseInt(recording.replace('.wav','')) + 1;
 	let location_id = '';

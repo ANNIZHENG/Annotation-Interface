@@ -22,6 +22,7 @@ function ajax_select_recording(){
 		recording_id = request_recording.responseText;
 		document.getElementById('source').src = '/templates/interface/assets/audio/recording/'+recording_id+'.wav';
 		document.getElementById('audio').load();
+		localStorage.setItem('recording',(recording_id+'.wav'));
 	}
 	request_recording.send();
 }

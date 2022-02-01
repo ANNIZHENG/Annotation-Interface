@@ -54,19 +54,23 @@ def next():
         source_count = data['source_count']
         user_note = data['user_note']
 
+
         # insert into Interaction table
         timestamp= datetime.fromtimestamp(data['timestamp'] / 1000)
         entry = Interaction(survey_id,"submit",None,timestamp,False)
         ses.add(entry)
         ses.commit()
 
+
         # insert into Annotation table
         entry1 = Annotation(survey_id,recording_id,source_count,user_note,False)
         ses.add(entry1)
         ses.commit()
 
+
         azimuth_list = data['azimuth']
         elevation_list = data['elevation']
+
 
         json_index = 0
         index = 0
@@ -79,9 +83,11 @@ def next():
                 json_index += 1
             index += 1
 
+
         result = eng.execute('''select id from "Annotation" where survey_id = ''' + "'" + survey_id + "'")
         for r in result:
             annotation_id = str(dict(r)['id'])
+
         
         eng.execute('''update "Interaction" set annotation_id='''+annotation_id+'''where annotation_id = '''  + "'" + survey_id + "'")
         eng.execute('''update "Location" set annotation_id='''+annotation_id+'''where annotation_id = '''  + "'" + survey_id + "'")
@@ -120,26 +126,34 @@ def submit_confirmation():
 
 @app.route('/confirm_annotation', methods=['GET', 'POST'])
 def confirm_annotation():
-    recording = 0
+    if (request.method == 'POST'):
+        data = request.json
+        recording_id = data['recording_id']
+        survey_id = data['survey_id']
+
+
     annotation_id = ''
-    result_get_recording = eng.execute('''select id, recording_id from "Annotation" order by id desc limit 1''')
+    result_get_recording = eng.execute('''select id from "Annotation" where survey_id = ''' + "'" + survey_id + "'")
     for r1 in result_get_recording:
-        recording = int(dict(r1)['recording_id'])-1
         annotation_id = str(dict(r1)['id'])
+    
 
     file_name = '''"file_name":{'''
     source_id = '''"source_id":{'''
     filename_json_index = 0
-    result_file_name = eng.execute( '''with cte as (select "Recording".id as recording_id, "Recording_Joint_Source".source_id as source_id from "Recording" inner join "Recording_Joint_Source" on "Recording".id = "Recording_Joint_Source".recording_id) select "Source".id as source_id, "Source".file_name as file_name from "Source" inner join cte on "Source".id = cte.source_id where recording_id ='''+str(recording+1) )
+    result_file_name = eng.execute( '''with cte as (select "Recording".id as recording_id, "Recording_Joint_Source".source_id as source_id from "Recording" inner join "Recording_Joint_Source" on "Recording".id = "Recording_Joint_Source".recording_id) select "Source".id as source_id, "Source".file_name as file_name from "Source" inner join cte on "Source".id = cte.source_id where recording_id ='''+ str(int(recording_id)+1) )
+
 
     for r in result_file_name:
         file_name = file_name + '"' + str(filename_json_index) + '":' + '"' + dict(r)['file_name'] + '",'
         source_id = source_id + '"' + str(filename_json_index) + '":' + '"' + str(dict(r)['source_id']) + '",'
         filename_json_index += 1
     
+
     file_name = file_name[:len(file_name)-1] + "}"
     source_id = source_id[:len(source_id)-1] + "}"
     actual_num_source = '''"actual_num_source":{"0":"''' + str(filename_json_index) + '"}'
+
 
     azimuth = '''"azimuth":{'''
     elevation = '''"elevation":{'''
@@ -161,7 +175,7 @@ def confirm_annotation():
     location_id = location_id[:len(location_id)-1] + "}"
     user_num_source = '''"user_num_source":{"0":"''' + str(json_index) + '"}'
 
-    return "{" + '''"recording":{"0":"''' + str(recording) + ".wav" + '"}' + "," + file_name + "," + azimuth + "," + elevation + "," + color + "," + user_num_source + "," + actual_num_source + "," + source_id + "," + location_id + "}"
+    return "{" + file_name + "," + azimuth + "," + elevation + "," + color + "," + user_num_source + "," + actual_num_source + "," + source_id + "," + location_id + "}"
 
 
 if __name__ =='__main__':
