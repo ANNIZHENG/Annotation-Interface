@@ -15,7 +15,7 @@ function confirm_annotation(){
 	recording_id = localStorage.getItem('recording').replace('.wav','');
 	request.onreadystatechange = function() {
 		if (request.readyState == 4){
-
+			
 			document.getElementById("user_note").value = localStorage.getItem("user_note");
 			color = JSON.parse(request.response)["color"];
 			azimuth = JSON.parse(request.response)["azimuth"];
@@ -227,20 +227,6 @@ function addLocation(coordinates) {
 }
 
 function submit_confirmation(){
-	/*
-	let found_column_index = document.getElementsByTagName("input")[0].id.substring(8,9);
-	let total_found_column_index = 1;
-	let num_checked = 0;
-	for (let i = 0; i < document.getElementsByTagName("input").length; i++){
-		if (document.getElementsByTagName("input")[i].checked) {
-			num_checked += 1;
-			if (document.getElementsByTagName("input")[i].id.substring(8,9) != found_column_index){
-				found_column_index = document.getElementsByTagName("input")[i].id.substring(8,9);
-				total_found_column_index += 1;
-			}
-		}
-	}
-	*/
 
 	recording_id = parseInt(recording_id) + 1;
 	let location_id = '';

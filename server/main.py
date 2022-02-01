@@ -54,6 +54,9 @@ def next():
         source_count = data['source_count']
         user_note = data['user_note']
 
+        # update number of annotation in Recording table
+        eng.execute('''update "Recording" set num_annotation= num_annotation + 1 where id='''+ str(recording_id))
+
 
         # insert into Interaction table
         timestamp= datetime.fromtimestamp(data['timestamp'] / 1000)
@@ -101,7 +104,6 @@ def select_recording():
         result = eng.execute('''select num_annotation from "Recording" where id='''+str(recording+1))
         for r in result:
             if (int(dict(r)['num_annotation']) < 5):
-                eng.execute('''update "Recording" set num_annotation='''+str(int(dict(r)['num_annotation'])+1)+'''where id='''+str(recording+1))
                 return str(recording)
 
 
