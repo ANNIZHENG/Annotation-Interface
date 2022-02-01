@@ -1,10 +1,10 @@
-var recording = 0;
 var file_name = {};
 var azimuth = {};
 var elevation = {};
 var color = {};
 var user_num_source;
 var actual_num_source;
+var recording_id = '';
 
 const colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
 const css_colors = ["#009dff", "#ff7f0e", "#00ff00", "#ff0000", "#9467bd", "#d3d3d3", "#c39b77", "#e377c2", "#bcbd22", "#00ffff"];
@@ -227,10 +227,10 @@ function addLocation(coordinates) {
 }
 
 function submit_confirmation(){
-	let num_checked = 0;
+	/*
 	let found_column_index = document.getElementsByTagName("input")[0].id.substring(8,9);
 	let total_found_column_index = 1;
-
+	let num_checked = 0;
 	for (let i = 0; i < document.getElementsByTagName("input").length; i++){
 		if (document.getElementsByTagName("input")[i].checked) {
 			num_checked += 1;
@@ -240,8 +240,9 @@ function submit_confirmation(){
 			}
 		}
 	}
+	*/
 
-	let recording_id = parseInt(recording.replace('.wav','')) + 1;
+	let recording_id = parseInt(recording_id) + 1;
 	let location_id = '';
 	let source_id = ''
 
