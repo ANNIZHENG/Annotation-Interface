@@ -168,7 +168,7 @@ function popKeyRules(e){
 function popRules(e){ 
 	e.preventDefault();
 	modal.style.display = "block";
-	if (read_all_rules) document.getElementById('sign').style.display = '';
+	if (read_all_rules) document.getElementById('sign').style.visibility = '';
 	document.getElementById('instruction-proceed').style.display = 'none';
 	document.getElementById('instruction-right').style.display = '';
 	document.getElementById('instruction'+curr_instruction).style.display = 'none';
