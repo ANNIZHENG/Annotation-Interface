@@ -81,6 +81,8 @@ function move_instruction_last(e){
 	}
 }
 
+confirm_annotation();
+
 function confirm_annotation(){
 	request.open('POST', '/confirm_annotation');
 	recording_id = localStorage.getItem('recording').replace('.wav','');

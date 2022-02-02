@@ -7,7 +7,7 @@ from db_tables import ses,eng,Annotation,Survey,Location,Interaction,Confirmatio
 from random import randrange
 app = Flask(__name__,static_folder="../templates",template_folder="..")
 
-# server side ajaxes
+
 @app.route('/')
 def home():
     result = eng.execute('''select num_annotation from "Recording" order by num_annotation asc limit 1''')
@@ -48,7 +48,6 @@ def interaction():
 def next():
     if request.method == 'POST':
         data = request.json
-
         survey_id = data['survey_id']
         recording_id = int(data['recording_id']) + 1
         source_count = data['source_count']
@@ -58,23 +57,19 @@ def next():
         # update number of annotation in Recording table
         eng.execute('''update "Recording" set num_annotation= num_annotation + 1 where id='''+ str(recording_id))
 
-
         # insert into Interaction table
         timestamp= datetime.fromtimestamp(data['timestamp'] / 1000)
         entry = Interaction(survey_id,"submit",None,timestamp,practice)
         ses.add(entry)
         ses.commit()
 
-
         # insert into Annotation table
         entry1 = Annotation(survey_id,recording_id,source_count,user_note,practice)
         ses.add(entry1)
         ses.commit()
 
-
         azimuth_list = data['azimuth']
         elevation_list = data['elevation']
-
 
         json_index = 0
         index = 0
@@ -87,16 +82,14 @@ def next():
                 json_index += 1
             index += 1
 
-
         result = eng.execute('''select id from "Annotation" where survey_id = ''' + "'" + survey_id + "'")
         for r in result:
             annotation_id = str(dict(r)['id'])
-
         
         eng.execute('''update "Interaction" set annotation_id='''+annotation_id+'''where annotation_id = '''  + "'" + survey_id + "'")
         eng.execute('''update "Location" set annotation_id='''+annotation_id+'''where annotation_id = '''  + "'" + survey_id + "'")
-        
-        return 'success'
+
+    return 'success'
 
 @app.route('/select_recording', methods=['GET', 'POST'])
 def select_recording():
@@ -123,62 +116,74 @@ def submit_confirmation():
                 entry = Confirmation(int(recording_id), source_id[i], None)
             ses.add(entry)
             ses.commit()
-
         return 'success'
 
 
 @app.route('/confirm_annotation', methods=['GET', 'POST'])
 def confirm_annotation():
     if (request.method == 'POST'):
+
         data = request.json
         recording_id = data['recording_id']
         survey_id = data['survey_id']
 
+        annotation_id = ''
+        result_get_recording = eng.execute('''select id from "Annotation" where survey_id = ''' + "'" + survey_id + "'")
+        for r1 in result_get_recording:
+            annotation_id = str(dict(r1)['id'])
+    
+        file_name = '''"file_name":{'''
+        source_id = '''"source_id":{'''
+        filename_json_index = 0
+        result_file_name = eng.execute( '''with cte as (select "Recording".id as recording_id, "Recording_Joint_Source".source_id as source_id from "Recording" inner join "Recording_Joint_Source" on "Recording".id = "Recording_Joint_Source".recording_id) select "Source".id as source_id, "Source".file_name as file_name from "Source" inner join cte on "Source".id = cte.source_id where recording_id ='''+ str(int(recording_id)+1) )
 
-    annotation_id = ''
-    result_get_recording = eng.execute('''select id from "Annotation" where survey_id = ''' + "'" + survey_id + "'")
-    for r1 in result_get_recording:
-        annotation_id = str(dict(r1)['id'])
+        for r in result_file_name:
+            file_name = file_name + '"' + str(filename_json_index) + '":' + '"' + dict(r)['file_name'] + '",'
+            source_id = source_id + '"' + str(filename_json_index) + '":' + '"' + str(dict(r)['source_id']) + '",'
+            filename_json_index += 1
+    
+        file_name = file_name[:len(file_name)-1] + "}"
+        source_id = source_id[:len(source_id)-1] + "}"
+        actual_num_source = '''"actual_num_source":{"0":"''' + str(filename_json_index) + '"}'
+
+        azimuth = '''"azimuth":{'''
+        elevation = '''"elevation":{'''
+        color = '''"color":{'''
+        location_id = '''"location_id":{'''
+        json_index = 0
+        result_get_location = eng.execute('''select id, azimuth, elevation, color from "Location" where annotation_id = '''+ "'" + annotation_id + "'")
+
+        for r in result_file_name:
+            file_name = file_name + '"' + str(filename_json_index) + '":' + '"' + dict(r)['file_name'] + '",'
+            source_id = source_id + '"' + str(filename_json_index) + '":' + '"' + str(dict(r)['source_id']) + '",'
+            filename_json_index += 1
     
 
-    file_name = '''"file_name":{'''
-    source_id = '''"source_id":{'''
-    filename_json_index = 0
-    result_file_name = eng.execute( '''with cte as (select "Recording".id as recording_id, "Recording_Joint_Source".source_id as source_id from "Recording" inner join "Recording_Joint_Source" on "Recording".id = "Recording_Joint_Source".recording_id) select "Source".id as source_id, "Source".file_name as file_name from "Source" inner join cte on "Source".id = cte.source_id where recording_id ='''+ str(int(recording_id)+1) )
+        file_name = file_name[:len(file_name)-1] + "}"
+        source_id = source_id[:len(source_id)-1] + "}"
+        actual_num_source = '''"actual_num_source":{"0":"''' + str(filename_json_index) + '"}'
 
+        azimuth = '''"azimuth":{'''
+        elevation = '''"elevation":{'''
+        color = '''"color":{'''
+        location_id = '''"location_id":{'''
+        json_index = 0
+        result_get_location = eng.execute('''select id, azimuth, elevation, color from "Location" where annotation_id = '''+ "'" + annotation_id + "'")
 
-    for r in result_file_name:
-        file_name = file_name + '"' + str(filename_json_index) + '":' + '"' + dict(r)['file_name'] + '",'
-        source_id = source_id + '"' + str(filename_json_index) + '":' + '"' + str(dict(r)['source_id']) + '",'
-        filename_json_index += 1
+        for r2 in result_get_location:
+            azimuth = azimuth + '"' + str(json_index) + '":"' + str(dict(r2)['azimuth']) + '",'
+            elevation = elevation + '"' + str(json_index) + '":"' + str(dict(r2)['elevation']) + '",'
+            color = color + '"' + str(json_index) + '":"' + str(dict(r2)['color']) + '",'
+            location_id = location_id + '"' + str(json_index) + '":"' + str(dict(r2)['id']) + '",'
+            json_index += 1
     
+        azimuth = azimuth[:len(azimuth)-1] + "}"
+        elevation = elevation[:len(elevation)-1] + "}"
+        color = color[:len(color)-1] + "}"
+        location_id = location_id[:len(location_id)-1] + "}"
+        user_num_source = '''"user_num_source":{"0":"''' + str(json_index) + '"}'
 
-    file_name = file_name[:len(file_name)-1] + "}"
-    source_id = source_id[:len(source_id)-1] + "}"
-    actual_num_source = '''"actual_num_source":{"0":"''' + str(filename_json_index) + '"}'
-
-
-    azimuth = '''"azimuth":{'''
-    elevation = '''"elevation":{'''
-    color = '''"color":{'''
-    location_id = '''"location_id":{'''
-    json_index = 0
-    result_get_location = eng.execute('''select id, azimuth, elevation, color from "Location" where annotation_id = '''+ "'" + annotation_id + "'")
-
-    for r2 in result_get_location:
-        azimuth = azimuth + '"' + str(json_index) + '":"' + str(dict(r2)['azimuth']) + '",'
-        elevation = elevation + '"' + str(json_index) + '":"' + str(dict(r2)['elevation']) + '",'
-        color = color + '"' + str(json_index) + '":"' + str(dict(r2)['color']) + '",'
-        location_id = location_id + '"' + str(json_index) + '":"' + str(dict(r2)['id']) + '",'
-        json_index += 1
-    
-    azimuth = azimuth[:len(azimuth)-1] + "}"
-    elevation = elevation[:len(elevation)-1] + "}"
-    color = color[:len(color)-1] + "}"
-    location_id = location_id[:len(location_id)-1] + "}"
-    user_num_source = '''"user_num_source":{"0":"''' + str(json_index) + '"}'
-
-    return "{" + file_name + "," + azimuth + "," + elevation + "," + color + "," + user_num_source + "," + actual_num_source + "," + source_id + "," + location_id + "}"
+        return "{" + file_name + "," + azimuth + "," + elevation + "," + color + "," + user_num_source + "," + actual_num_source + "," + source_id + "," + location_id + "}"
 
 
 if __name__ =='__main__':

@@ -11,6 +11,8 @@ var exit = false;
 document.getElementById('source').src = '/templates/interface/assets/audio/recording/'+recording_ids[curr_recording]+'.wav';
 document.getElementById('audio').load();
 
+ajax_start();
+
 function ajax_start(){
 	var request_start = new XMLHttpRequest();
 	request_start.open('POST', '/annotation_interface');

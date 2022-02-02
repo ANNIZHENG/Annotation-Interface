@@ -3,16 +3,6 @@ var request = new XMLHttpRequest();
 var survey_id = localStorage.getItem('survey_id');
 var practice = 0;
 
-// function ajax_start(){
-// 	var request_start = new XMLHttpRequest();
-// 	request_start.open('POST', '/annotation_interface');
-// 	request_start.onreadystatechange = function() {
-// 		survey_id = request_start.response;
-// 		localStorage.setItem("survey_id", survey_id);
-// 	}
-// 	request_start.send();
-// }
-
 var recording_id = 0;
 ajax_select_recording();
 
@@ -27,9 +17,6 @@ function ajax_select_recording(){
 	}
 	request_recording.send();
 }
-
-// check if the user goes through the whole instruction
-// var read_all_rules = false;
 
 // colors
 const colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
@@ -175,7 +162,6 @@ function popKeyRules(e){
 function popRules(e){ 
 	e.preventDefault();
 	modal.style.display = "block";
-	// if (read_all_rules) document.getElementById('sign').style.display = '';
 	document.getElementById('instruction-proceed').style.display = 'none';
 	document.getElementById('instruction-right').style.display = '';
 	document.getElementById('instruction'+curr_instruction).style.display = 'none';
@@ -185,8 +171,6 @@ function popRules(e){
 
 function closeRules(e){ 
 	e.preventDefault();
-	// if (read_all_rules) modal.style.display = "none";
-	// else window.alert("Please read all of the instructions first");
 	let audios = document.getElementsByClassName('audio-frame-instruction');
 	for (let i = 0; i < audios.length; i++) {
 		audio_id = "audio" + audios[i].id.replace("audio-frame-instruction","");
@@ -214,7 +198,6 @@ function move_instruction_next(e){
 	if (curr_instruction == 7) {
 		document.getElementById("instruction-right").style.display = 'none';
 		document.getElementById("instruction-proceed").style.display = '';
-		// read_all_rules = true;
 	}
 }
 
@@ -320,7 +303,6 @@ function ajax_next(){
 	var data = JSON.stringify({survey_id,recording_id,azimuth,elevation,source_count,timestamp,user_note,practice});
 	request.send(data);
 	window.location = '/templates/interface/confirm.html';
-	return true;
 }
 
 function displayBoth(hasFront, index, temp_azimuth, degree){
