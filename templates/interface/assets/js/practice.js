@@ -5,7 +5,6 @@ var practice = 1;
 const totalPractice = 2;
 var recording_ids = [0,2,23];
 var curr_recording = 0;
-var exit = false;
 
 // load the first audio for practice round
 document.getElementById('source').src = '/templates/interface/assets/audio/recording/'+recording_ids[curr_recording]+'.wav';
@@ -279,7 +278,7 @@ function displaySelection(){
 }
 
 function displayButton(){
-	if (exit) document.getElementById('btn-button-submit').setAttribute('style','float:left;');
+	document.getElementById('btn-button-submit').setAttribute('style','float:left;');
     if (curr_recording < totalPractice) document.getElementById('btn-button-next').setAttribute('style','float:right;');
     else document.getElementById('btn-button-again').setAttribute('style','float:right;');
 }
@@ -320,7 +319,6 @@ function ajax_next(again,start){
 	request.send(data);
 
     curr_recording = curr_recording + 1;
-    exit = true;
 
     if ((curr_recording > totalPractice && !again) || (start)) {
         window.location = '/templates/interface/interface.html';
