@@ -3,7 +3,7 @@ from sqlalchemy import *
 from sqlalchemy.sql import *
 from datetime import datetime
 from flask import *
-from db_tables import ses,eng,Survey,Interaction,Temp_Confirmation,Temp_Annotation,Temp_Location # ,Annotation,Location,Confirm
+from db_tables import ses,eng,Survey,Interaction,Confirmation,Annotation,Location
 from random import randrange
 app = Flask(__name__,static_folder="../templates",template_folder="..")
 
@@ -59,7 +59,7 @@ def next():
         ses.add(entry)
         ses.commit()
 
-        entry1 = Temp_Annotation(survey_id,recording_id,source_count,user_note,practice)
+        entry1 = Annotation(survey_id,recording_id,source_count,user_note,practice)
         ses.add(entry1)
         ses.commit()
 
@@ -70,26 +70,27 @@ def next():
         index = 0
         while (index < len(azimuth_list)):
             if (azimuth_list[index] != None):
-                entry2 = Temp_Location(survey_id,survey_id,azimuth_list[index],elevation_list[index],index+1,practice)
+                entry2 = Location(survey_id, azimuth_list[index], elevation_list[index], index+1, practice)
                 ses.add(entry2)
                 ses.commit()
                 json_index += 1
             index += 1
-
-        result = eng.execute('''select id from "Temp_Annotation" where survey_id = ''' + "'" + survey_id + "' order by id desc limit 1")
+        
+        result = eng.execute('''select id from "Annotation" where survey_id = ''' + "'" + survey_id + "' order by id desc limit 1")
         for r in result:
             annotation_id = str(dict(r)['id'])
         
         eng.execute('''update "Interaction" set annotation_id=''' + annotation_id + '''where annotation_id = '''  + "'" + survey_id + "'")
-        eng.execute('''update "Temp_Location" set annotation_id=''' + annotation_id + '''where annotation_id = '''  + "'" + survey_id + "'")
+        eng.execute('''update "Location" set annotation_id=''' + annotation_id + '''where annotation_id = '''  + "'" + survey_id + "'")
 
     return 'success'
+
 
 @app.route('/select_recording', methods=['GET', 'POST'])
 def select_recording():
     while (True):
         recording = randrange(30)
-        result = eng.execute('''select num_annotation from "Recording" where id='''+str(recording+1))
+        result = eng.execute('''select num_annotation from "Recording" where id=''' + str(recording+ 1) )
         for r in result:
             if (int(dict(r)['num_annotation']) < 5):
                 return str(recording)
@@ -107,26 +108,20 @@ def submit_confirmation():
 
         for i in range (len(source_id)):
             if (i < len(location_id)):
-                entry = Temp_Confirmation(survey_id, int(recording_id), source_id[i], location_id[i], practice)
+                entry = Confirmation(survey_id, int(recording_id), source_id[i], location_id[i], practice)
             else:
-                entry = Temp_Confirmation(survey_id, int(recording_id), source_id[i], None, practice)
-
+                entry = Confirmation(survey_id, int(recording_id), source_id[i], None, practice)
             ses.add(entry)
             ses.commit()
 
-        if (not practice): # This will be reached at the point of submission
+        result = eng.execute('''select id from "Annotation" where survey_id = ''' + "'" + survey_id + "' order by id desc limit 1")
+        for r in result:
+            annotation_id = str(dict(r)['id'])
+        
+        eng.execute('''update "Confirmation" set annotation_id=''' + annotation_id + '''where annotation_id = '''  + "'" + survey_id + "'")
+
+        if (not practice):
             eng.execute('''update "Recording" set num_annotation= num_annotation + 1 where id='''+ str(recording_id))
-
-            eng.execute('''insert into "Annotation" (survey_id, recording_id, source_count, user_note, practice_round) select survey_id, recording_id, source_count, user_note, practice_round from "Temp_Annotation" where survey_id = ''' + "'" + survey_id + "'")
-
-            eng.execute('''insert into "Location" (annotation_id, azimuth, elevation, practice_round) select survey_id, azimuth, elevation, practice_round from "Temp_Location" where survey_id = ''' + "'" + survey_id + "'")
-            result = eng.execute('''select id, source_count from "Annotation" where survey_id = ''' + "'" + survey_id + "'")
-            for r in result:
-                annotation_id = str(dict(r)['id'])
-                source_count = str(dict(r)['source_count'])
-                eng.execute('''update "Location" set annotation_id = ''' + "'" + annotation_id + "'" + ''' from (select * from "Location" where annotation_id = ''' + "'" + survey_id + "'" + ''' order by id asc limit ''' + source_count + ''') t where t.id = "Location".id''')
-
-            eng.execute('''insert into "Confirmation" (recording_id, source_id, location_id, practice_round) select recording_id, source_id, location_id, practice_round from "Temp_Confirmation" where survey_id = ''' + "'" + survey_id + "'")
             
         return 'success'
 
@@ -139,7 +134,7 @@ def confirm_annotation():
         survey_id = data['survey_id']
 
         annotation_id = ''
-        result_get_recording = eng.execute('''select id from "Temp_Annotation" where survey_id = ''' + "'" + survey_id + "' order by id desc limit 1")
+        result_get_recording = eng.execute('''select id from "Annotation" where survey_id = ''' + "'" + survey_id + "' order by id desc limit 1")
         for r1 in result_get_recording:
             annotation_id = str(dict(r1)['id'])
     
@@ -162,7 +157,7 @@ def confirm_annotation():
         color = '''"color":{'''
         location_id = '''"location_id":{'''
         json_index = 0
-        result_get_location = eng.execute('''select id, azimuth, elevation, color from "Temp_Location" where annotation_id = '''+ "'" + annotation_id + "'")
+        result_get_location = eng.execute('''select id, azimuth, elevation, color from "Location" where annotation_id = '''+ "'" + annotation_id + "'")
 
         for r2 in result_get_location:
             azimuth = azimuth + '"' + str(json_index) + '":"' + str(dict(r2)['azimuth']) + '",'
