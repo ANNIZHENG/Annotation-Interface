@@ -108,9 +108,9 @@ def submit_confirmation():
 
         for i in range (len(source_id)):
             if (i < len(location_id)):
-                entry = Confirmation(int(recording_id), source_id[i], location_id[i], practice, survey_id)
+                entry = Confirmation(int(recording_id), source_id[i], location_id[i], survey_id, practice)
             else:
-                entry = Confirmation(int(recording_id), source_id[i], None, practice, survey_id)
+                entry = Confirmation(int(recording_id), source_id[i], None, survey_id, practice)
             ses.add(entry)
             ses.commit()
 
