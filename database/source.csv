@@ -75,7 +75,10 @@ train_2_norm.wav,large transportation methods,Train
 trumpet_1_norm.wav,music,Trumpet
 trumpet_2_norm.wav,music,Trumpet
 trumpet_4_norm.wav,music,Trumpet
-violin_2_norm.wav,music,Trumpet
-violin_3_norm.wav,music,Trumpet
+violin_2_norm.wav,music,Violin
+violin_3_norm.wav,music,Violin
 wind_3_norm.wav,natural sounds,Wind
 wind_4_norm.wav,natural sounds,Wind
+person_talking_4_norm.wav,human voice,Person Talking
+dog_barking_3_norm.wav,animals,Dog Barking
+violin_4_norm.wav,musics,Violin

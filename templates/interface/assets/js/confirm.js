@@ -7,9 +7,11 @@ var actual_num_source;
 var recording_id = '';
 var curr_instruction = 1;
 var modal = document.getElementById("modal");
+var practice = 0; // FALSE
 
 const colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
 const css_colors = ["#009dff", "#ff7f0e", "#00ff00", "#ff0000", "#9467bd", "#d3d3d3", "#c39b77", "#e377c2", "#bcbd22", "#00ffff"];
+const recording_ids = [0,2,23];
 var request = new XMLHttpRequest(); 
 
 
@@ -88,7 +90,15 @@ function confirm_annotation(){
 	recording_id = localStorage.getItem('recording').replace('.wav','');
 	request.onreadystatechange = function() {
 		if (request.readyState == 4){
-			
+			if (parseInt(localStorage.getItem('practice'))) {
+				practice = 1;
+				document.getElementById('btn-button-again').style.display = '';
+				document.getElementById('btn-button-next').style.display = '';
+			}
+			else{
+				document.getElementById('btn-button-submit').style.display = '';
+			}
+
 			document.getElementById("user_note").value = localStorage.getItem("user_note");
 			color = JSON.parse(request.response)["color"];
 			azimuth = JSON.parse(request.response)["azimuth"];
@@ -125,10 +135,8 @@ function confirm_annotation(){
 				new_button.style.border = "1px black solid";
 				new_button.innerHTML = "Play Audio";
 				// end of styling
-
 				new_td.appendChild(new_audio);
 				new_td.appendChild(new_button);
-
 				document.getElementById("class-name").appendChild(new_td);
 			}
 
@@ -335,28 +343,37 @@ function addLocation(coordinates) {
 }
 
 function submit_confirmation(){
-
 	recording_id = parseInt(recording_id) + 1;
 	let location_id = '';
 	let source_id = ''
-
 	for (const [key,value] of Object.entries( JSON.parse(request.response)["location_id"])) {
 		location_id += value + ',';
 	}
 	for (const [key,value] of Object.entries( JSON.parse(request.response)["source_id"] )) {
 		source_id += value + ',';
 	}
-
+	localStorage.setItem('full_round', true);
 	location_id = location_id.substring(0,location_id.length-1);
 	source_id = source_id.substring(0,source_id.length-1);
-
 	request.open('POST', '/submit_confirmation', true);
 	request.setRequestHeader('content-type', 'application/json;charset=UTF-8');
-	var data = JSON.stringify({recording_id, location_id, source_id});
+	let survey_id = localStorage.getItem('survey_id');
+	var data = JSON.stringify({recording_id, location_id, source_id, practice, survey_id});
 	request.send(data);
-
-	window.location = '/templates/interface/submit.html';
 }
+
+document.getElementById('btn-button-submit').addEventListener('click', function(){
+	submit_confirmation();
+	window.location = '/templates/interface/submit.html';
+});
+document.getElementById('btn-button-again').addEventListener('click', function(){
+	submit_confirmation();
+	window.location = '/templates/interface/practice.html';
+});
+document.getElementById('btn-button-next').addEventListener('click', function(){
+	submit_confirmation();
+	window.location = '/templates/interface/interface.html';
+});
 
 
 /* Three.js */

@@ -1,16 +1,18 @@
 // request to server
 var request = new XMLHttpRequest();
 var survey_id = '';
-var practice = 1;
-const totalPractice = 2;
-var recording_ids = [0,2,23];
+var practice = 1; // true
+const totalPractice = 4;
+const recording_ids = [0,2,23,30,31];
 var curr_recording = 0;
 
-// load the first audio for practice round
+if (localStorage.getItem('practice') == undefined) curr_recording = 0
+else if (parseInt(localStorage.getItem('practice')) > totalPractice) curr_recording = 0;
+else curr_recording = localStorage.getItem('practice');
+
 document.getElementById('source').src = '/templates/interface/assets/audio/recording/'+recording_ids[curr_recording]+'.wav';
 document.getElementById('audio').load();
 
-ajax_start();
 
 function ajax_start(){
 	var request_start = new XMLHttpRequest();
@@ -21,6 +23,9 @@ function ajax_start(){
 	}
 	request_start.send();
 }
+
+if (localStorage.getItem('survey_id') == undefined) ajax_start();
+else survey_id = localStorage.getItem('survey_id');
 
 // check if the user goes through the whole instruction
 var read_all_rules = false;
@@ -233,12 +238,13 @@ function move_instruction_last(e){
 
 function addSourceCount(){
 	document.getElementById('2d-question').innerHTML = "Please identify the location of each source:";
-	document.getElementById('feedback').setAttribute('style',"display:inline-block;");
+	document.getElementById('feedback').style.visibility = '';
+	document.getElementById('feedback').style.display = 'inline-block';
 	document.getElementById('dot-tracker').style.display = '';
 	document.getElementById('head-wrapper').style.display = 'inline-block';
 	document.getElementById('front-wrapper').style.display = 'inline-block';
 	document.getElementById('side-wrapper').style.display = 'inline-block';
-	displayButton();
+	document.getElementById('btn-button-submit').setAttribute('style', 'float:right;');
 
 	source_count = document.getElementById('count').value;
 	value = document.getElementById('count').value;
@@ -277,22 +283,67 @@ function displaySelection(){
 	document.getElementById('count').setAttribute('style','');
 }
 
-function displayButton(){
-	document.getElementById('btn-button-submit').setAttribute('style','float:left;');
-    if (curr_recording < totalPractice) document.getElementById('btn-button-next').setAttribute('style','float:right;');
-    else document.getElementById('btn-button-again').setAttribute('style','float:right;');
-}
-
 function askProceed(){
 	if (document.getElementById('count').value == undefined){ window.alert("You must select a response"); return false; }
 	if (findUndefinedAzimuth() == -3 && findUndefinedElevation() == -3) { window.alert("You must annotate at least one location"); return false; }
 	if (findUndefinedAzimuth() != findUndefinedElevation()) { window.alert("You must annotate both the azimuth and elevation"); return false; }
 	if (findUndefinedAzimuth() == -2 || findUndefinedAzimuth() == -2) { window.alert("Your annotation number is greater than the source count you entered"); return false; }
 	if (findUndefinedAzimuth() != -1 || findUndefinedElevation() != -1 ) { 
-		if (confirm("You haven't annotated all sources yet\nDo you still want to submit?")) return true;
+		if (confirm("You haven't annotated all sources yet\nDo you still want to proceed?")) return true;
 		else return false;
 	}
 	return true;
+}
+
+function findUndefinedAzimuth(){
+	var index = 0;
+	var lock = 0;
+	var azimuth_item_index = 0;
+	var azimuth_count = 0;
+	var find_undefined = false;
+
+	if (azimuth.length > source_count) lock = azimuth.length
+	else lock = source_count;
+
+	while ( index < lock ){
+		if ( azimuth[index] == undefined && !find_undefined ){
+			azimuth_item_index = index;
+			find_undefined = true;
+		}
+		if ( azimuth[index] != undefined ) azimuth_count += 1;
+		index += 1;
+	}
+
+	if (azimuth_count == 0 && !key_perform) return -3; // when user hit 'submit' but there is no annotation
+	if (azimuth_count > source_count) return -2; // when user hit submit but annotate more annotation
+	if (azimuth_count == source_count) return -1; // when user hit submit and annotate all annotation(s)
+	else return azimuth_item_index; // when user hit submit but annotate less annotation(s)
+}
+
+function findUndefinedElevation(){
+	var index = 0;
+	var elevation_item_index = 0;
+	var elevation_count = 0;
+	var find_undefined = false;
+	var lock = 0;
+
+	if (elevation.length > source_count) lock = elevation.length;
+	else lock = source_count;
+
+	while ( index < lock ){
+		if ( elevation[index] == undefined && !find_undefined ){
+			elevation_item_index = index;
+			find_undefined = true;
+		}
+		if ( elevation_count > source_count ) return -2;
+		if ( elevation[index] != undefined ) elevation_count += 1;
+		index += 1;
+	}
+
+	if (elevation_count == 0 && !key_perform) return -3;
+	if (elevation_count > source_count) return -2;
+	if (elevation_count == source_count) return -1;
+	else return elevation_item_index;
 }
 
 function ajax_interaction() {
@@ -302,7 +353,7 @@ function ajax_interaction() {
 	request.send(data);
 }
 
-function ajax_next(again,start){
+function ajax_next(){
 	if (!askProceed()){
 		event.preventDefault();
 		return false;
@@ -318,29 +369,11 @@ function ajax_next(again,start){
 	var data = JSON.stringify({survey_id,recording_id,azimuth,elevation,source_count,timestamp,user_note,practice});
 	request.send(data);
 
-    curr_recording = curr_recording + 1;
-
-    if ((curr_recording > totalPractice && !again) || (start)) {
-        window.location = '/templates/interface/interface.html';
-    }
-    else{
-        if (curr_recording > totalPractice) curr_recording = 0;
-        reloadAll();
-        document.getElementById('count').style.display = 'none';
-        document.getElementById('2d-question').innerHTML = '';
-        document.getElementById('head-wrapper').style.display = 'none';
-        document.getElementById('front-wrapper').style.display = 'none';
-        document.getElementById('side-wrapper').style.display = 'none';
-        document.getElementById('feedback').style.visibility = 'hidden';
-        document.getElementById('dot-tracker').style.display = 'none';
-        document.getElementById('btn-button-next').style.display = 'none';
-        document.getElementById('btn-button-submit').style.display = 'none';
-        document.getElementById('btn-button-again').style.display = 'none';
-        document.getElementById('audio-frame').style.background = 'linear-gradient(to right, #efefef 0%, #ffffff 0%)';
-        document.getElementById('count').value = "";
-        document.getElementById('source').src = '/templates/interface/assets/audio/recording/'+recording_ids[curr_recording]+'.wav';
-        document.getElementById('audio').load();
-    }
+	localStorage.setItem('recording', recording_ids[curr_recording]+'.wav');
+    curr_recording = parseInt(curr_recording) + 1;
+	localStorage.setItem('practice', curr_recording);
+	
+	window.location = '/templates/interface/confirm.html';
 }
 
 function displayBoth(hasFront, index, temp_azimuth, degree){
@@ -1340,57 +1373,6 @@ function calculateAzimuth(x,y,cx,cy){
 		arccosine = Math.acos(newx / (Math.sqrt(Math.pow(newx,2) + Math.pow(newy,2))));
 		return Math.round(arccosine * (180 / Math.PI)) + 270;
 	}
-}
-
-function findUndefinedAzimuth(){
-	var index = 0;
-	var lock = 0;
-	var azimuth_item_index = 0;
-	var azimuth_count = 0;
-	var find_undefined = false;
-
-	if (azimuth.length > source_count) lock = azimuth.length
-	else lock = source_count;
-
-	while ( index < lock ){
-		if ( azimuth[index] == undefined && !find_undefined ){
-			azimuth_item_index = index;
-			find_undefined = true;
-		}
-		if ( azimuth[index] != undefined ) azimuth_count += 1;
-		index += 1;
-	}
-
-	if (azimuth_count == 0 && !key_perform) return -3; // when user hit 'submit' but there is no annotation
-	if (azimuth_count > source_count) return -2; // when user hit submit but annotate more annotation
-	if (azimuth_count == source_count) return -1; // when user hit submit and annotate all annotation(s)
-	else return azimuth_item_index; // when user hit submit but annotate less annotation(s)
-}
-
-function findUndefinedElevation(){
-	var index = 0;
-	var elevation_item_index = 0;
-	var elevation_count = 0;
-	var find_undefined = false;
-	var lock = 0;
-
-	if (elevation.length > source_count) lock = elevation.length;
-	else lock = source_count;
-
-	while ( index < lock ){
-		if ( elevation[index] == undefined && !find_undefined ){
-			elevation_item_index = index;
-			find_undefined = true;
-		}
-		if ( elevation_count > source_count ) return -2;
-		if ( elevation[index] != undefined ) elevation_count += 1;
-		index += 1;
-	}
-
-	if (elevation_count == 0 && !key_perform) return -3;
-	if (elevation_count > source_count) return -2;
-	if (elevation_count == source_count) return -1;
-	else return elevation_item_index;
 }
 
 function calculateRadius(mouseX, mouseY, frameX, frameY){

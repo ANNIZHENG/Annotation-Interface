@@ -3,7 +3,7 @@ from sqlalchemy import *
 from sqlalchemy.sql import *
 from datetime import datetime
 from flask import *
-from db_tables import ses,eng,Annotation,Survey,Location,Interaction,Confirmation
+from db_tables import ses,eng,Survey,Interaction,Temp_Confirmation,Temp_Annotation,Temp_Location # ,Annotation,Location,Confirm
 from random import randrange
 app = Flask(__name__,static_folder="../templates",template_folder="..")
 
@@ -54,17 +54,12 @@ def next():
         user_note = data['user_note']
         practice = bool(int(data['practice']))
 
-        # update number of annotation in Recording table
-        eng.execute('''update "Recording" set num_annotation= num_annotation + 1 where id='''+ str(recording_id))
-
-        # insert into Interaction table
         timestamp= datetime.fromtimestamp(data['timestamp'] / 1000)
         entry = Interaction(survey_id,"submit",None,timestamp,practice)
         ses.add(entry)
         ses.commit()
 
-        # insert into Annotation table
-        entry1 = Annotation(survey_id,recording_id,source_count,user_note,practice)
+        entry1 = Temp_Annotation(survey_id,recording_id,source_count,user_note,practice)
         ses.add(entry1)
         ses.commit()
 
@@ -75,19 +70,18 @@ def next():
         index = 0
         while (index < len(azimuth_list)):
             if (azimuth_list[index] != None):
-                # insert into Location table
-                entry2 = Location(survey_id,azimuth_list[index],elevation_list[index],index+1,practice)
+                entry2 = Temp_Location(survey_id,survey_id,azimuth_list[index],elevation_list[index],index+1,practice)
                 ses.add(entry2)
                 ses.commit()
                 json_index += 1
             index += 1
 
-        result = eng.execute('''select id from "Annotation" where survey_id = ''' + "'" + survey_id + "'")
+        result = eng.execute('''select id from "Temp_Annotation" where survey_id = ''' + "'" + survey_id + "' order by id desc limit 1")
         for r in result:
             annotation_id = str(dict(r)['id'])
         
-        eng.execute('''update "Interaction" set annotation_id='''+annotation_id+'''where annotation_id = '''  + "'" + survey_id + "'")
-        eng.execute('''update "Location" set annotation_id='''+annotation_id+'''where annotation_id = '''  + "'" + survey_id + "'")
+        eng.execute('''update "Interaction" set annotation_id=''' + annotation_id + '''where annotation_id = '''  + "'" + survey_id + "'")
+        eng.execute('''update "Temp_Location" set annotation_id=''' + annotation_id + '''where annotation_id = '''  + "'" + survey_id + "'")
 
     return 'success'
 
@@ -105,30 +99,47 @@ def select_recording():
 def submit_confirmation():
     if (request.method == 'POST'):
         data = request.json
+        practice = bool(int(data['practice']))
         recording_id = data['recording_id']
         source_id = data['source_id'].split(',')
         location_id = data['location_id'].split(',')
-        
+        survey_id = str(data['survey_id'])
+
         for i in range (len(source_id)):
             if (i < len(location_id)):
-                entry = Confirmation(int(recording_id), source_id[i], location_id[i])
+                entry = Temp_Confirmation(survey_id, int(recording_id), source_id[i], location_id[i], practice)
             else:
-                entry = Confirmation(int(recording_id), source_id[i], None)
+                entry = Temp_Confirmation(survey_id, int(recording_id), source_id[i], None, practice)
+
             ses.add(entry)
             ses.commit()
+
+        if (not practice): # This will be reached at the point of submission
+            eng.execute('''update "Recording" set num_annotation= num_annotation + 1 where id='''+ str(recording_id))
+
+            eng.execute('''insert into "Annotation" (survey_id, recording_id, source_count, user_note, practice_round) select survey_id, recording_id, source_count, user_note, practice_round from "Temp_Annotation" where survey_id = ''' + "'" + survey_id + "'")
+
+            eng.execute('''insert into "Location" (annotation_id, azimuth, elevation, practice_round) select survey_id, azimuth, elevation, practice_round from "Temp_Location" where survey_id = ''' + "'" + survey_id + "'")
+            result = eng.execute('''select id, source_count from "Annotation" where survey_id = ''' + "'" + survey_id + "'")
+            for r in result:
+                annotation_id = str(dict(r)['id'])
+                source_count = str(dict(r)['source_count'])
+                eng.execute('''update "Location" set annotation_id = ''' + "'" + annotation_id + "'" + ''' from (select * from "Location" where annotation_id = ''' + "'" + survey_id + "'" + ''' order by id asc limit ''' + source_count + ''') t where t.id = "Location".id''')
+
+            eng.execute('''insert into "Confirmation" (recording_id, source_id, location_id, practice_round) select recording_id, source_id, location_id, practice_round from "Temp_Confirmation" where survey_id = ''' + "'" + survey_id + "'")
+            
         return 'success'
 
 
 @app.route('/confirm_annotation', methods=['GET', 'POST'])
 def confirm_annotation():
     if (request.method == 'POST'):
-
         data = request.json
         recording_id = data['recording_id']
         survey_id = data['survey_id']
 
         annotation_id = ''
-        result_get_recording = eng.execute('''select id from "Annotation" where survey_id = ''' + "'" + survey_id + "'")
+        result_get_recording = eng.execute('''select id from "Temp_Annotation" where survey_id = ''' + "'" + survey_id + "' order by id desc limit 1")
         for r1 in result_get_recording:
             annotation_id = str(dict(r1)['id'])
     
@@ -151,24 +162,7 @@ def confirm_annotation():
         color = '''"color":{'''
         location_id = '''"location_id":{'''
         json_index = 0
-        result_get_location = eng.execute('''select id, azimuth, elevation, color from "Location" where annotation_id = '''+ "'" + annotation_id + "'")
-
-        for r in result_file_name:
-            file_name = file_name + '"' + str(filename_json_index) + '":' + '"' + dict(r)['file_name'] + '",'
-            source_id = source_id + '"' + str(filename_json_index) + '":' + '"' + str(dict(r)['source_id']) + '",'
-            filename_json_index += 1
-    
-
-        file_name = file_name[:len(file_name)-1] + "}"
-        source_id = source_id[:len(source_id)-1] + "}"
-        actual_num_source = '''"actual_num_source":{"0":"''' + str(filename_json_index) + '"}'
-
-        azimuth = '''"azimuth":{'''
-        elevation = '''"elevation":{'''
-        color = '''"color":{'''
-        location_id = '''"location_id":{'''
-        json_index = 0
-        result_get_location = eng.execute('''select id, azimuth, elevation, color from "Location" where annotation_id = '''+ "'" + annotation_id + "'")
+        result_get_location = eng.execute('''select id, azimuth, elevation, color from "Temp_Location" where annotation_id = '''+ "'" + annotation_id + "'")
 
         for r2 in result_get_location:
             azimuth = azimuth + '"' + str(json_index) + '":"' + str(dict(r2)['azimuth']) + '",'

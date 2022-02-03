@@ -1,5 +1,3 @@
--- in postgresql do \i path/to/this/file
-
 CREATE TABLE "Recording" (
 	id serial PRIMARY KEY,
 	recording_name VARCHAR,
@@ -21,8 +19,6 @@ CREATE TABLE "Source" (
 	coarse_class VARCHAR,
 	specific_class VARCHAR
 );
-
--- PLEASE CHANGE THE PATH TO ACCOMODATE YOUR ENVIRONMENT!
 
 COPY "Recording"(recording_name, file_name, num_annotation, actual_num_source)
 FROM '/Users/anniezheng/Desktop/Annotation-Interface/database/recording.csv'

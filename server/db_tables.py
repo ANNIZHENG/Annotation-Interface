@@ -34,6 +34,24 @@ class Annotation(Base):
         self.practice_round = practice_round
 
 
+class Temp_Annotation(Base):
+    __tablename__ = "Temp_Annotation"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    survey_id = Column(String)
+    recording_id = Column(Integer)
+    source_count = Column(Integer)
+    user_note = Column(String)
+    practice_round = Column(Boolean)
+
+    def __init__(self,survey_id,recording_id,source_count,user_note,practice_round):
+        self.survey_id = survey_id
+        self.recording_id = recording_id
+        self.source_count = source_count
+        self.user_note = user_note
+        self.practice_round = practice_round
+
+
 class Interaction(Base):
     __tablename__ = "Interaction"
 
@@ -59,15 +77,34 @@ class Location(Base):
     annotation_id = Column(String)
     azimuth = Column(Integer)
     elevation = Column(Integer)
+    practice_round = Column(Boolean)
+
+    def __init__(self,annotation_id,azimuth,elevation,practice_round):
+        self.annotation_id = annotation_id
+        self.azimuth = azimuth
+        self.elevation = elevation
+        self.practice_round = practice_round
+
+
+class Temp_Location(Base):
+    __tablename__ = "Temp_Location"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    survey_id = Column(String)
+    annotation_id = Column(String)
+    azimuth = Column(Integer)
+    elevation = Column(Integer)
     color = Column(Integer)
     practice_round = Column(Boolean)
 
-    def __init__(self,annotation_id,azimuth,elevation,color,practice_round):
+    def __init__(self,survey_id,annotation_id,azimuth,elevation,color,practice_round):
+        self.survey_id = survey_id
         self.annotation_id = annotation_id
         self.azimuth = azimuth
         self.elevation = elevation
         self.color = color
         self.practice_round = practice_round
+
 
 class Confirmation(Base):
     __tablename__ = "Confirmation"
@@ -76,11 +113,30 @@ class Confirmation(Base):
     recording_id = Column(Integer)
     source_id = Column(Integer)
     location_id = Column(Integer)
+    practice_round = Column(Boolean)
 
-    def __init__(self,recording_id,source_id,location_id):
+    def __init__(self,recording_id,source_id,location_id,practice_round):
         self.recording_id = recording_id
         self.source_id = source_id
         self.location_id = location_id
+        self.practice_round = practice_round
+
+class Temp_Confirmation(Base):
+    __tablename__ = "Temp_Confirmation"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    survey_id = Column(String)
+    recording_id = Column(Integer)
+    source_id = Column(Integer)
+    location_id = Column(Integer)
+    practice_round = Column(Boolean)
+
+    def __init__(self,survey_id,recording_id,source_id,location_id,practice_round):
+        self.survey_id = survey_id
+        self.recording_id = recording_id
+        self.source_id = source_id
+        self.location_id = location_id
+        self.practice_round = practice_round
 
 Base.metadata.bind = eng
 Session = sessionmaker(bind=eng)

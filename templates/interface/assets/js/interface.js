@@ -2,8 +2,8 @@
 var request = new XMLHttpRequest();
 var survey_id = localStorage.getItem('survey_id');
 var practice = 0;
-
 var recording_id = 0;
+
 ajax_select_recording();
 
 function ajax_select_recording(){
@@ -267,7 +267,7 @@ function displaySelection(){
 }
 
 function displayButton(){
-	document.getElementById('btn-button-refresh').setAttribute('style','float:left;');
+	// document.getElementById('btn-button-refresh').setAttribute('style','float:left;');
 	document.getElementById('btn-button-submit').setAttribute('style','float:right;');
 }
 
@@ -295,6 +295,7 @@ function ajax_next(){
 		event.preventDefault();
 		return false;
 	}
+
 	let user_note = document.getElementById("user_note").value;
 	localStorage.setItem("user_note", user_note);
 	timestamp = Date.now();
@@ -302,6 +303,9 @@ function ajax_next(){
 	request.setRequestHeader('content-type', 'application/json;charset=UTF-8');
 	var data = JSON.stringify({survey_id,recording_id,azimuth,elevation,source_count,timestamp,user_note,practice});
 	request.send(data);
+
+	localStorage.setItem('practice',practice);
+
 	window.location = '/templates/interface/confirm.html';
 }
 
@@ -1861,8 +1865,6 @@ function keyboardEvents(e){
 				document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 
 				enable_side = false;
-				// enable_head = false;
-				// enable_front = false; 
 
 				// prevent undesired events
 				document.onmousedown = null; 
@@ -1881,74 +1883,74 @@ function keyboardEvents(e){
 	return;
 }
 
-function reloadAll(){
-	document.getElementById("user_note").value = "";
+// function reloadAll(){
+// 	document.getElementById("user_note").value = "";
 
-	azimuth = new Array();
-	elevation = new Array();
-	current_colors_index = 0;
-	curr_azimuth = 0;
-	curr_elevation = 0;
+// 	azimuth = new Array();
+// 	elevation = new Array();
+// 	current_colors_index = 0;
+// 	curr_azimuth = 0;
+// 	curr_elevation = 0;
 
-	indicators = {
-		1: [],
-		2: [],
-		3: [],
-		4: [],
-		5: [],
-		6: [],
-		7: [],
-		8: [],
-		9: [],
-		10: []
-	};
+// 	indicators = {
+// 		1: [],
+// 		2: [],
+// 		3: [],
+// 		4: [],
+// 		5: [],
+// 		6: [],
+// 		7: [],
+// 		8: [],
+// 		9: [],
+// 		10: []
+// 	};
 
-	front_indicators = {
-		1: [],
-		2: [],
-		3: [],
-		4: [],
-		5: [],
-		6: [],
-		7: [],
-		8: [],
-		9: [],
-		10: []
-	};
+// 	front_indicators = {
+// 		1: [],
+// 		2: [],
+// 		3: [],
+// 		4: [],
+// 		5: [],
+// 		6: [],
+// 		7: [],
+// 		8: [],
+// 		9: [],
+// 		10: []
+// 	};
 
-	side_indicators = {
-		1: [],
-		2: [],
-		3: [],
-		4: [],
-		5: [],
-		6: [],
-		7: [],
-		8: [],
-		9: [],
-		10: []
-	};
+// 	side_indicators = {
+// 		1: [],
+// 		2: [],
+// 		3: [],
+// 		4: [],
+// 		5: [],
+// 		6: [],
+// 		7: [],
+// 		8: [],
+// 		9: [],
+// 		10: []
+// 	};
 
-	var index = 0;
-	while (index < 10){
-		document.getElementById('circular'+(index+1)).style.display = 'none';
-		document.getElementById('circularF'+(index+1)).style.display = 'none';
-		document.getElementById('circularS'+(index+1)).style.display = 'none';
-		document.getElementById('head-item-'+(index+1)).style.display = 'none';
-		document.getElementById('front-item-'+(index+1)).style.display = 'none';
-		document.getElementById('side-item-'+(index+1)).style.display = 'none';
-		index += 1;
-	}
-	document.getElementById('p-azimuth').innerHTML = '';
-	document.getElementById('p-elevation').innerHTML = '';
-	document.getElementById('azimuth-dot').style.backgroundColor = '';
-	document.getElementById('elevation-dot').style.backgroundColor = '';
+// 	var index = 0;
+// 	while (index < 10){
+// 		document.getElementById('circular'+(index+1)).style.display = 'none';
+// 		document.getElementById('circularF'+(index+1)).style.display = 'none';
+// 		document.getElementById('circularS'+(index+1)).style.display = 'none';
+// 		document.getElementById('head-item-'+(index+1)).style.display = 'none';
+// 		document.getElementById('front-item-'+(index+1)).style.display = 'none';
+// 		document.getElementById('side-item-'+(index+1)).style.display = 'none';
+// 		index += 1;
+// 	}
+// 	document.getElementById('p-azimuth').innerHTML = '';
+// 	document.getElementById('p-elevation').innerHTML = '';
+// 	document.getElementById('azimuth-dot').style.backgroundColor = '';
+// 	document.getElementById('elevation-dot').style.backgroundColor = '';
 
-	document.onmousedown = null; 
-	document.onkeydown = null;
+// 	document.onmousedown = null; 
+// 	document.onkeydown = null;
 
-	removeAllBalls();
-}
+// 	removeAllBalls();
+// }
 
 function findDefinedAnnotation(flag){
 	let index = 0
