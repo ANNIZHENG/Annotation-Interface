@@ -74,18 +74,18 @@ class Confirmation(Base):
     __tablename__ = "Confirmation"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    annotation_id = Column(String)
     recording_id = Column(Integer)
     source_id = Column(Integer)
     location_id = Column(Integer)
     practice_round = Column(Boolean)
+    annotation_id = Column(String)
 
-    def __init__(self,annotation_id,recording_id,source_id,location_id,practice_round):
-        self.annotation_id = annotation_id
+    def __init__(self,recording_id,source_id,location_id,practice_round,annotation_id):
         self.recording_id = recording_id
         self.source_id = source_id
         self.location_id = location_id
         self.practice_round = practice_round
+        self.annotation_id = annotation_id
 
 
 Base.metadata.bind = eng

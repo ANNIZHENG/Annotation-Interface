@@ -11,7 +11,7 @@ var practice = 0; // FALSE
 
 const colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
 const css_colors = ["#009dff", "#ff7f0e", "#00ff00", "#ff0000", "#9467bd", "#d3d3d3", "#c39b77", "#e377c2", "#bcbd22", "#00ffff"];
-const recording_ids = [0,2,23];
+// const recording_ids = [0,2,23,30,32];
 var request = new XMLHttpRequest(); 
 
 
@@ -90,6 +90,7 @@ function confirm_annotation(){
 	recording_id = localStorage.getItem('recording').replace('.wav','');
 	request.onreadystatechange = function() {
 		if (request.readyState == 4){
+			console.log(request.response);
 			if (parseInt(localStorage.getItem('practice'))) {
 				practice = 1;
 				document.getElementById('btn-button-again').style.display = '';
