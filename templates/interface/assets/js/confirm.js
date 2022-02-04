@@ -389,7 +389,20 @@ function submit_confirmation(){
 	recording_id = parseInt(recording_id) + 1;
 	let location_id = '';
 	let source_id = ''
+	let total_confirmation_num = 0;
+	let checkboxes = document.getElementsByTagName('input');
+	for (let i = 0; i < checkboxes.length; i++) {
+		if (checkboxes[i].checked) {
+			total_confirmation_num += 1;
+			break;
+		}
+	}
+	if (total_confirmation_num < 1) {
+		window.alert("You must confirm at least 1 annotation");
+		return false;
+	}
 	for (const [key,value] of Object.entries( JSON.parse(request.response)["location_id"])) {
+		total_confirmation_num += 1;
 		location_id += value + ',';
 	}
 	for (const [key,value] of Object.entries( JSON.parse(request.response)["source_id"] )) {
@@ -403,19 +416,17 @@ function submit_confirmation(){
 	let survey_id = localStorage.getItem('survey_id');
 	var data = JSON.stringify({recording_id, location_id, source_id, practice, survey_id});
 	request.send(data);
+	return true;
 }
 
 document.getElementById('btn-button-submit').addEventListener('click', function(){
-	submit_confirmation();
-	window.location = '/templates/interface/submit.html';
+	if (submit_confirmation()) window.location = '/templates/interface/submit.html';
 });
 document.getElementById('btn-button-again').addEventListener('click', function(){
-	submit_confirmation();
-	window.location = '/templates/interface/practice.html';
+	if (submit_confirmation()) window.location = '/templates/interface/practice.html';
 });
 document.getElementById('btn-button-next').addEventListener('click', function(){
-	submit_confirmation();
-	window.location = '/templates/interface/interface.html';
+	if (submit_confirmation()) window.location = '/templates/interface/interface.html';
 });
 
 function changeSize(item_index){
