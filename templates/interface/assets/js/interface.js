@@ -395,8 +395,8 @@ function displayBoth(hasFront, index, temp_azimuth, degree){
 function changeSize(item_index){
 
 	const selected_azimuth = azimuth[item_index - 1];
-	let size = 15 - 8;
-	let margin_top = -55 + 4;
+	let size = 18 - 8;
+	let margin_top = -65 + 4;
 	let margin_left = 0 + 4;
 
 	for ( let index = azimuth.length - 1; index > -1; index-- ){
@@ -536,8 +536,9 @@ function changeSize(item_index){
 
 	const selected_elevation = elevation[item_index - 1];
 	const selected_elevation_degree = parseInt(document.getElementById('circularF'+item_index).style.transform.replace('rotate(','').replace('deg)',''));
-	size = 15 - 8;
-	margin_top = -55 + 4;
+	
+	size = 18 - 8;
+	margin_top = -65 + 4;
 	margin_left = 0 + 4;
 
 	for ( let index = elevation.length - 1; index > -1; index-- ) {
@@ -678,8 +679,9 @@ function changeSize(item_index){
 
 	const selected_elevation2 = elevation[item_index - 1];
 	const selected_elevation_degree2 = parseInt(document.getElementById('circularS'+item_index).style.transform.replace('rotate(','').replace('deg)',''));
-	size = 15 - 8;
-	margin_top = -55 + 4;
+	
+	size = 18 - 8;
+	margin_top = -65 + 4;
 	margin_left = 0 + 4;
 
 	for ( let index = elevation.length - 1; index > -1; index-- ) {
@@ -1363,7 +1365,7 @@ function calculateRadius(mouseX, mouseY, frameX, frameY){
 	x = frameX - mouseX;
 	y = frameY - mouseY;
 	radius = Math.sqrt( Math.pow(x,2) + Math.pow(y,2) );
-	if ( radius <= 87 ) return true;
+	if ( radius <= 100 ) return true;
 	else return false;
 }
 

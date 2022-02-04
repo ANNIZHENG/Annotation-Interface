@@ -22,6 +22,7 @@ body{
 }
 
 .container-3D{
+	flex-shrink: 1.5;
 	background-color: black;
 }
 
@@ -80,8 +81,8 @@ body{
 #btn-button-next,
 #btn-button-submit,
 #btn-button-again{
-	margin-top: 10px;
-	padding:5px;
+	margin-top: 5px;
+	padding: 5px;
 	width: 170px;
 	border: 2px solid black;
 	background-color: #efefef;
@@ -118,12 +119,12 @@ body{
 }
 
 #head, #front, #side, #feedback{
-	margin-bottom: 5px;
 	vertical-align: middle;
 	display:inline-block;
 	position: relative;
-	height: 180px; 
-	width: 180px;
+	margin-bottom: 5px;
+	height: 200px;
+	width: 200px;
 	background-size: cover;
 	font-size: 13px;
 }
@@ -147,23 +148,10 @@ body{
 
 #azimuth-dot, #elevation-dot{
 	border-radius: 50%; 
-	width: 10px; 
-	height: 10px;
+	width: 11px;
+	height: 11px;
 	display: inline-block;
 	margin-right: 5px;
-}
-
-.indicator{
-	position: absolute;
-	margin-top: -55px;
-	width: 15px; 
-	height: 15px;
-	border-radius: 50%;
-	
-	/* Numberic Text */
-	font-size: 12px;
-	font-weight: 900;
-	text-align: center;
 }
 
 .confirm-indicator{
@@ -173,19 +161,28 @@ body{
 	width: 25px; 
 	height: 25px;
 	border-radius: 50%;
-	
-	/* Numberic Text */
 	font-size: 17px;
 	font-weight: 900;
 	text-align: center;
 }
 
+.indicator{
+	position: absolute;
+	border-radius: 50%;
+	font-size: 12px;
+	font-weight: 900;
+	text-align: center;
+	/* margin-top: -65px;
+	width: 18px;
+	height: 18px; */
+}
+
 .circular{
 	position: absolute;
-	margin-top: 55px;
-	width: 17px;
+	margin-top: 65px;
+	width: 18px;
 	height: 70px;
-	left: 82px;
+	left: 91.5px;
 	border: rgba(0,0,0,0) solid 0.5px;
 }
 
