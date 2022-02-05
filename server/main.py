@@ -1,3 +1,4 @@
+from tkinter import HORIZONTAL
 import uuid
 from sqlalchemy import *
 from sqlalchemy.sql import *
@@ -11,13 +12,12 @@ app = Flask(__name__,static_folder="../templates",template_folder="..")
 @app.route('/')
 def home():
     result = eng.execute('''select num_annotation from "Recording" order by num_annotation asc limit 1''')
-    least_annotation = ''
     for r in result:
         least_annotation = int(dict(r)['num_annotation'])
-    if (least_annotation == 5):
-        return render_template('/templates/interface/finish.html')
-    else:
-        return render_template('/templates/index.html')
+        if (least_annotation == 5):
+            return render_template('/templates/interface/finish.html')
+        else:
+            return render_template('/templates/index.html')
 
 
 @app.route('/annotation_interface', methods=['GET', 'POST'])
@@ -48,8 +48,15 @@ def interaction():
 def next():
     if request.method == 'POST':
         data = request.json
+        vertical = bool(data['vertical'])
         survey_id = data['survey_id']
-        recording_id = int(data['recording_id']) + 1
+
+        recording_id = -1
+        recording_name = data['recording_name']
+        result_recording_id = eng.execute('''select id from "Recording" where recording_name = ''' + "'" + recording_name + "' and vertical = " + str(vertical))
+        for r in result_recording_id:
+            recording_id = int(dict(r)['id'])
+
         source_count = data['source_count']
         user_note = data['user_note']
         practice = bool(int(data['practice']))
@@ -59,7 +66,7 @@ def next():
         ses.add(entry)
         ses.commit()
 
-        entry1 = Annotation(survey_id,recording_id,source_count,user_note,practice)
+        entry1 = Annotation(survey_id,recording_id,source_count,user_note,practice,vertical)
         ses.add(entry1)
         ses.commit()
 
@@ -89,11 +96,18 @@ def next():
 @app.route('/select_recording', methods=['GET', 'POST'])
 def select_recording():
     while (True):
-        recording = randrange(30)
-        result = eng.execute('''select num_annotation from "Recording" where id=''' + str(recording+ 1) )
+        recording = randrange(192) + 1 # 1 - 192
+        result = eng.execute('''select num_annotation, recording_name from "Recording" where id = ''' + str(recording+ 1) )
+        # vertical = 1
         for r in result:
             if (int(dict(r)['num_annotation']) < 5):
-                return str(recording)
+                if (recording > 96): # in horizontal file not in horizontal_vertical file
+                    vertical = 0
+                else:
+                    vertical = 1
+                return "{" + '''"recording_name":{"0":''' + '"' + str(dict(r)['recording_name']) + '"' + "}," + '''"vertical":{"0":''' + str(vertical) + "}" + "}"
+            else:
+                continue
 
 
 @app.route('/submit_confirmation', methods=['GET', 'POST'])
@@ -101,16 +115,23 @@ def submit_confirmation():
     if (request.method == 'POST'):
         data = request.json
         practice = bool(int(data['practice']))
-        recording_id = data['recording_id']
+        vertical = str(bool(data['vertical']))
+        recording_name = data['recording_name']
         source_id = data['source_id'].split(',')
         location_id = data['location_id'].split(',')
         survey_id = str(data['survey_id'])
 
+        recording_id = -1
+        recording_name = data['recording_name']
+        result_recording_id = eng.execute('''select id from "Recording" where recording_name = ''' + "'" + recording_name + "' and vertical = " + vertical)
+        for r in result_recording_id:
+            recording_id = int(dict(r)['id'])
+
         for i in range (len(source_id)):
             if (i < len(location_id)):
-                entry = Confirmation(int(recording_id), source_id[i], location_id[i], survey_id, practice)
+                entry = Confirmation(recording_id, source_id[i], location_id[i], survey_id, practice)
             else:
-                entry = Confirmation(int(recording_id), source_id[i], None, survey_id, practice)
+                entry = Confirmation(recording_id, source_id[i], None, survey_id, practice)
             ses.add(entry)
             ses.commit()
 
@@ -130,18 +151,26 @@ def submit_confirmation():
 def confirm_annotation():
     if (request.method == 'POST'):
         data = request.json
-        recording_id = data['recording_id']
+        recording_name = data['recording_name']
+        vertical = str(bool(data['vertical']))
         survey_id = data['survey_id']
+
+        recording_id = -1
+        recording_name = data['recording_name']
+        result_recording_id = eng.execute('''select id from "Recording" where recording_name = ''' + "'" + recording_name + "' and vertical = " + vertical)
+        for r in result_recording_id:
+            recording_id = int(dict(r)['id'])
 
         annotation_id = ''
         result_get_recording = eng.execute('''select id from "Annotation" where survey_id = ''' + "'" + survey_id + "' order by id desc limit 1")
         for r1 in result_get_recording:
             annotation_id = str(dict(r1)['id'])
+        print(annotation_id)
     
-        file_name = '''"file_name":{'''
+        file_name = '''"file_name":{''' # source file_name
         source_id = '''"source_id":{'''
         filename_json_index = 0
-        result_file_name = eng.execute( '''with cte as (select "Recording".id as recording_id, "Recording_Joint_Source".source_id as source_id from "Recording" inner join "Recording_Joint_Source" on "Recording".id = "Recording_Joint_Source".recording_id) select "Source".id as source_id, "Source".file_name as file_name from "Source" inner join cte on "Source".id = cte.source_id where recording_id ='''+ str(int(recording_id)+1) )
+        result_file_name = eng.execute( '''with cte as (select "Recording".id as recording_id, "Recording_Joint_Source".source_id as source_id from "Recording" inner join "Recording_Joint_Source" on "Recording".id = "Recording_Joint_Source".recording_id) select "Source".id as source_id, "Source".file_name as file_name from "Source" inner join cte on "Source".id = cte.source_id where recording_id ='''+ str(recording_id) )
 
         for r in result_file_name:
             file_name = file_name + '"' + str(filename_json_index) + '":' + '"' + dict(r)['file_name'] + '",'

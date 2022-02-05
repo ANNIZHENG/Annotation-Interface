@@ -4,10 +4,11 @@ var elevation = {};
 var color = {};
 var user_num_source;
 var actual_num_source;
-var recording_id = '';
+var recording_name = '';
 var curr_instruction = 1;
 var modal = document.getElementById("modal");
 var practice = 0; // FALSE
+var totalInstructions = 8;
 
 const colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
 const css_colors = ["#009dff", "#ff7f0e", "#00ff00", "#ff0000", "#9467bd", "#d3d3d3", "#c39b77", "#e377c2", "#bcbd22", "#00ffff"];
@@ -77,27 +78,27 @@ function closeRules(e){
 	for (let i = 0; i < audios.length; i++) {
 		audio_id = "audio" + audios[i].id.replace("audio-frame-instruction","");
 		document.getElementById(audio_id).pause();
-		document.getElementById(audios[i].id ).innerHTML = 'Click to Play Sample Audio';
+		document.getElementById(audios[i].id ).innerHTML = 'Play an Example';
 	}
 	modal.style.display = "none";
 }
 
 function move_instruction_next(e){
 	e.preventDefault();
-	if (curr_instruction == 2){ // pause all audios
+	if (curr_instruction == 3){ // pause all audios
 		let audios = document.getElementsByClassName('audio-frame-instruction');
 		for (let i = 0; i < audios.length; i++) {
 			audio_id = "audio" + audios[i].id.replace("audio-frame-instruction","");
 			document.getElementById(audio_id).pause();
-			document.getElementById(audios[i].id ).innerHTML = 'Click to Play Sample Audio';
+			document.getElementById(audios[i].id ).innerHTML = 'Play an Example';
 		}
 	}
-	if (curr_instruction < 7) {
+	if (curr_instruction < totalInstructions) {
 		document.getElementById('instruction'+curr_instruction).style.display = 'none';
 		document.getElementById('instruction'+(curr_instruction+1)).style.display = '';
 		curr_instruction += 1;
 	}
-	if (curr_instruction == 7) {
+	if (curr_instruction == totalInstructions) {
 		document.getElementById("instruction-right").style.display = 'none';
 		document.getElementById("instruction-proceed").style.display = '';
 	}
@@ -106,12 +107,12 @@ function move_instruction_next(e){
 function move_instruction_last(e){
 	e.preventDefault();
 	if (curr_instruction > 1) {
-		if (curr_instruction == 2){ // pause all audios
+		if (curr_instruction == 3){ // pause all audios
 			let audios = document.getElementsByClassName('audio-frame-instruction');
 			for (let i = 0; i < audios.length; i++) {
 				audio_id = "audio" + audios[i].id.replace("audio-frame-instruction","");
 				document.getElementById(audio_id).pause();
-				document.getElementById(audios[i].id ).innerHTML = 'Click to Play Sample Audio';
+				document.getElementById(audios[i].id ).innerHTML = 'Play an Example';
 			}
 		}
 		document.getElementById("instruction-right").style.display = '';
@@ -126,7 +127,8 @@ confirm_annotation();
 
 function confirm_annotation(){
 	request.open('POST', '/confirm_annotation');
-	recording_id = localStorage.getItem('recording').replace('.wav','');
+	let vertical = parseInt(localStorage.getItem('vertical'))
+	recording_name = localStorage.getItem('recording')
 	request.onreadystatechange = function() {
 		if (request.readyState == 4){
 			console.log(request.response);
@@ -144,12 +146,12 @@ function confirm_annotation(){
 			azimuth = JSON.parse(request.response)["azimuth"];
 			elevation = JSON.parse(request.response)["elevation"];
 
-			console.log(azimuth);
-
 			user_num_source = parseInt(JSON.parse(request.response)["user_num_source"]["0"]);
 			actual_num_source = parseInt(JSON.parse(request.response)["actual_num_source"]["0"]);
 
-			document.getElementById('original-audio-source').src = '/templates/interface/assets/audio/recording/'+localStorage.getItem('recording');
+			let recording_file_name = vertical == "0" ? "horizontal" : "horizontal_vertical";
+
+			document.getElementById('original-audio-source').src = '/templates/interface/assets/audio/recording/' + recording_file_name + '/' +localStorage.getItem('recording');
 			document.getElementById('audio-full').load();
 
 			for (const [key,value] of Object.entries( JSON.parse(request.response)["file_name"] )) {
@@ -210,7 +212,7 @@ function confirm_annotation(){
 	}
  	let survey_id = localStorage.getItem('survey_id');
 	request.setRequestHeader('content-type', 'application/json;charset=UTF-8');
-	var data = JSON.stringify({recording_id, survey_id});
+	var data = JSON.stringify({recording_name, survey_id, vertical});
 	request.send(data);
 }
 
@@ -233,12 +235,12 @@ document.addEventListener('click', function(e){
 			let audio_id = "audio" + audios[i].id.replace("audio-frame-instruction","");
 			if (audios[i].id != e.target.id) {
 				document.getElementById(audio_id).pause();
-				document.getElementById(audios[i].id ).innerHTML = 'Click to Play Sample Audio';
+				document.getElementById(audios[i].id ).innerHTML = 'Play an Example';
 			}
 			else {
 				playing_id = audio_id;
-				document.getElementById(audios[i].id).innerHTML = document.getElementById(audios[i].id).innerHTML == 'Click to Play Sample Audio' ? 'Click to Pause Sample Audio' : 'Click to Play Sample Audio';
-				document.getElementById(audios[i].id).innerHTML == 'Click to Play Sample Audio' ? document.getElementById(audio_id).pause() : document.getElementById(audio_id).play();
+				document.getElementById(audios[i].id).innerHTML = document.getElementById(audios[i].id).innerHTML == 'Play an Example' ? 'Pause This Example' : 'Play an Example';
+				document.getElementById(audios[i].id).innerHTML == 'Play an Example' ? document.getElementById(audio_id).pause() : document.getElementById(audio_id).play();
 			}
 		}
 
@@ -250,7 +252,7 @@ document.addEventListener('click', function(e){
 				}
 			});
 			document.getElementById(playing_id).addEventListener("ended",function(){
-				document.getElementById(e.target.id).innerHTML = 'Click to Play Sample Audio';
+				document.getElementById(e.target.id).innerHTML = 'Play an Example';
 			});
 		}
 	}
@@ -386,7 +388,6 @@ function addLocation(coordinates) {
 }
 
 function submit_confirmation(){
-	recording_id = parseInt(recording_id) + 1;
 	let location_id = '';
 	let source_id = ''
 	let total_confirmation_num = 0;
@@ -414,7 +415,8 @@ function submit_confirmation(){
 	request.open('POST', '/submit_confirmation', true);
 	request.setRequestHeader('content-type', 'application/json;charset=UTF-8');
 	let survey_id = localStorage.getItem('survey_id');
-	var data = JSON.stringify({recording_id, location_id, source_id, practice, survey_id});
+	let vertical = parseInt(localStorage.getItem('vertical'));
+	var data = JSON.stringify({recording_name, location_id, source_id, practice, survey_id, vertical});
 	request.send(data);
 	return true;
 }
@@ -426,13 +428,12 @@ document.getElementById('btn-button-again').addEventListener('click', function()
 	if (submit_confirmation()) window.location = '/templates/interface/practice.html';
 });
 document.getElementById('btn-button-next').addEventListener('click', function(){
-	if (submit_confirmation()) window.location = '/templates/interface/interface.html';
+	if (submit_confirmation()) window.location = '/templates/interface/annotation.html';
 });
 
 function changeSize(item_index){
 
 	const selected_azimuth = azimuth[(item_index - 1).toString()];
-	console.log(selected_azimuth, Object.keys(azimuth).length);
 	let size = 18 - 8;
 	let margin_top = -65 + 4;
 	let margin_left = 0 + 4;

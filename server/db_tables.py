@@ -25,13 +25,15 @@ class Annotation(Base):
     source_count = Column(Integer)
     user_note = Column(String)
     practice_round = Column(Boolean)
+    vertical = Column(Boolean)
 
-    def __init__(self,survey_id,recording_id,source_count,user_note,practice_round):
+    def __init__(self,survey_id,recording_id,source_count,user_note,practice_round,vertical):
         self.survey_id = survey_id
         self.recording_id = recording_id
         self.source_count = source_count
         self.user_note = user_note
         self.practice_round = practice_round
+        self.vertical = vertical
 
 
 class Interaction(Base):

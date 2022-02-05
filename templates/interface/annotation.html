@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Main | Annotation Interface</title>
+	<link rel="stylesheet" type="text/css" href="/templates/interface/assets/css/main.css">
+	<style>
+	li{
+		margin-bottom: 15px;
+	}
+	#sound-classes{
+		background-color: aliceblue;
+		display: table;
+		margin: 0 auto;
+	}
+	</style>
+</head>
+<body id = "body">
+	<div class="container-3D"> 
+		<div id="3d-head" width="400"></div>
+	</div>
+	<div class="container" id = "container">
+		<div>
+			<button id="message">Instructions</button>
+			<button id="key-message">Keyboard Rules</button>
+			<h2>Please listen to the audio</h2>
+			<audio id="audio" controls style="display: none;"><source id = "source" type="audio/wav"> Your browser does not support audio </audio>
+			<button id="audio-frame">Play Audio</button>
+			<br>
+			<label id="question" for="count" style="font-size: 16px; font-weight: bold;">How many distinct sounds can you hear?</label>
+			<select id="count" name="count" style="display: none;">
+				<option id="default-option" value="" selected disabled></option>
+				<option id="option1" value=1>1</option> <option id="option2" value=2>2</option>
+				<option id="option3" value=3>3</option> <option id="option4" value=4>4</option>
+				<option id="option5" value=5>5</option> <option id="option6" value=6>6</option>
+				<option id="option7" value=7>7</option> <option id="option8" value=8>8</option>
+				<option id="option9" value=9>9</option> <option id="option10" value=10>10</option>
+			</select>
+			<br><br>
+			<label id="2d-question" for="2d" style="font-size: 16px; font-weight: bold; margin-top: 5px;"></label>
+			<div id="2d" style="margin-top: 5px;">
+				<div id="head-wrapper" style="display: none;"><div style="font-weight:bold; font-size:13px; color:blue; text-align: center;">Top View</div>
+					<div id="head" style="background-image: url('/templates/interface/img/head.png');">
+						<div class="circular" id="circular"></div>
+						<div class="circular" id="circular1" style="display: none;"><div class="indicator" id="head-item-1" style="display: none;">1</div></div>
+						<div class="circular" id="circular2" style="display: none;"><div class="indicator" id="head-item-2" style="display: none;">2</div></div>
+						<div class="circular" id="circular3" style="display: none;"><div class="indicator" id="head-item-3" style="display: none;">3</div></div>
+						<div class="circular" id="circular4" style="display: none;"><div class="indicator" id="head-item-4" style="display: none;">4</div></div>
+						<div class="circular" id="circular5" style="display: none;"><div class="indicator" id="head-item-5" style="display: none;">5</div></div>
+						<div class="circular" id="circular6" style="display: none;"><div class="indicator" id="head-item-6" style="display: none;">6</div></div>
+						<div class="circular" id="circular7" style="display: none;"><div class="indicator" id="head-item-7" style="display: none;">7</div></div>
+						<div class="circular" id="circular8" style="display: none;"><div class="indicator" id="head-item-8" style="display: none;">8</div></div>
+						<div class="circular" id="circular9" style="display: none;"><div class="indicator" id="head-item-9" style="display: none;">9</div></div>
+						<div class="circular" id="circular10" style="display: none;"><div class="indicator" id="head-item-10" style="display: none;">10</div></div>
+					</div>
+				</div>
+				<div id="feedback" style="visibility: hidden;">
+					<div id="dot-tracker" style="display: none;">
+						<div id='azimuth-dot'></div>horizontal location:<button id='azimuth-minus'>-</button><div id='p-azimuth'></div><button id='azimuth-plus'>+</button><br><br>
+						<div id='elevation-dot'></div>vertical location:<button id='elevation-minus'>-</button><div id='p-elevation'></div><button id='elevation-plus'>+</button>
+					</div>
+					<div style="margin-top:10px; font-size: 12px; color:blue; text-align:center; font-weight:bold; visibility: visible;">You May Take Notes Here</div>
+					<textarea id="user_note" style="font-size: 11px; width: 100%; height: 108px; background-color:#f0f8ff; z-index:2; visibility: visible;"></textarea>
+				</div>
+				<br>
+				<div id="front-wrapper" style="display: none;"><div style="font-weight:bold; font-size:13px; color:blue; text-align: center;">Back View</div>
+					<div id="front" style="background-image: url('/templates/interface/img/front.png');">
+						<div class="circular" id="circularF"></div>
+						<div class="circular" id="circularF1" style="display: none;"><div class="indicator" id="front-item-1" style="display: none;">1</div></div>
+						<div class="circular" id="circularF2" style="display: none;"><div class="indicator" id="front-item-2" style="display: none;">2</div></div>
+						<div class="circular" id="circularF3" style="display: none;"><div class="indicator" id="front-item-3" style="display: none;">3</div></div>
+						<div class="circular" id="circularF4" style="display: none;"><div class="indicator" id="front-item-4" style="display: none;">4</div></div>
+						<div class="circular" id="circularF5" style="display: none;"><div class="indicator" id="front-item-5" style="display: none;">5</div></div>
+						<div class="circular" id="circularF6" style="display: none;"><div class="indicator" id="front-item-6" style="display: none;">6</div></div>
+						<div class="circular" id="circularF7" style="display: none;"><div class="indicator" id="front-item-7" style="display: none;">7</div></div>
+						<div class="circular" id="circularF8" style="display: none;"><div class="indicator" id="front-item-8" style="display: none;">8</div></div>
+						<div class="circular" id="circularF9" style="display: none;"><div class="indicator" id="front-item-9" style="display: none;">9</div></div>
+						<div class="circular" id="circularF10" style="display: none;"><div class="indicator" id="front-item-10" style="display: none;">10</div></div>
+					</div>
+				</div>
+				<div id="side-wrapper" style="display: none;"><div style="font-weight:bold; font-size:13px; color:blue; text-align: center; z-index:1;">Side View</div>
+					<div id="side" style="background-image: url('/templates/interface/img/side.png');">
+						<div class="circular" id="circularS"></div>
+						<div class="circular" id="circularS1" style="display: none;"><div class="indicator" id="side-item-1" style="display: none;">1</div></div>
+						<div class="circular" id="circularS2" style="display: none;"><div class="indicator" id="side-item-2" style="display: none;">2</div></div>
+						<div class="circular" id="circularS3" style="display: none;"><div class="indicator" id="side-item-3" style="display: none;">3</div></div>
+						<div class="circular" id="circularS4" style="display: none;"><div class="indicator" id="side-item-4" style="display: none;">4</div></div>
+						<div class="circular" id="circularS5" style="display: none;"><div class="indicator" id="side-item-5" style="display: none;">5</div></div>
+						<div class="circular" id="circularS6" style="display: none;"><div class="indicator" id="side-item-6" style="display: none;">6</div></div>
+						<div class="circular" id="circularS7" style="display: none;"><div class="indicator" id="side-item-7" style="display: none;">7</div></div>
+						<div class="circular" id="circularS8" style="display: none;"><div class="indicator" id="side-item-8" style="display: none;">8</div></div>
+						<div class="circular" id="circularS9" style="display: none;"><div class="indicator" id="side-item-9" style="display: none;">9</div></div>
+						<div class="circular" id="circularS10" style="display: none;"><div class="indicator" id="side-item-10" style="display: none;">10</div></div>
+					</div>
+				</div>
+			</div>
+			<input id="btn-button-submit" type="submit" name="btn-button-submit" value="SUBMIT" onclick="ajax_next()" style="display: none;">
+
+			<div id="modal" style="display: none; z-index: 2;">
+				<div class="instructions">
+					<button class="move" id="instruction-left" style="margin-right: 20px;">&#8249;</button>
+					<div id="instruction1" style="margin: 0 auto;">
+						<p>&nbsp;</p>
+						<div>
+							<h2 style="text-align: center; color: blue; margin-top: 3vh;">Annotation Interface Instructions</h2><br>
+							<ul style="font-size: 20px;">
+								This task consists of 3 stages<br><br>
+								<li>Identification of distinct sounds</li>
+								<li>Localization of these sounds</li>
+								<li>Matching each location with its corresponding sound</li>
+							</ul>
+						</div>
+					</div>
+					<div id="instruction2" style="display: none;">
+						<p style="font-size: 17px;">Page 1 / 7</p>
+						<h3 style="text-align: center; color: blue; margin-top: 3vh;">Annotation Interface Instructions</h3>
+						<img src="/templates/interface/img/1.png" style="width:70%; display: block; margin: auto;">
+						<p>The first stage is to identify the number of distinct sounds.</p>
+						<ul>
+							<li>Press the Play button to listen to the audio recording.</li>
+							<li>While listening, count the number of distinct sounds that you heard.</li>
+							<li>
+								You can use the text box to take notes about the sounds you hear and their
+								locations. It might help you when localizing the sounds.
+							</li>
+						</ul>
+					</div>
+					<div id="instruction3" style="display: none; width: 100%;">
+						<p style="font-size: 17px;">Page 2 / 7</p>
+						<h3 style="text-align: center; color: blue;">Annotation Interface Instructions</h3>
+						<p style="text-align: center; margin-top: 3vh;">
+							The recordings in this task may contain the following different types of sounds
+						</p>
+						<ol id="sound-classes">
+							<li>Alarms:</li>
+							<ol type="a">
+								<li>
+									Car alarm
+									<audio id="audio-alarm"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/car_alarm_1_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-alarm" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+								<li>
+									Car horn
+									<audio id="audio-horn"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/horn_1_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-horn" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+								<li>
+									Siren
+									<audio id="audio-siren"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/siren_4_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-siren" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+							</ol>
+							<li>Animals:</li>
+							<ol type="a">
+								<li>
+									Bird
+									<audio id="audio-bird"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/birds_2_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-bird" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+								<li>
+									Cat meowing
+									<audio id="audio-cat"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/cat_3_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-cat" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+								<li>
+									Dog barking
+									<audio id="audio-dog"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/dog_barking_5_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-dog" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+								<li>
+									Rooster
+									<audio id="audio-rooster"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/rooster_4_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-rooster" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+							</ol>
+							<li>Domestic sounds:</li>
+							<ol type="a">
+								<li>
+									Boiling liquid
+									<audio id="audio-boiling"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/boiling_2_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-boiling" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+								<li>
+									Clothes Dryer
+									<audio id="audio-dryer"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/dryer_1_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-dryer" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+								<li>
+									Keys
+									<audio id="audio-keys"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/keys_3_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-keys" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+								<li>
+									Toilet flush
+									<audio id="audio-toilet"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/toilet_1_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-toilet" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+							</ol>
+							<li>Engines:</li>
+							<ol type="a">
+								<li>
+									Large engine
+									<audio id="audio-large"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/large_engine_4_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-large" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+								<li>
+									Medium engine
+									<audio id="audio-medium"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/medium_engine_4_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-medium" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+							</ol>
+							<li>Human voice:</li>
+							<ol type="a">
+								<li>
+									Person talking
+									<audio id="audio-person"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/person_talking_5_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-person" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+							</ol>
+							<li>Impact sounds</li>
+							<ol type="a">
+								<li>
+									Hammer
+									<audio id="audio-hammer"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/hammering_2_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-hammer" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+								<li>
+									Jackhammer
+									<audio id="audio-jackhammer"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/jackhammer_3_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-jackhammer" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+							</ol>
+							<li>Large transportation methods:</li>
+							<ol type="a">
+								<li>
+									Airplane
+									<audio id="audio-airplane"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/airplane_2_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-airplane" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+								<li>
+									Helicopter
+									<audio id="audio-helicopter"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/helicopter_1_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-helicopter" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+								<li>
+									Train
+									<audio id="audio-train"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/train_4_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-train" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+							</ol>
+							<li>Music:</li>
+							<ol type="a">
+								<li>
+									Cello
+									<audio id="audio-cello"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/cello_1_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-cello" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+								<li>
+									Clarinet
+									<audio id="audio-clarinet"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/clarinet_1_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-clarinet" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+								<li>
+									Flute
+									<audio id="audio-flute"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/flute_2_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-flute" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+								<li>
+									Piano
+									<audio id="audio-piano"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/piano_3_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-piano" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+								<li>
+									Trumpet
+									<audio id="audio-trumpet"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/trumpet_3_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-trumpet" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+								<li>
+									Violin
+									<audio id="audio-violin"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/violin_3_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-violin" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+							</ol>
+							<li>Natural sounds:</li>
+							<ol type="a">
+								<li>
+									Water (river or waterfall)
+									<audio id="audio-waterfall"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/river_waterfall_1_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-waterfall" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+								<li>
+									Wind
+									<audio id="audio-wind"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/wind_3_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-wind" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+							</ol>
+							<li>Saws:</li>
+							<ol type="a">
+								<li>
+									Chainsaw
+									<audio id="audio-chainsaw"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/chainsaw_2_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-chainsaw" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+								<li>
+									Electric saw-type sounds
+									<audio id="audio-electric"><source id = "source" type="audio/wav" src="/templates/interface/assets/audio/class-examples/electric_saw_type_2_norm.wav">Your browser does not support audio</audio>
+									<button class="audio-frame-instruction" id="audio-frame-instruction-electric" style="display: inline-block; margin-left: auto; margin-right: auto;">Play an Example</button>
+								</li>
+							</ol>
+						</ol>
+						<br><br>
+					</div>
+					<div id="instruction4" style="display: none;">
+						<p style="font-size: 17px;">Page 3 / 7</p>
+						<h3 style="text-align: center; color: blue;"> Annotation Interface Instructions</h3>
+						<img src="/templates/interface/img/2.png"  style="width:70%; display: block; margin: auto;">
+						<ul>
+							<li>
+								After listening to the full audio recording, select the number of distinct sounds 
+								you heard using the dropdown menu. Remember the only types of sounds in the recording
+								are those listed in page 2.
+							</li>
+							<li>
+								You may change this number at any time.
+							</li>
+						</ul>
+					</div>
+					<div id="instruction5" style="display: none;">
+						<p style="font-size: 17px;">Page 4 / 7</p>
+						<h3 style="text-align: center; color: blue;"> Annotation Interface Instructions</h3>
+						<img src="/templates/interface/img/3.png" style="width:70%; display: block; margin: auto;">
+						<p>The second stage is to localize these sounds.</p>
+						<ul>
+							<li>
+								After selecting the number of sounds, you need to indicate the spatial location of each sound 
+								that you heard. We will refer to these spatial locations as annotations.
+							</li>
+							<li>
+								A 2D "top view" display on which you can annotate the horizontal spatial location; 
+								2D "back view" and "side view" displays on which you can annotate the vertical spatial location; and 
+								a rotatable 3D view which is just for displaying the spatial location annotations you create.
+							</li>
+						</ul>
+					</div>
+					<div id="instruction6" style="display: none;">
+						<p style="font-size: 17px;">Page 5 / 7</p>
+						<h3 style="text-align: center; color: blue;"> Annotation Interface Instructions</h3>
+						<img src="/templates/interface/img/4.png" style="width:70%; display: block; margin: auto;">
+						<ul>
+							<li>To add a new source press "Option" or "Alt" + click.</li>
+							<li>To remove a source press "Command" or "Win" + click.</li>
+							<li>You can always see the rules in the "Keyboard Rules" button.</li>
+							<li>
+								To annotate the spatial location of each sound, you must select a horizontal spatial location.
+							</li>
+						</ul>
+					</div>
+					<div id="instruction7" style="display: none;">
+						<p style="font-size: 17px;">Page 6 / 7</p>
+						<h3 style="text-align: center; color: blue;"> Annotation Interface Instructions</h3>
+						<img src="/templates/interface/img/5.png" style="width:70%; display: block; margin: auto;">
+						<ul>
+							<li>If you need to adjust the location of the sources, you may click on the desired point and move it, or use the + and - buttons.</li>
+							<li>Click submit once you have completed your annotation.</li>
+						</ul>
+					</div>
+					<div id="instruction8" style="display: none;">
+						<p style="font-size: 17px;">Page 7 / 7</p>
+						<h3 style="text-align: center; color: blue;"> Annotation Interface Instructions</h3>
+						<img src="/templates/interface/img/6.png" style="width:70%; display:block; margin:auto;">
+						<ul>
+							<li>In the last stage of this task, match each location you annotated with its corresponding sound.</li>
+							<li>The set of sounds available for matching consists of all of the sounds that were present in the recording.</li>
+							<li>Please listen to all the sounds and match them to the annotated spatial locations.</li>
+							<li>Each sound can only be matched once.</li>
+						</ul>
+					</div>
+					<span id="sign">&times;</span>
+					<button class="move" id="instruction-proceed" style="margin-left: 20px; font-size: 30px; padding:11px; display: none;">
+						C<br>L<br>I<br>C<br>K<br><br>T<br>O<br><br>S<br>T<br>A<br>R<br>T
+					</button>
+					<button class="move" id="instruction-right" style="margin-left: 20px;">&#8250;</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="//cdn.rawgit.com/mrdoob/three.js/master/build/three.js"></script>
+	<script src="//cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
+	<script src="/templates/interface/assets/js/annotation.js"></script>
+	<script type="text/javascript">
+		document.body.style.cursor='wait';
+		window.onload = function(){
+			document.body.style.cursor='default';
+		}
+	</script>
+</body>
+</html>
