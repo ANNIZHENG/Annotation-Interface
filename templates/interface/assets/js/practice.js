@@ -3,15 +3,17 @@ var request = new XMLHttpRequest();
 var survey_id = '';
 var practice = 1; // true
 const totalPractice = 4;
-const recording_names = ['sources_3_recording_3.wav','sources_3_recording_5.wav','sources_3_recording_22.wav','sources_3_recording_32.wav','sources_3_recording_33.wav'];
+const recording_names = ['sources_3_recording_8.wav', 'sources_3_recording_57.wav', 'sources_3_recording_130.wav', 'sources_3_recording_150.wav', 'sources_3_recording_160.wav'];
+const recording_file = 'practice'
 var curr_recording = 0;
 var totalInstructions = 8;
+const audio_path = 'https://assets-audio.s3.amazonaws.com/audio';
 
 if (localStorage.getItem('practice') == undefined) curr_recording = 0
 else if (parseInt(localStorage.getItem('practice')) > totalPractice) curr_recording = 0;
 else curr_recording = localStorage.getItem('practice');
 
-document.getElementById('source').src = '/templates/interface/assets/audio/recording/horizontal_vertical/'+recording_names[curr_recording];
+document.getElementById('source').src =  audio_path + '/recording/' + recording_file + '/' + recording_names[curr_recording];
 document.getElementById('audio').load();
 
 
@@ -169,7 +171,7 @@ document.getElementById('elevation-minus').addEventListener("click",move_elevati
 
 function popKeyRules(e){
 	e.preventDefault();
-	window.alert("Press [Option] or [Alt] key to add an annotation once you see the cursor turning to '+'\n\nPress [Command] or [Win] key to delete an annotation once you see the cursor turning to '-'\n\nDeleting an annotation means to delete both its annotated horizontal location and vertical location.")
+	window.alert("Press [Option] or [Alt] key to add an annotation once you see the cursor turning to.\nPress [Command] or [Win] key to delete an annotation once you see the cursor turning to '-'.\nDeleting an annotation means to delete both its annotated horizontal location and vertical location.")
 }
 
 function popRules(e){ 
@@ -185,11 +187,6 @@ function popRules(e){
 
 function closeRules(e){ 
 	if (read_all_rules) modal.style.display = "none";
-	else {
-		window.alert("Please read all of the instructions first");
-		event.preventDefault();
-		return false;
-	}
 	let audios = document.getElementsByClassName('audio-frame-instruction');
 	for (let i = 0; i < audios.length; i++) {
 		audio_id = "audio" + audios[i].id.replace("audio-frame-instruction","");
@@ -244,7 +241,6 @@ function addSourceCount(){
 	document.getElementById('2d-question').innerHTML = "Please identify the location of each sound";
 	document.getElementById('feedback').style.visibility = '';
 	document.getElementById('feedback').style.display = 'inline-block';
-	document.getElementById('dot-tracker').style.display = '';
 	document.getElementById('head-wrapper').style.display = 'inline-block';
 	document.getElementById('front-wrapper').style.display = 'inline-block';
 	document.getElementById('side-wrapper').style.display = 'inline-block';
@@ -283,17 +279,17 @@ function addPlaying(e){
 
 function displaySelection(){ 
 	isPlaying = false;
-	document.getElementById('audio-frame').innerHTML='Play Audio';
-	document.getElementById('count').setAttribute('style','');
+	document.getElementById('audio-frame').innerHTML = 'Play Audio';
+	document.getElementById('count').style.display = '';
 }
 
 function askProceed(){
-	if (document.getElementById('count').value == undefined){ window.alert("You must select a response"); return false; }
-	if (findUndefinedAzimuth() == -3 && findUndefinedElevation() == -3) { window.alert("You must annotate at least one location"); return false; }
-	if (findUndefinedAzimuth() != findUndefinedElevation()) { window.alert("You must annotate both the azimuth and elevation"); return false; }
-	if (findUndefinedAzimuth() == -2 || findUndefinedAzimuth() == -2) { window.alert("Your annotation number is greater than the source count you entered"); return false; }
+	if (document.getElementById('count').value == undefined){ window.alert("You must select a number of distinct sounds"); return false; }
+	if (findUndefinedAzimuth() == -3 && findUndefinedElevation() == -3) { window.alert("You must annotate at least one spatial location"); return false; }
+	if (findUndefinedAzimuth() != findUndefinedElevation()) { window.alert("You must annotate both a horizontal location and a vertical location for each sound"); return false; }
+	if (findUndefinedAzimuth() == -2 || findUndefinedAzimuth() == -2) { window.alert("You can’t annotate more sounds than the number of distinct sounds selected. Please delete the additional location annotation(s)"); return false; }
 	if (findUndefinedAzimuth() != -1 || findUndefinedElevation() != -1 ) { 
-		if (confirm("You haven't annotated all sources yet\nDo you still want to proceed?")) return true;
+		if (confirm("You haven’t annotated all sounds yet. Do you still want to proceed?")) return true;
 		else return false;
 	}
 	return true;
@@ -368,11 +364,11 @@ function ajax_next(){
 	request.open('POST', '/next', true);
 	request.setRequestHeader('content-type', 'application/json;charset=UTF-8');
 	let recording_name = recording_names[curr_recording];
-	let vertical = 1;
+	let vertical = 2;
+	localStorage.setItem('vertical', vertical);
 	var data = JSON.stringify({survey_id,recording_name,azimuth,elevation,source_count,timestamp,user_note,practice,vertical});
 	request.send(data);
 	localStorage.setItem('recording', recording_names[curr_recording]);
-	localStorage.setItem('vertical', 1); // because practice file is always in the horizontal_vertical folder
     curr_recording = parseInt(curr_recording) + 1;
 	localStorage.setItem('practice', curr_recording);
 	window.location = '/templates/interface/confirm.html';
@@ -892,7 +888,7 @@ function move_azimuth_plus(e){
 	e.preventDefault();
 
 	if (document.getElementById('head-item-'+(current_colors_index+1)).style.display == 'none'){
-		window.alert("Please select an annotation"); 
+		window.alert("Please annotate the sound first using the 2D views"); 
 		return false; 
 	}
 
@@ -914,7 +910,7 @@ function move_azimuth_plus(e){
 		displayBoth(false, (current_colors_index+1), temp_azimuth, degree);
 	}
 
-	document.getElementById('p-azimuth').innerHTML = temp_azimuth + " degree";
+	document.getElementById('p-azimuth').innerHTML = temp_azimuth + " degrees";
 	azimuth[current_colors_index] = temp_azimuth;
 	document.getElementById('circular'+(current_colors_index+1)).style.transform = 'rotate('+temp_azimuth+'deg)';
 	changeSize(current_colors_index+1);
@@ -931,7 +927,7 @@ function move_azimuth_minus(e){
 	e.preventDefault();
 
 	if (document.getElementById('head-item-'+(current_colors_index+1)).style.display == 'none'){ 
-		window.alert("Please select an annotation"); 
+		window.alert("Please annotate the sound first using the 2D views"); 
 		return false; 
 	}
 
@@ -953,7 +949,7 @@ function move_azimuth_minus(e){
 		displayBoth(false, (current_colors_index+1), temp_azimuth, degree);
 	}
 
-	document.getElementById('p-azimuth').innerHTML = temp_azimuth + " degree";
+	document.getElementById('p-azimuth').innerHTML = temp_azimuth + " degrees";
 	azimuth[current_colors_index] = temp_azimuth;
 	document.getElementById('circular'+(current_colors_index+1)).style.transform = 'rotate('+temp_azimuth+'deg)';
 	changeSize(current_colors_index+1);
@@ -971,7 +967,7 @@ function move_elevation_plus(e){
 
 	if (document.getElementById('front-item-'+(current_colors_index+1)).style.display == 'none' 
 	&& document.getElementById('side-item-'+(current_colors_index+1)).style.display == 'none' ){
-		window.alert("Please select an annotation"); 
+		window.alert("Please annotate the sound first using the 2D views"); 
 		return false; 
 	}
 
@@ -979,7 +975,7 @@ function move_elevation_plus(e){
 	if (new_elevation > 90) { return false; }
 
 	if (document.getElementById('front-item-'+(current_colors_index+1)).style.display != 'none'){
-		document.getElementById('p-elevation').innerHTML = new_elevation + " degree"
+		document.getElementById('p-elevation').innerHTML = new_elevation + " degrees";
 		elevation[current_colors_index] = new_elevation;
 
 		old_elevation_degree = parseInt(document.getElementById('circularF'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
@@ -995,7 +991,7 @@ function move_elevation_plus(e){
 		}
 	}
 	if (document.getElementById('side-item-'+(current_colors_index+1)).style.display != 'none'){
-		document.getElementById('p-elevation').innerHTML = new_elevation + " degree"
+		document.getElementById('p-elevation').innerHTML = new_elevation + " degrees";
 		elevation[current_colors_index] = new_elevation;
 
 		old_elevation_degree = parseInt(document.getElementById('circularS'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
@@ -1022,7 +1018,7 @@ function move_elevation_plus(e){
 function move_elevation_minus(e){
 	e.preventDefault();
 	if (document.getElementById('front-item-'+(current_colors_index+1)).style.display == 'none' && document.getElementById('side-item-'+(current_colors_index+1)).style.display == 'none' ){ 
-		window.alert("Please select an annotation"); 
+		window.alert("Please annotate the sound first using the 2D views"); 
 		return false; 
 	}
 
@@ -1031,7 +1027,7 @@ function move_elevation_minus(e){
 
 	if (document.getElementById('front-item-'+(current_colors_index+1)).style.display != 'none'){
 		degree = parseInt(document.getElementById('circular'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
-		document.getElementById('p-elevation').innerHTML = new_elevation + " degree"
+		document.getElementById('p-elevation').innerHTML = new_elevation + " degrees";
 		elevation[current_colors_index] = new_elevation;
 
 		old_elevation_degree = parseInt(document.getElementById('circularF'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
@@ -1049,7 +1045,7 @@ function move_elevation_minus(e){
 	}
 	if (document.getElementById('side-item-'+(current_colors_index+1)).style.display != 'none'){
 		degree = parseInt(document.getElementById('circular'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
-		document.getElementById('p-elevation').innerHTML = new_elevation + " degree"
+		document.getElementById('p-elevation').innerHTML = new_elevation + " degrees";
 		elevation[current_colors_index] = new_elevation;
 
 		old_elevation_degree = parseInt(document.getElementById('circularS'+(current_colors_index+1)).style.transform.replace('rotate(','').replace('deg)',''));
@@ -1118,9 +1114,9 @@ function dragElement(index,indicator,add_index){
 				degree = parseInt(document.getElementById('circular'+index).style.transform.replace('rotate(','').replace('deg)',''));
 
 				if ( ((degree < 90 || degree > 270) && (temp_azimuthS > 180)) || ((degree > 90 && degree < 270) && (temp_azimuthS < 180)) ){
-					window.alert("Your side view annotation does not match with your azimuth");
+					window.alert("The annotation for the vertical location is inconsistent with the annotation for the horizontal location");
 					itemS.style.transform = 'rotate('+original_side_degree+'deg)';
-					document.getElementById('p-elevation').innerHTML = elevation[add_index] + " degree"
+					document.getElementById('p-elevation').innerHTML = elevation[add_index] + " degrees";
 
 					// prevent undesired behaviors
 					document.onmousedown = null;
@@ -1200,9 +1196,9 @@ function dragElement(index,indicator,add_index){
 				degree = parseInt(document.getElementById('circular'+index).style.transform.replace('rotate(','').replace('deg)',''));
 
 				if ( (degree < 180 && temp_azimuthF > 180) || (degree > 180 && temp_azimuthF < 180) ){
-					window.alert("Your back view annotation does not match with your azimuth");
+					window.alert("The annotation for the vertical location is inconsistent with the annotation for the horizontal location");
 					itemF.style.transform = 'rotate('+original_front_degree+'deg)';
-					document.getElementById('p-elevation').innerHTML = elevation[add_index] + " degree"
+					document.getElementById('p-elevation').innerHTML = elevation[add_index] + " degrees";
 
 					// prevent undesired behaviors
 					document.onmousedown = null;
@@ -1316,8 +1312,8 @@ function dragElement(index,indicator,add_index){
 			else{ curr_elevation = (temp_azimuthF - 180) - 90 }
 
 			itemF.style.transform = 'rotate('+temp_azimuthF+'deg)';
-			document.getElementById('p-azimuth').innerHTML = (azimuth[add_index] != undefined ? azimuth[add_index] : 0) + " degree";
-			document.getElementById('p-elevation').innerHTML = curr_elevation + " degree";
+			document.getElementById('p-azimuth').innerHTML = (azimuth[add_index] != undefined ? azimuth[add_index] : 0) + " degrees";
+			document.getElementById('p-elevation').innerHTML = curr_elevation + " degrees";
 		}
 		else if (indicator == 2){
 			var ilocationS = itemS.getBoundingClientRect();
@@ -1330,8 +1326,8 @@ function dragElement(index,indicator,add_index){
 			else{ curr_elevation = (temp_azimuthS - 180) - 90 }
 
 			itemS.style.transform = 'rotate('+temp_azimuthS+'deg)';
-			document.getElementById('p-azimuth').innerHTML = (azimuth[add_index] != undefined ? azimuth[add_index] : 0) + " degree";
-			document.getElementById('p-elevation').innerHTML = curr_elevation + " degree";
+			document.getElementById('p-azimuth').innerHTML = (azimuth[add_index] != undefined ? azimuth[add_index] : 0) + " degrees";
+			document.getElementById('p-elevation').innerHTML = curr_elevation + " degrees";
 		}
 		else{
 			var ilocation = item.getBoundingClientRect();
@@ -1341,8 +1337,8 @@ function dragElement(index,indicator,add_index){
 			temp_azimuth = (temp_azimuth == 360 ? 0 : temp_azimuth);
 
 			item.style.transform = 'rotate('+temp_azimuth+'deg)';
-			document.getElementById('p-azimuth').innerHTML = temp_azimuth + " degree";
-			document.getElementById('p-elevation').innerHTML = (elevation[add_index] != undefined ? elevation[add_index] : 0) + " degree";
+			document.getElementById('p-azimuth').innerHTML = temp_azimuth + " degrees";
+			document.getElementById('p-elevation').innerHTML = (elevation[add_index] != undefined ? elevation[add_index] : 0) + " degrees";
 		}
 		suppress = false;
 		not_moving = false;
@@ -1444,7 +1440,7 @@ function keyboardEvents(e){
 
 			if (enable_head){
 				if ( azimuth_item_index == -1 ){
-					window.alert("You have already enter " + source_count + " azimuth elements"); 
+					window.alert("You have already annotated " + source_count + " horizontal locations. Please update the number of distinct sounds before continuing."); 
 					document.getElementById('body').style.cursor = 'default'; 
 					key_perform = false;
 					enable_head = false;
@@ -1456,7 +1452,7 @@ function keyboardEvents(e){
 				}
 
 				if ((azimuth_item_index > elevation_item_index) && elevation_item_index != -1) {
-					window.alert("You must annotate an elevation"); 
+					window.alert("You must annotate a vertical location before adding a new sound annotation"); 
 					document.getElementById('body').style.cursor = 'default'; 
 					key_perform = false;
 					enable_head = false;
@@ -1475,7 +1471,7 @@ function keyboardEvents(e){
 					original_front = parseInt(document.getElementById('circularF'+azimuth_item_index).style.transform.replace('rotate(','').replace('deg)',''));
 					if ( (original_front < 180 && curr_azimuth > 180)
 					|| (original_front > 180 && curr_azimuth < 180) ) {
-						window.alert("Your head view annotation does not match with your front view annotation"); 
+						window.alert("The annotation for the horizontal location is inconsistent with the annotation for the vertical location"); 
 						document.getElementById('body').style.cursor = 'default'; 
 						key_perform = false;
 						enable_head = false;
@@ -1534,7 +1530,7 @@ function keyboardEvents(e){
 					original_side = parseInt(document.getElementById('circularS'+azimuth_item_index).style.transform.replace('rotate(','').replace('deg)',''));
 					if ( ((curr_azimuth < 90 || curr_azimuth > 270) && (original_side > 180))
 					|| ((curr_azimuth > 90 && curr_azimuth < 270) && (original_side < 180)) ) {
-						window.alert("Your head view annotation does not match with your side view annotation");
+						window.alert("The annotation for the horizontal location is inconsistent with the annotation for the vertical location");
 						document.getElementById('body').style.cursor = 'default'; 
 						key_perform = false;
 						enable_head = false;
@@ -1599,8 +1595,8 @@ function keyboardEvents(e){
 				changeSize(azimuth_item_index); 
 				displayBall(curr_azimuth - 180, (elevation[azimuth_item_index-1] != undefined ? elevation[azimuth_item_index-1] : 0) , azimuth_item_index); // display 3D azimuth
 
-				document.getElementById('p-azimuth').innerHTML = curr_azimuth + " degree";
-				document.getElementById('p-elevation').innerHTML = (elevation[azimuth_item_index-1] != undefined ? elevation[azimuth_item_index-1] : 0) + " degree";
+				document.getElementById('p-azimuth').innerHTML = curr_azimuth + " degrees";
+				document.getElementById('p-elevation').innerHTML = (elevation[azimuth_item_index-1] != undefined ? elevation[azimuth_item_index-1] : 0) + " degrees";
 
 				current_colors_index = azimuth_item_index-1;
 				color_hex = '000000'+colors[azimuth_item_index-1].toString(16);
@@ -1621,7 +1617,7 @@ function keyboardEvents(e){
 			}
 			else if (enable_front){
 				if ( elevation_item_index == -1 ){
-					window.alert("You have already enter " + source_count + " elevation elements"); 
+					window.alert("You have already annotated " + source_count + " vertical locations. Please update the number of distinct sounds before continuing."); 
 					document.getElementById('body').style.cursor = 'default'; 
 					key_perform = false;
 					enable_front = false;
@@ -1633,7 +1629,7 @@ function keyboardEvents(e){
 				}
 
 				if ((elevation_item_index > azimuth_item_index) && azimuth_item_index != -1) {
-					window.alert("You must annotate an azimuth"); 
+					window.alert("You must annotate a horizontal location before adding a new sound annotation"); 
 					document.getElementById('body').style.cursor = 'default'; 
 					key_perform = false;
 					enable_front = false;
@@ -1732,8 +1728,8 @@ function keyboardEvents(e){
 				displayBall(temp_azimuth, curr_elevation, elevation_item_index);
 
 				// display azimuth and elevation
-				document.getElementById('p-azimuth').innerHTML = (azimuth[elevation_item_index-1] != undefined ? azimuth[elevation_item_index-1] : 0) + " degree"
-				document.getElementById('p-elevation').innerHTML = curr_elevation + " degree";
+				document.getElementById('p-azimuth').innerHTML = (azimuth[elevation_item_index-1] != undefined ? azimuth[elevation_item_index-1] : 0) + " degrees";
+				document.getElementById('p-elevation').innerHTML = curr_elevation + " degrees";
 
 				// color display
 				current_colors_index = elevation_item_index-1;
@@ -1759,7 +1755,7 @@ function keyboardEvents(e){
 			}
 			else if (enable_side){
 				if (elevation_item_index == -1){
-					window.alert("You have already enter " + source_count + " elevation elements"); 
+					window.alert("You have already annotated " + source_count + " vertical locations. Please update the number of distinct sounds before continuing."); 
 					document.getElementById('body').style.cursor = 'default';
 					key_perform = false;
 					enable_side = false;
@@ -1771,7 +1767,7 @@ function keyboardEvents(e){
 				}
 
 				if ((elevation_item_index > azimuth_item_index) && azimuth_item_index != -1) {
-					window.alert("You must annotate an azimuth"); 
+					window.alert("You must annotate a horizontal location before adding a new sound annotation"); 
 					document.getElementById('body').style.cursor = 'default'; 
 					key_perform = false;
 					enable_side = false;
@@ -1870,8 +1866,8 @@ function keyboardEvents(e){
 				displayBall(temp_azimuth, curr_elevation, elevation_item_index);
 
 				// display azimuth and elevation
-				document.getElementById('p-azimuth').innerHTML = (azimuth[elevation_item_index-1] != undefined ? azimuth[elevation_item_index-1] : 0) + " degree"
-				document.getElementById('p-elevation').innerHTML = curr_elevation + + " degree";
+				document.getElementById('p-azimuth').innerHTML = (azimuth[elevation_item_index-1] != undefined ? azimuth[elevation_item_index-1] : 0) + " degrees";
+				document.getElementById('p-elevation').innerHTML = curr_elevation + " degrees";
 
 				// color display
 				current_colors_index = elevation_item_index-1;
@@ -2005,8 +2001,8 @@ document.getElementById('head-item-1').addEventListener("mousedown",function(e){
 
 		key_perform = true;
 		let annotation = findDefinedAnnotation(1);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degree";
-		document.getElementById('p-elevation').innerHTML = (annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2029,8 +2025,8 @@ document.getElementById('head-item-1').addEventListener("mousedown",function(e){
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[0] == undefined ? 0 : azimuth[0])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[0] == undefined ? 0 : elevation[0])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[0] == undefined ? 0 : azimuth[0]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[0] == undefined ? 0 : elevation[0]) + " degrees";
 		color_hex = '000000'+colors[0].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2058,8 +2054,8 @@ document.getElementById('head-item-2').addEventListener("mousedown",function(e){
 		document.getElementById('circularS2').style.display = 'none';
 		key_perform = true;
 		let annotation = findDefinedAnnotation(2);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML = (annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+ 		document.getElementById('p-elevation').innerHTML = (annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2082,8 +2078,8 @@ document.getElementById('head-item-2').addEventListener("mousedown",function(e){
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[1] == undefined ? 0 : azimuth[1])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[1] == undefined ? 0 : elevation[1])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[1] == undefined ? 0 : azimuth[1]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[1] == undefined ? 0 : elevation[1]) + " degrees";
 		color_hex = '000000'+colors[1].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2112,8 +2108,8 @@ document.getElementById('head-item-3').addEventListener("mousedown",function(e){
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(3);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML = (annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2136,8 +2132,8 @@ document.getElementById('head-item-3').addEventListener("mousedown",function(e){
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[2] == undefined ? 0 : azimuth[2])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[2] == undefined ? 0 : elevation[2])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[2] == undefined ? 0 : azimuth[2]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[2] == undefined ? 0 : elevation[2]) + " degrees";
 		color_hex = '000000'+colors[2].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2165,8 +2161,8 @@ document.getElementById('head-item-4').addEventListener("mousedown",function(e){
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(4);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML = (annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2189,8 +2185,8 @@ document.getElementById('head-item-4').addEventListener("mousedown",function(e){
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[3] == undefined ? 0 : azimuth[3])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[3] == undefined ? 0 : elevation[3])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[3] == undefined ? 0 : azimuth[3]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[3] == undefined ? 0 : elevation[3]) + " degrees";
 		color_hex = '000000'+colors[3].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2218,8 +2214,8 @@ document.getElementById('head-item-5').addEventListener("mousedown",function(e){
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(5);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2242,8 +2238,8 @@ document.getElementById('head-item-5').addEventListener("mousedown",function(e){
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[4] == undefined ? 0 : azimuth[4])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[4] == undefined ? 0 : elevation[4])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[4] == undefined ? 0 : azimuth[4]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[4] == undefined ? 0 : elevation[4]) + " degrees";
 		color_hex = '000000'+colors[4].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2271,8 +2267,8 @@ document.getElementById('head-item-6').addEventListener("mousedown",function(e){
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(6);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2295,8 +2291,8 @@ document.getElementById('head-item-6').addEventListener("mousedown",function(e){
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[5] == undefined ? 0 : azimuth[5])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[5] == undefined ? 0 : elevation[5]) + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[5] == undefined ? 0 : azimuth[5])+ " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[5] == undefined ? 0 : elevation[5]) + " degrees";
 		color_hex = '000000'+colors[5].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2324,8 +2320,8 @@ document.getElementById('head-item-7').addEventListener("mousedown",function(e){
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(7);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))+ " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2348,8 +2344,8 @@ document.getElementById('head-item-7').addEventListener("mousedown",function(e){
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[6] == undefined ? 0 : azimuth[6])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[6] == undefined ? 0 : elevation[6])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[6] == undefined ? 0 : azimuth[6]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[6] == undefined ? 0 : elevation[6]) + " degrees";
 		color_hex = '000000'+colors[6].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2377,8 +2373,8 @@ document.getElementById('head-item-8').addEventListener("mousedown",function(e){
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(8);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))+ " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))+ " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2401,8 +2397,8 @@ document.getElementById('head-item-8').addEventListener("mousedown",function(e){
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[7] == undefined ? 0 : azimuth[7])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[7] == undefined ? 0 : elevation[7])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[7] == undefined ? 0 : azimuth[7])+ " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[7] == undefined ? 0 : elevation[7])+ " degrees";
 		color_hex = '000000'+colors[7].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2430,8 +2426,8 @@ document.getElementById('head-item-9').addEventListener("mousedown",function(e){
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(9);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2454,8 +2450,8 @@ document.getElementById('head-item-9').addEventListener("mousedown",function(e){
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[8] == undefined ? 0 : azimuth[8])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[8] == undefined ? 0 : elevation[8])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[8] == undefined ? 0 : azimuth[8]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[8] == undefined ? 0 : elevation[8]) + " degrees";
 		color_hex = '000000'+colors[8].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2483,8 +2479,8 @@ document.getElementById('head-item-10').addEventListener("mousedown",function(e)
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(10);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2507,8 +2503,8 @@ document.getElementById('head-item-10').addEventListener("mousedown",function(e)
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[9] == undefined ? 0 : azimuth[9])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[9] == undefined ? 0 : elevation[9])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[9] == undefined ? 0 : azimuth[9]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[9] == undefined ? 0 : elevation[9]) + " degrees";
 		color_hex = '000000'+colors[9].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2536,8 +2532,8 @@ document.getElementById('front-item-1').addEventListener("mousedown",function(e)
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(1);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2560,8 +2556,8 @@ document.getElementById('front-item-1').addEventListener("mousedown",function(e)
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[0] == undefined ? 0 : azimuth[0])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[0] == undefined ? 0 : elevation[0])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[0] == undefined ? 0 : azimuth[0]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[0] == undefined ? 0 : elevation[0]) + " degrees";
 		color_hex = '000000'+colors[0].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2589,8 +2585,8 @@ document.getElementById('front-item-2').addEventListener("mousedown",function(e)
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(2);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))+ " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2613,8 +2609,8 @@ document.getElementById('front-item-2').addEventListener("mousedown",function(e)
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[1] == undefined ? 0 : azimuth[1])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[1] == undefined ? 0 : elevation[1])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[1] == undefined ? 0 : azimuth[1]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[1] == undefined ? 0 : elevation[1])+ " degrees";
 		color_hex = '000000'+colors[1].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2642,8 +2638,8 @@ document.getElementById('front-item-3').addEventListener("mousedown",function(e)
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(3);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2666,8 +2662,8 @@ document.getElementById('front-item-3').addEventListener("mousedown",function(e)
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[2] == undefined ? 0 : azimuth[2])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[2] == undefined ? 0 : elevation[2])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[2] == undefined ? 0 : azimuth[2]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[2] == undefined ? 0 : elevation[2]) + " degrees";
 		color_hex = '000000'+colors[2].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2695,8 +2691,8 @@ document.getElementById('front-item-4').addEventListener("mousedown",function(e)
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(4);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))+ " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2719,8 +2715,8 @@ document.getElementById('front-item-4').addEventListener("mousedown",function(e)
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[3] == undefined ? 0 : azimuth[3])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[3] == undefined ? 0 : elevation[3])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[3] == undefined ? 0 : azimuth[3])+ " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[3] == undefined ? 0 : elevation[3]) + " degrees";
 		color_hex = '000000'+colors[3].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2748,8 +2744,8 @@ document.getElementById('front-item-5').addEventListener("mousedown",function(e)
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(5);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2772,8 +2768,8 @@ document.getElementById('front-item-5').addEventListener("mousedown",function(e)
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[4] == undefined ? 0 : azimuth[4])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[4] == undefined ? 0 : elevation[4])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[4] == undefined ? 0 : azimuth[4]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[4] == undefined ? 0 : elevation[4]) + " degrees";
 		color_hex = '000000'+colors[4].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2801,8 +2797,8 @@ document.getElementById('front-item-6').addEventListener("mousedown",function(e)
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(6);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2825,8 +2821,8 @@ document.getElementById('front-item-6').addEventListener("mousedown",function(e)
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[5] == undefined ? 0 : azimuth[5])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[5] == undefined ? 0 : elevation[5])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[5] == undefined ? 0 : azimuth[5]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[5] == undefined ? 0 : elevation[5])+ " degrees";
 		color_hex = '000000'+colors[5].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2854,8 +2850,8 @@ document.getElementById('front-item-7').addEventListener("mousedown",function(e)
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(7);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2878,8 +2874,8 @@ document.getElementById('front-item-7').addEventListener("mousedown",function(e)
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[6] == undefined ? 0 : azimuth[6])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[6] == undefined ? 0 : elevation[6])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[6] == undefined ? 0 : azimuth[6])+ " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[6] == undefined ? 0 : elevation[6]) + " degrees";
 		color_hex = '000000'+colors[6].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2907,8 +2903,8 @@ document.getElementById('front-item-8').addEventListener("mousedown",function(e)
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(8);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))+ " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))+ " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2931,8 +2927,8 @@ document.getElementById('front-item-8').addEventListener("mousedown",function(e)
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[7] == undefined ? 0 : azimuth[7])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[7] == undefined ? 0 : elevation[7])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[7] == undefined ? 0 : azimuth[7])+ " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[7] == undefined ? 0 : elevation[7]) + " degrees";
 		color_hex = '000000'+colors[7].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2960,8 +2956,8 @@ document.getElementById('front-item-9').addEventListener("mousedown",function(e)
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(9);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -2984,8 +2980,8 @@ document.getElementById('front-item-9').addEventListener("mousedown",function(e)
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[8] == undefined ? 0 : azimuth[8])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[8] == undefined ? 0 : elevation[8])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[8] == undefined ? 0 : azimuth[8]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[8] == undefined ? 0 : elevation[8])+ " degrees";
 		color_hex = '000000'+colors[8].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3013,8 +3009,8 @@ document.getElementById('front-item-10').addEventListener("mousedown",function(e
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(10);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3037,8 +3033,8 @@ document.getElementById('front-item-10').addEventListener("mousedown",function(e
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[9] == undefined ? 0 : azimuth[9])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[9] == undefined ? 0 : elevation[9])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[9] == undefined ? 0 : azimuth[9])+ " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[9] == undefined ? 0 : elevation[9]) + " degrees";
 		color_hex = '000000'+colors[9].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3067,8 +3063,8 @@ document.getElementById('side-item-1').addEventListener("mousedown",function(e){
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(1);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3091,8 +3087,8 @@ document.getElementById('side-item-1').addEventListener("mousedown",function(e){
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[0] == undefined ? 0 : azimuth[0])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[0] == undefined ? 0 : elevation[0])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[0] == undefined ? 0 : azimuth[0]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[0] == undefined ? 0 : elevation[0]) + " degrees";
 		color_hex = '000000'+colors[0].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3120,8 +3116,8 @@ document.getElementById('side-item-2').addEventListener("mousedown",function(e){
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(2);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3144,8 +3140,8 @@ document.getElementById('side-item-2').addEventListener("mousedown",function(e){
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[1] == undefined ? 0 : azimuth[1])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[1] == undefined ? 0 : elevation[1])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[1] == undefined ? 0 : azimuth[1]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[1] == undefined ? 0 : elevation[1]) + " degrees";
 		color_hex = '000000'+colors[1].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3173,8 +3169,8 @@ document.getElementById('side-item-3').addEventListener("mousedown",function(e){
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(3);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))+ " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))+ " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3197,8 +3193,8 @@ document.getElementById('side-item-3').addEventListener("mousedown",function(e){
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[2] == undefined ? 0 : azimuth[2])  + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[2] == undefined ? 0 : elevation[2])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[2] == undefined ? 0 : azimuth[2])  + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[2] == undefined ? 0 : elevation[2])  + " degrees";
 		color_hex = '000000'+colors[2].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3226,8 +3222,8 @@ document.getElementById('side-item-4').addEventListener("mousedown",function(e){
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(4);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation]))  + " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation]))  + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3250,8 +3246,8 @@ document.getElementById('side-item-4').addEventListener("mousedown",function(e){
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[3] == undefined ? 0 : azimuth[3]) + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[3] == undefined ? 0 : elevation[3])  + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[3] == undefined ? 0 : azimuth[3]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[3] == undefined ? 0 : elevation[3])  + " degrees";
 		color_hex = '000000'+colors[3].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3279,8 +3275,8 @@ document.getElementById('side-item-5').addEventListener("mousedown",function(e){
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(5);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3303,8 +3299,8 @@ document.getElementById('side-item-5').addEventListener("mousedown",function(e){
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[4] == undefined ? 0 : azimuth[4]) + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[4] == undefined ? 0 : elevation[4]) + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[4] == undefined ? 0 : azimuth[4]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[4] == undefined ? 0 : elevation[4]) + " degrees";
 		color_hex = '000000'+colors[4].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3332,8 +3328,8 @@ document.getElementById('side-item-6').addEventListener("mousedown",function(e){
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(6);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3356,8 +3352,8 @@ document.getElementById('side-item-6').addEventListener("mousedown",function(e){
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[5] == undefined ? 0 : azimuth[5]) + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[5] == undefined ? 0 : elevation[5]) + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[5] == undefined ? 0 : azimuth[5]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[5] == undefined ? 0 : elevation[5]) + " degrees";
 		color_hex = '000000'+colors[5].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3385,8 +3381,8 @@ document.getElementById('side-item-7').addEventListener("mousedown",function(e){
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(7);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3409,8 +3405,8 @@ document.getElementById('side-item-7').addEventListener("mousedown",function(e){
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[6] == undefined ? 0 : azimuth[6]) + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[6] == undefined ? 0 : elevation[6]) + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[6] == undefined ? 0 : azimuth[6]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[6] == undefined ? 0 : elevation[6]) + " degrees";
 		color_hex = '000000'+colors[6].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3438,8 +3434,8 @@ document.getElementById('side-item-8').addEventListener("mousedown",function(e){
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(8);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3462,8 +3458,8 @@ document.getElementById('side-item-8').addEventListener("mousedown",function(e){
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[7] == undefined ? 0 : azimuth[7]) + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[7] == undefined ? 0 : elevation[7]) + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[7] == undefined ? 0 : azimuth[7]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[7] == undefined ? 0 : elevation[7]) + " degrees";
 		color_hex = '000000'+colors[7].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3491,8 +3487,8 @@ document.getElementById('side-item-9').addEventListener("mousedown",function(e){
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(9);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3515,8 +3511,8 @@ document.getElementById('side-item-9').addEventListener("mousedown",function(e){
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[8] == undefined ? 0 : azimuth[8]) + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[8] == undefined ? 0 : elevation[8]) + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[8] == undefined ? 0 : azimuth[8]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[8] == undefined ? 0 : elevation[8]) + " degrees";
 		color_hex = '000000'+colors[8].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3544,8 +3540,8 @@ document.getElementById('side-item-10').addEventListener("mousedown",function(e)
 				
 		key_perform = true;
 		let annotation = findDefinedAnnotation(10);
-		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degree";
-		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degree";
+		document.getElementById('p-azimuth').innerHTML = (annotation == -1 ? '' : (azimuth[annotation] == undefined ? 0 : azimuth[annotation])) + " degrees";
+		document.getElementById('p-elevation').innerHTML =(annotation == -1 ? '' : (elevation[annotation] == undefined ? 0 : elevation[annotation])) + " degrees";
 		if (annotation != -1){
 			color_hex = '000000'+colors[annotation].toString(16);
 			document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3568,8 +3564,8 @@ document.getElementById('side-item-10').addEventListener("mousedown",function(e)
 		document.onkeydown = null;
 	}
 	else if (document.getElementById('body').style.cursor == 'default') {
-		document.getElementById('p-azimuth').innerHTML = (azimuth[9] == undefined ? 0 : azimuth[9]) + " degree";
-		document.getElementById('p-elevation').innerHTML = (elevation[9] == undefined ? 0 : elevation[9]) + " degree";
+		document.getElementById('p-azimuth').innerHTML = (azimuth[9] == undefined ? 0 : azimuth[9]) + " degrees";
+		document.getElementById('p-elevation').innerHTML = (elevation[9] == undefined ? 0 : elevation[9]) + " degrees";
 		color_hex = '000000'+colors[9].toString(16);
 		document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 		document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
@@ -3671,8 +3667,8 @@ function displayBall(azimuth, elevation, number){
 }
 
 function deleteBall(number){ 
-	if (document.getElementById('p-azimuth').innerHTML == ' degree') {
-		document.getElementById('p-azimuth').innerHTML = '';
+	if (document.getElementById('p-azimuth').innerHTML == " degrees") {
+		document.getElementById('p-azimuth').innerHTML ='';
 		document.getElementById('p-elevation').innerHTML = '';
 	}
 	scene.remove(scene.getObjectByName('ball'+number)); 

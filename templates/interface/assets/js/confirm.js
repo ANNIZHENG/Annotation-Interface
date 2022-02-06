@@ -9,6 +9,7 @@ var curr_instruction = 1;
 var modal = document.getElementById("modal");
 var practice = 0; // FALSE
 var totalInstructions = 8;
+const audio_path = 'https://assets-audio.s3.amazonaws.com/audio';
 
 const colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
 const css_colors = ["#009dff", "#ff7f0e", "#00ff00", "#ff0000", "#9467bd", "#d3d3d3", "#c39b77", "#e377c2", "#bcbd22", "#00ffff"];
@@ -149,9 +150,12 @@ function confirm_annotation(){
 			user_num_source = parseInt(JSON.parse(request.response)["user_num_source"]["0"]);
 			actual_num_source = parseInt(JSON.parse(request.response)["actual_num_source"]["0"]);
 
-			let recording_file_name = vertical == "0" ? "horizontal" : "horizontal_vertical";
+			let recording_file_name = ''
+			if (vertical == 2) recording_file_name = "practice";
+ 			else if (vertical == 0) recording_file_name = "horizontal";
+			else recording_file_name = "horizontal_vertical";
 
-			document.getElementById('original-audio-source').src = '/templates/interface/assets/audio/recording/' + recording_file_name + '/' +localStorage.getItem('recording');
+			document.getElementById('original-audio-source').src = audio_path + "/recording/" + recording_file_name + '/' +localStorage.getItem('recording');
 			document.getElementById('audio-full').load();
 
 			for (const [key,value] of Object.entries( JSON.parse(request.response)["file_name"] )) {
@@ -165,7 +169,7 @@ function confirm_annotation(){
 				let new_audio_source = document.createElement('source');
 				new_audio_source.id = "audio-source-"+key;
 				new_audio_source.type = "audio/wav";
-				new_audio_source.src = '/templates/interface/assets/audio/source/'+value;
+				new_audio_source.src = audio_path + '/source/' + value;
 				new_audio.appendChild(new_audio_source);
 
 				let new_button = document.createElement('button');
@@ -399,7 +403,7 @@ function submit_confirmation(){
 		}
 	}
 	if (total_confirmation_num < 1) {
-		window.alert("You must confirm at least 1 annotation");
+		window.alert("You must match at least one audio recording to an annotated location");
 		return false;
 	}
 	for (const [key,value] of Object.entries( JSON.parse(request.response)["location_id"])) {

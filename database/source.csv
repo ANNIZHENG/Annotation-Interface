@@ -1,449 +1,126 @@
 ﻿file_name,coarse_class,specific_class,bandwidth_continuity
 airplane_1_norm.wav,large transportation methods,airplane,broad continuous
-airplane_1_norm.wav,large transportation methods,airplane,broad continuous
-airplane_2_norm.wav,large transportation methods,airplane,broad continuous
-airplane_2_norm.wav,large transportation methods,airplane,broad continuous
-airplane_2_norm.wav,large transportation methods,airplane,broad continuous
 airplane_2_norm.wav,large transportation methods,airplane,broad continuous
 airplane_3_norm.wav,large transportation methods,airplane,broad continuous
-airplane_3_norm.wav,large transportation methods,airplane,broad continuous
-birds_1_norm.wav,animals,birds,narrow continuous
-birds_1_norm.wav,animals,birds,narrow continuous
 birds_1_norm.wav,animals,birds,narrow continuous
 birds_3_norm.wav,animals,birds,narrow continuous
-birds_3_norm.wav,animals,birds,narrow continuous
-birds_3_norm.wav,animals,birds,narrow continuous
-birds_3_norm.wav,animals,birds,narrow continuous
-birds_3_norm.wav,animals,birds,narrow continuous
-birds_3_norm.wav,animals,birds,narrow continuous
-birds_3_norm.wav,animals,birds,narrow continuous
-birds_3_norm.wav,animals,birds,narrow continuous
-boiling_1_norm.wav,domestic sounds,boiling liquids,broad continuous
-boiling_1_norm.wav,domestic sounds,boiling liquids,broad continuous
 boiling_1_norm.wav,domestic sounds,boiling liquids,broad continuous
 boiling_2_norm.wav,domestic sounds,boiling liquids,broad continuous
-boiling_2_norm.wav,domestic sounds,boiling liquids,broad continuous
-boiling_2_norm.wav,domestic sounds,boiling liquids,broad continuous
-boiling_2_norm.wav,domestic sounds,boiling liquids,broad continuous
-boiling_2_norm.wav,domestic sounds,boiling liquids,broad continuous
-boiling_3_norm.wav,domestic sounds,boiling liquids,broad continuous
-boiling_3_norm.wav,domestic sounds,boiling liquids,broad continuous
-boiling_3_norm.wav,domestic sounds,boiling liquids,broad continuous
 boiling_3_norm.wav,domestic sounds,boiling liquids,broad continuous
 boiling_4_norm.wav,domestic sounds,boiling liquids,broad continuous
-boiling_4_norm.wav,domestic sounds,boiling liquids,broad continuous
-boiling_4_norm.wav,domestic sounds,boiling liquids,broad continuous
-boiling_4_norm.wav,domestic sounds,boiling liquids,broad continuous
 car_alarm_1_norm.wav,alarms,car alarm,narrow continuous
-car_alarm_1_norm.wav,alarms,car alarm,narrow continuous
-car_alarm_1_norm.wav,alarms,car alarm,narrow continuous
-car_alarm_1_norm.wav,alarms,car alarm,narrow continuous
-car_alarm_2_norm.wav,alarms,car alarm,narrow continuous
-car_alarm_2_norm.wav,alarms,car alarm,narrow continuous
-car_alarm_2_norm.wav,alarms,car alarm,narrow continuous
-car_alarm_2_norm.wav,alarms,car alarm,narrow continuous
 car_alarm_2_norm.wav,alarms,car alarm,narrow continuous
 car_alarm_3_norm.wav,alarms,car alarm,narrow continuous
-car_alarm_4_norm.wav,alarms,car alarm,narrow continuous
-car_alarm_4_norm.wav,alarms,car alarm,narrow continuous
 car_alarm_4_norm.wav,alarms,car alarm,narrow continuous
 cat_3_norm.wav,animals,cat meowing,narrow transient
 cat_5_norm.wav,animals,cat meowing,narrow transient
 cello_1_norm.wav,music,cello,narrow continuous
-cello_1_norm.wav,music,cello,narrow continuous
-cello_1_norm.wav,music,cello,narrow continuous
-cello_2_norm.wav,music,cello,narrow continuous
-cello_2_norm.wav,music,cello,narrow continuous
-cello_2_norm.wav,music,cello,narrow continuous
 cello_2_norm.wav,music,cello,narrow continuous
 cello_3_norm.wav,music,cello,narrow continuous
-cello_3_norm.wav,music,cello,narrow continuous
-cello_4_norm.wav,music,cello,narrow continuous
-cello_4_norm.wav,music,cello,narrow continuous
 cello_4_norm.wav,music,cello,narrow continuous
 chainsaw_1_norm.wav,saw_type_sounds,chainsaw,broad continuous
 chainsaw_2_norm.wav,saw_type_sounds,chainsaw,broad continuous
-chainsaw_2_norm.wav,saw_type_sounds,chainsaw,broad continuous
-chainsaw_2_norm.wav,saw_type_sounds,chainsaw,broad continuous
-chainsaw_2_norm.wav,saw_type_sounds,chainsaw,broad continuous
-chainsaw_2_norm.wav,saw_type_sounds,chainsaw,broad continuous
-chainsaw_2_norm.wav,saw_type_sounds,chainsaw,broad continuous
-chainsaw_2_norm.wav,saw_type_sounds,chainsaw,broad continuous
-chainsaw_2_norm.wav,saw_type_sounds,chainsaw,broad continuous
-chainsaw_2_norm.wav,saw_type_sounds,chainsaw,broad continuous
 chainsaw_3_norm.wav,saw_type_sounds,chainsaw,broad continuous
-chainsaw_3_norm.wav,saw_type_sounds,chainsaw,broad continuous
-chainsaw_3_norm.wav,saw_type_sounds,chainsaw,broad continuous
-chainsaw_3_norm.wav,saw_type_sounds,chainsaw,broad continuous
-chainsaw_3_norm.wav,saw_type_sounds,chainsaw,broad continuous
-chainsaw_3_norm.wav,saw_type_sounds,chainsaw,broad continuous
-chainsaw_4_norm.wav,saw_type_sounds,chainsaw,broad continuous
-chainsaw_4_norm.wav,saw_type_sounds,chainsaw,broad continuous
-chainsaw_4_norm.wav,saw_type_sounds,chainsaw,broad continuous
-chainsaw_4_norm.wav,saw_type_sounds,chainsaw,broad continuous
 chainsaw_4_norm.wav,saw_type_sounds,chainsaw,broad continuous
 clarinet_1_norm.wav,music,clarinet,narrow continuous
 clarinet_3_norm.wav,music,clarinet,narrow continuous
-clarinet_3_norm.wav,music,clarinet,narrow continuous
-clarinet_3_norm.wav,music,clarinet,narrow continuous
-dog_barking_10_norm.wav,animals,dog barking,broad transient
 dog_barking_10_norm.wav,animals,dog barking,broad transient
 dog_barking_11_norm.wav,animals,dog barking,broad transient
-dog_barking_11_norm.wav,animals,dog barking,broad transient
-dog_barking_11_norm.wav,animals,dog barking,broad transient
-dog_barking_11_norm.wav,animals,dog barking,broad transient
-dog_barking_11_norm.wav,animals,dog barking,broad transient
-dog_barking_11_norm.wav,animals,dog barking,broad transient
-dog_barking_11_norm.wav,animals,dog barking,broad transient
-dog_barking_11_norm.wav,animals,dog barking,broad transient
-dog_barking_11_norm.wav,animals,dog barking,broad transient
 dog_barking_2_norm.wav,animals,dog barking,broad transient
-dog_barking_2_norm.wav,animals,dog barking,broad transient
-dog_barking_3_norm.wav,animals,dog barking,broad transient
-dog_barking_3_norm.wav,animals,dog barking,broad transient
 dog_barking_3_norm.wav,animals,dog barking,broad transient
 dog_barking_4_norm.wav,animals,dog barking,broad transient
 dog_barking_5_norm.wav,animals,dog barking,broad transient
-dog_barking_5_norm.wav,animals,dog barking,broad transient
-dog_barking_5_norm.wav,animals,dog barking,broad transient
-dog_barking_6_norm.wav,animals,dog barking,broad transient
-dog_barking_6_norm.wav,animals,dog barking,broad transient
 dog_barking_6_norm.wav,animals,dog barking,broad transient
 dog_barking_7_norm.wav,animals,dog barking,broad transient
-dog_barking_7_norm.wav,animals,dog barking,broad transient
-dog_barking_9_norm.wav,animals,dog barking,broad transient
-dog_barking_9_norm.wav,animals,dog barking,broad transient
-dog_barking_9_norm.wav,animals,dog barking,broad transient
-dog_barking_9_norm.wav,animals,dog barking,broad transient
-dog_barking_9_norm.wav,animals,dog barking,broad transient
 dog_barking_9_norm.wav,animals,dog barking,broad transient
 dryer_1_norm.wav,domestic sounds,dryer,broad continuous
-dryer_1_norm.wav,domestic sounds,dryer,broad continuous
-dryer_1_norm.wav,domestic sounds,dryer,broad continuous
 dryer_2_norm.wav,domestic sounds,dryer,broad continuous
-dryer_2_norm.wav,domestic sounds,dryer,broad continuous
-dryer_2_norm.wav,domestic sounds,dryer,broad continuous
-dryer_2_norm.wav,domestic sounds,dryer,broad continuous
-dryer_2_norm.wav,domestic sounds,dryer,broad continuous
-dryer_2_norm.wav,domestic sounds,dryer,broad continuous
-dryer_3_norm.wav,domestic sounds,dryer,broad continuous
-dryer_3_norm.wav,domestic sounds,dryer,broad continuous
-dryer_3_norm.wav,domestic sounds,dryer,broad continuous
-dryer_3_norm.wav,domestic sounds,dryer,broad continuous
-dryer_3_norm.wav,domestic sounds,dryer,broad continuous
 dryer_3_norm.wav,domestic sounds,dryer,broad continuous
 dryer_4_norm.wav,domestic sounds,dryer,broad continuous
 electric_saw_type_1_norm.wav,saw_type_sounds,electric saw-type,broad continuous
-electric_saw_type_1_norm.wav,saw_type_sounds,electric saw-type,broad continuous
-electric_saw_type_1_norm.wav,saw_type_sounds,electric saw-type,broad continuous
-electric_saw_type_1_norm.wav,saw_type_sounds,electric saw-type,broad continuous
-electric_saw_type_1_norm.wav,saw_type_sounds,electric saw-type,broad continuous
-electric_saw_type_1_norm.wav,saw_type_sounds,electric saw-type,broad continuous
-electric_saw_type_1_norm.wav,saw_type_sounds,electric saw-type,broad continuous
 electric_saw_type_2_norm.wav,saw_type_sounds,electric saw-type,broad continuous
 electric_saw_type_3_norm.wav,saw_type_sounds,electric saw-type,broad continuous
-electric_saw_type_3_norm.wav,saw_type_sounds,electric saw-type,broad continuous
-electric_saw_type_3_norm.wav,saw_type_sounds,electric saw-type,broad continuous
-electric_saw_type_3_norm.wav,saw_type_sounds,electric saw-type,broad continuous
-electric_saw_type_3_norm.wav,saw_type_sounds,electric saw-type,broad continuous
-flute_1_norm.wav,music,flute,narrow continuous
-flute_1_norm.wav,music,flute,narrow continuous
-flute_1_norm.wav,music,flute,narrow continuous
 flute_1_norm.wav,music,flute,narrow continuous
 flute_2_norm.wav,music,flute,narrow continuous
-flute_2_norm.wav,music,flute,narrow continuous
-flute_2_norm.wav,music,flute,narrow continuous
-flute_2_norm.wav,music,flute,narrow continuous
-flute_3_norm.wav,music,flute,narrow continuous
-flute_3_norm.wav,music,flute,narrow continuous
 flute_3_norm.wav,music,flute,narrow continuous
 flute_4_norm.wav,music,flute,narrow continuous
-flute_4_norm.wav,music,flute,narrow continuous
-hammering_1_norm.wav,impact sounds,hammering,broad transient
 hammering_1_norm.wav,impact sounds,hammering,broad transient
 hammering_2_norm.wav,impact sounds,hammering,broad transient
-hammering_2_norm.wav,impact sounds,hammering,broad transient
-hammering_2_norm.wav,impact sounds,hammering,broad transient
-hammering_2_norm.wav,impact sounds,hammering,broad transient
-hammering_3_norm.wav,impact sounds,hammering,broad transient
-hammering_3_norm.wav,impact sounds,hammering,broad transient
-hammering_3_norm.wav,impact sounds,hammering,broad transient
 hammering_3_norm.wav,impact sounds,hammering,broad transient
 hammering_4_norm.wav,impact sounds,hammering,broad transient
 hammering_5_norm.wav,impact sounds,hammering,broad transient
-hammering_5_norm.wav,impact sounds,hammering,broad transient
-hammering_5_norm.wav,impact sounds,hammering,broad transient
-hammering_5_norm.wav,impact sounds,hammering,broad transient
-hammering_5_norm.wav,impact sounds,hammering,broad transient
-hammering_5_norm.wav,impact sounds,hammering,broad transient
-hammering_5_norm.wav,impact sounds,hammering,broad transient
-hammering_5_norm.wav,impact sounds,hammering,broad transient
 helicopter_1_norm.wav,large transportation methods,helicopter,broad continuous
-helicopter_1_norm.wav,large transportation methods,helicopter,broad continuous
-helicopter_1_norm.wav,large transportation methods,helicopter,broad continuous
-helicopter_1_norm.wav,large transportation methods,helicopter,broad continuous
-helicopter_2_norm.wav,large transportation methods,helicopter,broad continuous
-helicopter_2_norm.wav,large transportation methods,helicopter,broad continuous
-helicopter_2_norm.wav,large transportation methods,helicopter,broad continuous
-helicopter_2_norm.wav,large transportation methods,helicopter,broad continuous
-helicopter_2_norm.wav,large transportation methods,helicopter,broad continuous
 helicopter_2_norm.wav,large transportation methods,helicopter,broad continuous
 helicopter_3_norm.wav,large transportation methods,helicopter,broad continuous
 helicopter_4_norm.wav,large transportation methods,helicopter,broad continuous
 horn_1_norm.wav,alarms,car horn,broad transient
-horn_1_norm.wav,alarms,car horn,broad transient
 horn_2_norm.wav,alarms,car horn,broad transient
-horn_2_norm.wav,alarms,car horn,broad transient
-horn_2_norm.wav,alarms,car horn,broad transient
-horn_2_norm.wav,alarms,car horn,broad transient
-horn_2_norm.wav,alarms,car horn,broad transient
-horn_2_norm.wav,alarms,car horn,broad transient
-horn_2_norm.wav,alarms,car horn,broad transient
-horn_3_norm.wav,alarms,car horn,broad transient
-horn_3_norm.wav,alarms,car horn,broad transient
-horn_3_norm.wav,alarms,car horn,broad transient
 horn_3_norm.wav,alarms,car horn,broad transient
 horn_4_norm.wav,alarms,car horn,broad transient
 jackhammer_1_norm.wav,impact sounds,jackhammer,broad transient
-jackhammer_1_norm.wav,impact sounds,jackhammer,broad transient
-jackhammer_1_norm.wav,impact sounds,jackhammer,broad transient
-jackhammer_1_norm.wav,impact sounds,jackhammer,broad transient
-jackhammer_1_norm.wav,impact sounds,jackhammer,broad transient
-jackhammer_1_norm.wav,impact sounds,jackhammer,broad transient
-jackhammer_1_norm.wav,impact sounds,jackhammer,broad transient
-jackhammer_1_norm.wav,impact sounds,jackhammer,broad transient
-jackhammer_2_norm.wav,impact sounds,jackhammer,broad transient
-jackhammer_2_norm.wav,impact sounds,jackhammer,broad transient
-jackhammer_2_norm.wav,impact sounds,jackhammer,broad transient
-jackhammer_2_norm.wav,impact sounds,jackhammer,broad transient
-jackhammer_2_norm.wav,impact sounds,jackhammer,broad transient
-jackhammer_2_norm.wav,impact sounds,jackhammer,broad transient
-jackhammer_2_norm.wav,impact sounds,jackhammer,broad transient
 jackhammer_2_norm.wav,impact sounds,jackhammer,broad transient
 jackhammer_3_norm.wav,impact sounds,jackhammer,broad transient
-jackhammer_3_norm.wav,impact sounds,jackhammer,broad transient
-jackhammer_3_norm.wav,impact sounds,jackhammer,broad transient
-keys_1_norm.wav,domestic sounds,keys,narrow continuous
-keys_1_norm.wav,domestic sounds,keys,narrow continuous
-keys_1_norm.wav,domestic sounds,keys,narrow continuous
-keys_1_norm.wav,domestic sounds,keys,narrow continuous
-keys_1_norm.wav,domestic sounds,keys,narrow continuous
-keys_1_norm.wav,domestic sounds,keys,narrow continuous
-keys_1_norm.wav,domestic sounds,keys,narrow continuous
-keys_1_norm.wav,domestic sounds,keys,narrow continuous
-keys_1_norm.wav,domestic sounds,keys,narrow continuous
 keys_1_norm.wav,domestic sounds,keys,narrow continuous
 keys_2_norm.wav,domestic sounds,keys,narrow continuous
-keys_2_norm.wav,domestic sounds,keys,narrow continuous
-keys_2_norm.wav,domestic sounds,keys,narrow continuous
-keys_2_norm.wav,domestic sounds,keys,narrow continuous
-keys_2_norm.wav,domestic sounds,keys,narrow continuous
-keys_3_norm.wav,domestic sounds,keys,narrow continuous
-keys_3_norm.wav,domestic sounds,keys,narrow continuous
-keys_3_norm.wav,domestic sounds,keys,narrow continuous
-keys_3_norm.wav,domestic sounds,keys,narrow continuous
-keys_3_norm.wav,domestic sounds,keys,narrow continuous
 keys_3_norm.wav,domestic sounds,keys,narrow continuous
 large_engine_1_norm.wav,engines,large engine,broad continuous
-large_engine_1_norm.wav,engines,large engine,broad continuous
-large_engine_10_norm.wav,engines,large engine,broad continuous
 large_engine_10_norm.wav,engines,large engine,broad continuous
 large_engine_11_norm.wav,engines,large engine,broad continuous
-large_engine_11_norm.wav,engines,large engine,broad continuous
-large_engine_11_norm.wav,engines,large engine,broad continuous
-large_engine_2_norm.wav,engines,large engine,broad continuous
-large_engine_2_norm.wav,engines,large engine,broad continuous
-large_engine_2_norm.wav,engines,large engine,broad continuous
 large_engine_2_norm.wav,engines,large engine,broad continuous
 large_engine_3_norm.wav,engines,large engine,broad continuous
 large_engine_5_norm.wav,engines,large engine,broad continuous
-large_engine_5_norm.wav,engines,large engine,broad continuous
-large_engine_5_norm.wav,engines,large engine,broad continuous
-large_engine_6_norm.wav,engines,large engine,broad continuous
-large_engine_6_norm.wav,engines,large engine,broad continuous
 large_engine_6_norm.wav,engines,large engine,broad continuous
 large_engine_7_norm.wav,engines,large engine,broad continuous
-large_engine_7_norm.wav,engines,large engine,broad continuous
-large_engine_8_norm.wav,engines,large engine,broad continuous
-large_engine_8_norm.wav,engines,large engine,broad continuous
-large_engine_8_norm.wav,engines,large engine,broad continuous
 large_engine_8_norm.wav,engines,large engine,broad continuous
 large_engine_9_norm.wav,engines,large engine,broad continuous
-large_engine_9_norm.wav,engines,large engine,broad continuous
-large_engine_9_norm.wav,engines,large engine,broad continuous
 medium_engine_1_norm.wav,engines,medium engine,broad continuous
-medium_engine_1_norm.wav,engines,medium engine,broad continuous
-medium_engine_1_norm.wav,engines,medium engine,broad continuous
-medium_engine_2_norm.wav,engines,medium engine,broad continuous
 medium_engine_2_norm.wav,engines,medium engine,broad continuous
 medium_engine_3_norm.wav,engines,medium engine,broad continuous
 medium_engine_5_norm.wav,engines,medium engine,broad continuous
-medium_engine_5_norm.wav,engines,medium engine,broad continuous
-medium_engine_5_norm.wav,engines,medium engine,broad continuous
-medium_engine_5_norm.wav,engines,medium engine,broad continuous
-medium_engine_5_norm.wav,engines,medium engine,broad continuous
-person_talking_1_norm.wav,human voice,person talking,narrow continuous
-person_talking_1_norm.wav,human voice,person talking,narrow continuous
-person_talking_1_norm.wav,human voice,person talking,narrow continuous
-person_talking_1_norm.wav,human voice,person talking,narrow continuous
 person_talking_1_norm.wav,human voice,person talking,narrow continuous
 person_talking_2_norm.wav,human voice,person talking,narrow continuous
-person_talking_2_norm.wav,human voice,person talking,narrow continuous
-person_talking_2_norm.wav,human voice,person talking,narrow continuous
-person_talking_2_norm.wav,human voice,person talking,narrow continuous
-person_talking_2_norm.wav,human voice,person talking,narrow continuous
-person_talking_2_norm.wav,human voice,person talking,narrow continuous
-person_talking_2_norm.wav,human voice,person talking,narrow continuous
-person_talking_3_norm.wav,human voice,person talking,narrow continuous
-person_talking_3_norm.wav,human voice,person talking,narrow continuous
-person_talking_3_norm.wav,human voice,person talking,narrow continuous
-person_talking_3_norm.wav,human voice,person talking,narrow continuous
 person_talking_3_norm.wav,human voice,person talking,narrow continuous
 person_talking_4_norm.wav,human voice,person talking,narrow continuous
-person_talking_4_norm.wav,human voice,person talking,narrow continuous
-person_talking_4_norm.wav,human voice,person talking,narrow continuous
-person_talking_4_norm.wav,human voice,person talking,narrow continuous
-person_talking_5_norm.wav,human voice,person talking,narrow continuous
-person_talking_5_norm.wav,human voice,person talking,narrow continuous
-person_talking_5_norm.wav,human voice,person talking,narrow continuous
 person_talking_5_norm.wav,human voice,person talking,narrow continuous
 person_talking_6_norm.wav,human voice,person talking,narrow continuous
-person_talking_6_norm.wav,human voice,person talking,narrow continuous
-person_talking_6_norm.wav,human voice,person talking,narrow continuous
-person_talking_6_norm.wav,human voice,person talking,narrow continuous
-person_talking_6_norm.wav,human voice,person talking,narrow continuous
-person_talking_6_norm.wav,human voice,person talking,narrow continuous
-person_talking_6_norm.wav,human voice,person talking,narrow continuous
-piano_1_norm.wav,music,piano,narrow continuous
-piano_1_norm.wav,music,piano,narrow continuous
-piano_1_norm.wav,music,piano,narrow continuous
 piano_1_norm.wav,music,piano,narrow continuous
 piano_2_norm.wav,music,piano,narrow continuous
-piano_2_norm.wav,music,piano,narrow continuous
-piano_2_norm.wav,music,piano,narrow continuous
-piano_2_norm.wav,music,piano,narrow continuous
 piano_3_norm.wav,music,piano,narrow continuous
-piano_3_norm.wav,music,piano,narrow continuous
-piano_3_norm.wav,music,piano,narrow continuous
-piano_3_norm.wav,music,piano,narrow continuous
-piano_3_norm.wav,music,piano,narrow continuous
-piano_4_norm.wav,music,piano,narrow continuous
-piano_4_norm.wav,music,piano,narrow continuous
-piano_4_norm.wav,music,piano,narrow continuous
 piano_4_norm.wav,music,piano,narrow continuous
 river_waterfall_1_norm.wav,natural sounds,river_waterfall,broad continuous
-river_waterfall_1_norm.wav,natural sounds,river_waterfall,broad continuous
-river_waterfall_2_norm.wav,natural sounds,river_waterfall,broad continuous
 river_waterfall_2_norm.wav,natural sounds,river_waterfall,broad continuous
 river_waterfall_3_norm.wav,natural sounds,river_waterfall,broad continuous
-river_waterfall_3_norm.wav,natural sounds,river_waterfall,broad continuous
-river_waterfall_4_norm.wav,natural sounds,river_waterfall,broad continuous
 river_waterfall_4_norm.wav,natural sounds,river_waterfall,broad continuous
 river_waterfall_5_norm.wav,natural sounds,river_waterfall,broad continuous
-river_waterfall_5_norm.wav,natural sounds,river_waterfall,broad continuous
-river_waterfall_5_norm.wav,natural sounds,river_waterfall,broad continuous
-river_waterfall_5_norm.wav,natural sounds,river_waterfall,broad continuous
-river_waterfall_5_norm.wav,natural sounds,river_waterfall,broad continuous
-river_waterfall_5_norm.wav,natural sounds,river_waterfall,broad continuous
-river_waterfall_6_norm.wav,natural sounds,river_waterfall,broad continuous
-river_waterfall_6_norm.wav,natural sounds,river_waterfall,broad continuous
-river_waterfall_6_norm.wav,natural sounds,river_waterfall,broad continuous
-river_waterfall_6_norm.wav,natural sounds,river_waterfall,broad continuous
-river_waterfall_6_norm.wav,natural sounds,river_waterfall,broad continuous
-river_waterfall_6_norm.wav,natural sounds,river_waterfall,broad continuous
 river_waterfall_6_norm.wav,natural sounds,river_waterfall,broad continuous
 river_waterfall_7_norm.wav,natural sounds,river_waterfall,broad continuous
-river_waterfall_7_norm.wav,natural sounds,river_waterfall,broad continuous
-river_waterfall_7_norm.wav,natural sounds,river_waterfall,broad continuous
-river_waterfall_7_norm.wav,natural sounds,river_waterfall,broad continuous
-river_waterfall_7_norm.wav,natural sounds,river_waterfall,broad continuous
-rooster_1_norm.wav,animals,rooster,broad transient
-rooster_1_norm.wav,animals,rooster,broad transient
-rooster_1_norm.wav,animals,rooster,broad transient
-rooster_1_norm.wav,animals,rooster,broad transient
 rooster_1_norm.wav,animals,rooster,broad transient
 rooster_2_norm.wav,animals,rooster,broad transient
-rooster_2_norm.wav,animals,rooster,broad transient
-rooster_2_norm.wav,animals,rooster,broad transient
-rooster_3_norm.wav,animals,rooster,broad transient
-rooster_3_norm.wav,animals,rooster,broad transient
 rooster_3_norm.wav,animals,rooster,broad transient
 rooster_4_norm.wav,animals,rooster,broad transient
-rooster_4_norm.wav,animals,rooster,broad transient
-siren_1_norm.wav,alarms,siren,narrow continuous
-siren_1_norm.wav,alarms,siren,narrow continuous
-siren_1_norm.wav,alarms,siren,narrow continuous
 siren_1_norm.wav,alarms,siren,narrow continuous
 siren_2_norm.wav,alarms,siren,narrow continuous
-siren_2_norm.wav,alarms,siren,narrow continuous
 siren_3_norm.wav,alarms,siren,narrow continuous
-siren_3_norm.wav,alarms,siren,narrow continuous
-siren_3_norm.wav,alarms,siren,narrow continuous
-siren_4_norm.wav,alarms,siren,narrow continuous
-siren_4_norm.wav,alarms,siren,narrow continuous
-siren_4_norm.wav,alarms,siren,narrow continuous
 siren_4_norm.wav,alarms,siren,narrow continuous
 siren_5_norm.wav,alarms,siren,narrow continuous
-siren_5_norm.wav,alarms,siren,narrow continuous
-siren_6_norm.wav,alarms,siren,narrow continuous
-siren_6_norm.wav,alarms,siren,narrow continuous
 siren_6_norm.wav,alarms,siren,narrow continuous
 siren_8_norm.wav,alarms,siren,narrow continuous
-siren_8_norm.wav,alarms,siren,narrow continuous
-siren_8_norm.wav,alarms,siren,narrow continuous
-siren_9_norm.wav,alarms,siren,narrow continuous
-siren_9_norm.wav,alarms,siren,narrow continuous
-siren_9_norm.wav,alarms,siren,narrow continuous
-siren_9_norm.wav,alarms,siren,narrow continuous
 siren_9_norm.wav,alarms,siren,narrow continuous
 toilet_3_norm.wav,domestic sounds,toilet,broad continuous
 train_1_norm.wav,large transportation methods,train,broad continuous
-train_1_norm.wav,large transportation methods,train,broad continuous
-train_1_norm.wav,large transportation methods,train,broad continuous
-train_1_norm.wav,large transportation methods,train,broad continuous
-train_1_norm.wav,large transportation methods,train,broad continuous
-train_1_norm.wav,large transportation methods,train,broad continuous
 train_2_norm.wav,large transportation methods,train,broad continuous
-train_2_norm.wav,large transportation methods,train,broad continuous
-train_2_norm.wav,large transportation methods,train,broad continuous
-train_2_norm.wav,large transportation methods,train,broad continuous
-train_3_norm.wav,large transportation methods,train,broad continuous
-train_3_norm.wav,large transportation methods,train,broad continuous
-train_3_norm.wav,large transportation methods,train,broad continuous
-train_3_norm.wav,large transportation methods,train,broad continuous
 train_3_norm.wav,large transportation methods,train,broad continuous
 train_4_norm.wav,large transportation methods,train,broad continuous
-train_4_norm.wav,large transportation methods,train,broad continuous
-train_4_norm.wav,large transportation methods,train,broad continuous
 trumpet_1_norm.wav,music,trumpet,narrow continuous
-trumpet_1_norm.wav,music,trumpet,narrow continuous
-trumpet_1_norm.wav,music,trumpet,narrow continuous
-trumpet_2_norm.wav,music,trumpet,narrow continuous
-trumpet_2_norm.wav,music,trumpet,narrow continuous
 trumpet_2_norm.wav,music,trumpet,narrow continuous
 trumpet_3_norm.wav,music,trumpet,narrow continuous
-trumpet_3_norm.wav,music,trumpet,narrow continuous
-trumpet_4_norm.wav,music,trumpet,narrow continuous
-trumpet_4_norm.wav,music,trumpet,narrow continuous
-trumpet_4_norm.wav,music,trumpet,narrow continuous
 trumpet_4_norm.wav,music,trumpet,narrow continuous
 violin_1_norm.wav,music,violin,narrow continuous
 violin_2_norm.wav,music,violin,narrow continuous
-violin_2_norm.wav,music,violin,narrow continuous
-violin_2_norm.wav,music,violin,narrow continuous
 violin_4_norm.wav,music,violin,narrow continuous
 wind_1_norm.wav,natural sounds,wind,broad continuous
-wind_1_norm.wav,natural sounds,wind,broad continuous
-wind_1_norm.wav,natural sounds,wind,broad continuous
-wind_1_norm.wav,natural sounds,wind,broad continuous
-wind_1_norm.wav,natural sounds,wind,broad continuous
-wind_2_norm.wav,natural sounds,wind,broad continuous
-wind_2_norm.wav,natural sounds,wind,broad continuous
 wind_2_norm.wav,natural sounds,wind,broad continuous
 wind_3_norm.wav,natural sounds,wind,broad continuous
-wind_3_norm.wav,natural sounds,wind,broad continuous
-wind_3_norm.wav,natural sounds,wind,broad continuous
 wind_4_norm.wav,natural sounds,wind,broad continuous
-wind_4_norm.wav,natural sounds,wind,broad continuous
-wind_4_norm.wav,natural sounds,wind,broad continuous
-wind_4_norm.wav,natural sounds,wind,broad continuous
+toilet_1_norm.wav,domestic sounds,toilet,broad continuous
+small_crowd_1_norm.wav,human voice,people talking,narrow continuous

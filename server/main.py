@@ -1,4 +1,3 @@
-from tkinter import HORIZONTAL
 import uuid
 from sqlalchemy import *
 from sqlalchemy.sql import *
@@ -48,12 +47,18 @@ def interaction():
 def next():
     if request.method == 'POST':
         data = request.json
-        vertical = bool(data['vertical'])
+        recording_name = data['recording_name']
         survey_id = data['survey_id']
 
+        if (data['vertical'] == 2):
+            vertical = None
+            exec = '''select id from "Recording" where recording_name = ''' + "'" + recording_name + "' and vertical is null"
+        else:
+            vertical = bool(data['vertical'])
+            exec = '''select id from "Recording" where recording_name = ''' + "'" + recording_name + "' and vertical = " + str(vertical)
+
         recording_id = -1
-        recording_name = data['recording_name']
-        result_recording_id = eng.execute('''select id from "Recording" where recording_name = ''' + "'" + recording_name + "' and vertical = " + str(vertical))
+        result_recording_id = eng.execute(exec)
         for r in result_recording_id:
             recording_id = int(dict(r)['id'])
 
@@ -97,14 +102,14 @@ def next():
 def select_recording():
     while (True):
         recording = randrange(192) + 1 # 1 - 192
-        result = eng.execute('''select num_annotation, recording_name from "Recording" where id = ''' + str(recording+ 1) )
-        # vertical = 1
+        result = eng.execute('''select num_annotation, recording_name from "Recording" where id = ''' + str(recording) )
         for r in result:
             if (int(dict(r)['num_annotation']) < 5):
-                if (recording > 96): # in horizontal file not in horizontal_vertical file
-                    vertical = 0
+                if (recording > 96):
+                    vertical = 0 # horizontal file
                 else:
-                    vertical = 1
+                    vertical = 1 # horizontal_vertical file
+
                 return "{" + '''"recording_name":{"0":''' + '"' + str(dict(r)['recording_name']) + '"' + "}," + '''"vertical":{"0":''' + str(vertical) + "}" + "}"
             else:
                 continue
@@ -115,7 +120,12 @@ def submit_confirmation():
     if (request.method == 'POST'):
         data = request.json
         practice = bool(int(data['practice']))
-        vertical = str(bool(data['vertical']))
+        if (data['vertical'] == 2):
+            vertical = None
+            vertical_exec = "is null"
+        else:
+            vertical = bool(data['vertical'])
+            vertical_exec = "= "+str(vertical)
         recording_name = data['recording_name']
         source_id = data['source_id'].split(',')
         location_id = data['location_id'].split(',')
@@ -123,7 +133,7 @@ def submit_confirmation():
 
         recording_id = -1
         recording_name = data['recording_name']
-        result_recording_id = eng.execute('''select id from "Recording" where recording_name = ''' + "'" + recording_name + "' and vertical = " + vertical)
+        result_recording_id = eng.execute('''select id from "Recording" where recording_name = ''' + "'" + recording_name + "' and vertical " + vertical_exec)
         for r in result_recording_id:
             recording_id = int(dict(r)['id'])
 
@@ -151,13 +161,18 @@ def submit_confirmation():
 def confirm_annotation():
     if (request.method == 'POST'):
         data = request.json
-        recording_name = data['recording_name']
-        vertical = str(bool(data['vertical']))
         survey_id = data['survey_id']
+
+        if (data['vertical'] == 2):
+            vertical = None
+            vertical_exec = "is null"
+        else:
+            vertical = bool(data['vertical'])
+            vertical_exec = "= "+str(vertical)
 
         recording_id = -1
         recording_name = data['recording_name']
-        result_recording_id = eng.execute('''select id from "Recording" where recording_name = ''' + "'" + recording_name + "' and vertical = " + vertical)
+        result_recording_id = eng.execute('''select id from "Recording" where recording_name = ''' + "'" + recording_name + "' and vertical " + vertical_exec)
         for r in result_recording_id:
             recording_id = int(dict(r)['id'])
 
@@ -165,7 +180,6 @@ def confirm_annotation():
         result_get_recording = eng.execute('''select id from "Annotation" where survey_id = ''' + "'" + survey_id + "' order by id desc limit 1")
         for r1 in result_get_recording:
             annotation_id = str(dict(r1)['id'])
-        print(annotation_id)
     
         file_name = '''"file_name":{''' # source file_name
         source_id = '''"source_id":{'''

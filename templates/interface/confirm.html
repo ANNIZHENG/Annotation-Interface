@@ -41,11 +41,7 @@
 						<div class="circular" id="circular10" style="display: none;"><div class="indicator" id="head-item-10" style="display: none;">10</div></div>
 					</div>
 				</div>
-				<div id="feedback" style="display: inline-block; z-index: 2;">
-					<button id="message">Instructions</button>
-					<textarea id="user_note" style="font-size: 11px; width: 100%; height: 150px; background-color:#f0f8ff; margin-top: 10px;" readonly></textarea>
-				</div>
-				<br>
+				<button id="message" style="width:200px;">Instructions</button><br>
 				<div id="front-wrapper" style="display: inline-block;"><div style="font-weight:bold; font-size:13px; color:blue; text-align: center;">Back View</div>
 					<div id="front" style="background-image: url('/templates/interface/img/front.png');">
 						<div class="circular" id="circularF1" style="display: none;"><div class="indicator" id="front-item-1" style="display: none;">1</div></div>
@@ -75,6 +71,10 @@
 					</div>
 				</div>
 			</div>
+			<div style="margin-left: 10px;">
+				<div style="font-size: 14px; color:blue; text-align:center; font-weight:bold;">Your Notes</div>
+				<textarea id="user_note" style="z-index: 1; height: 421.5px;"></textarea>
+			</div>
         </div>
 
 		<div id="confirm-form">
@@ -99,7 +99,7 @@
 			<input id="btn-button-next" type="submit" name="btn-button-next" value="GO TO TASK" style="float: right; margin-bottom:20px; display:none;">
 		</div>
 
-		<div id="modal" style="display: none; z-index: 2;">
+		<div id="modal" style="z-index:2; display:none;">
 			<div class="instructions">
 				<button class="move" id="instruction-left" style="margin-right: 20px;">&#8249;</button>
 				<div id="instruction1" style="margin: 0 auto;">
@@ -339,7 +339,7 @@
 							that you heard. We will refer to these spatial locations as annotations.
 						</li>
 						<li>
-							A 2D "top view" display on which you can annotate the horizontal spatial location; 
+							In this stage you will see 4 spatial displays: a 2D "top view" display on which you can annotate the horizontal spatial location; 
 							2D "back view" and "side view" displays on which you can annotate the vertical spatial location; and 
 							a rotatable 3D view which is just for displaying the spatial location annotations you create.
 						</li>
@@ -350,8 +350,8 @@
 					<h3 style="text-align: center; color: blue;"> Annotation Interface Instructions</h3>
 					<img src="/templates/interface/img/4.png" style="width:70%; display: block; margin: auto;">
 					<ul>
-						<li>To add a new source press "Option" or "Alt" + click.</li>
-						<li>To remove a source press "Command" or "Win" + click.</li>
+						<li>To add a new annotation press key Option or Alt and click.</li>
+						<li>To remove a annotation press key Command or Win and click.</li>
 						<li>You can always see the rules in the "Keyboard Rules" button.</li>
 						<li>
 							To annotate the spatial location of each sound, you must select a horizontal spatial location.

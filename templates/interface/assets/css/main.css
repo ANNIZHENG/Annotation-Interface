@@ -32,7 +32,8 @@ body{
 	cursor: pointer;
 	font-size: 15px;
 	width: 170px;
-	height: 40px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 	background-color: #efefef;
 	border: 2px solid black;
 }
@@ -83,7 +84,8 @@ body{
 #btn-button-submit,
 #btn-button-again{
 	margin-top: 5px;
-	padding: 5px;
+	padding-top: 3px;
+	padding-bottom: 3px;
 	width: 170px;
 	border: 2px solid black;
 	background-color: #efefef;
@@ -119,6 +121,13 @@ body{
 	margin: 0;
 }
 
+#user_note{
+	font-size: 13px; 
+	width: 100%;
+	height: 400px; 
+	background-color:#f0f8ff;
+}
+
 #head, #front, #side, #feedback{
 	vertical-align: middle;
 	display:inline-block;
@@ -128,14 +137,6 @@ body{
 	width: 200px;
 	background-size: cover;
 	font-size: 13px;
-}
-
-#side{
-	margin-left: 25px;
-}
-
-#feedback{
-	width: 300px;
 }
 
 #p-azimuth, #p-elevation{
@@ -161,6 +162,7 @@ body{
 	height: 11px;
 	display: inline-block;
 	margin-right: 5px;
+	border: 0.5px solid black;
 }
 
 .confirm-indicator{

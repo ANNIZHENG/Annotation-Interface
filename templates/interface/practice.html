@@ -20,13 +20,13 @@
 		<div id="3d-head" width="400"></div>
 	</div>
 	<div class="container" id = "container">
-		<div>
+		<div style="z-index: 1;">
 			<button id="message">Instructions</button>
 			<button id="key-message">Keyboard Rules</button>
 			<h2>Please listen to the audio</h2>
 			<audio id="audio" controls style="display: none;"><source id = "source" type="audio/wav"> Your browser does not support audio </audio>
 			<button id="audio-frame">Play Audio</button><br>
-			<label id="question" for="count" style="font-size: 16px; font-weight: bold;">How many distinct sounds can you hear?</label>
+			<label id="question" for="count" style="font-size: 15px; font-weight: bold;">How many distinct sounds can you hear?</label>
 			<select id="count" name="count" style="display: none;">
 				<option id="default-option" value="" selected disabled></option>
 				<option id="option1" value=1>1</option> <option id="option2" value=2>2</option>
@@ -35,8 +35,7 @@
 				<option id="option7" value=7>7</option> <option id="option8" value=8>8</option>
 				<option id="option9" value=9>9</option> <option id="option10" value=10>10</option>
 			</select>
-			<br><br>
-			<label id="2d-question" for="2d" style="font-size: 15px; font-weight: bold; margin-top: 5px;"></label>
+			<label for="2d" style="font-size:15px; font-weight:bold;"><p id="2d-question"></p></label>
 			<div id="2d" style="margin-top: 5px;">
 				<div id="head-wrapper" style="display: none;"><div style="font-weight:bold; font-size:13px; color:blue; text-align: center;">Top View</div>
 					<div id="head" style="background-image: url('/templates/interface/img/head.png');">
@@ -54,12 +53,15 @@
 					</div>
 				</div>
 				<div id="feedback" style="visibility: hidden;">
-					<div id="dot-tracker" style="display: none;">
-						<div id='azimuth-dot'></div>horizontal location:<button id='azimuth-minus'>-</button><div id='p-azimuth'></div><button id='azimuth-plus'>+</button><br><br>
-						<div id='elevation-dot'></div>vertical location:<button id='elevation-minus'>-</button><div id='p-elevation'></div><button id='elevation-plus'>+</button>
-					</div>
-					<div style="margin-top:10px; font-size: 12px; color:blue; text-align:center; font-weight:bold; visibility: visible;">You May Take Notes Here</div>
-					<textarea id="user_note" style="font-size: 12px; width: 100%; height: 108px; background-color:#f0f8ff; z-index:2; visibility: visible;"></textarea>
+					<div id='azimuth-dot'></div>horizontal location:<br>
+					<button id='azimuth-minus'>-</button>
+					<div id='p-azimuth'></div>
+					<button id='azimuth-plus'>+</button><br><br>
+
+					<div id='elevation-dot'></div>vertical location:<br>
+					<button id='elevation-minus'>-</button>
+					<div id='p-elevation'></div>
+					<button id='elevation-plus'>+</button>
 				</div>
 				<br>
 				<div id="front-wrapper" style="display: none;"><div style="font-weight:bold; font-size:13px; color:blue; text-align: center;">Back View</div>
@@ -77,7 +79,7 @@
 						<div class="circular" id="circularF10" style="display: none;"><div class="indicator" id="front-item-10" style="display: none;">10</div></div>
 					</div>
 				</div>
-				<div id="side-wrapper" style="display: none;"><div style="font-weight:bold; font-size:13px; color:blue; text-align: center; z-index:1;">Side View</div>
+				<div id="side-wrapper" style="display: none;"><div style="font-weight:bold; font-size:13px; color:blue; text-align: center;">Side View</div>
 					<div id="side" style="background-image: url('/templates/interface/img/side.png');">
 						<div class="circular" id="circularS"></div>
 						<div class="circular" id="circularS1" style="display: none;"><div class="indicator" id="side-item-1" style="display: none;">1</div></div>
@@ -95,7 +97,7 @@
 			</div>
 			<input id="btn-button-submit" type="submit" name="btn-button-submit" value="SUBMIT" onclick="ajax_next()" style="display:none;">
 
-			<div id="modal" style="z-index: 2;">
+			<div id="modal" style="z-index:2;">
 				<div class="instructions">
 					<button class="move" id="instruction-left" style="margin-right: 20px;">&#8249;</button>
 					<div id="instruction1" style="margin: 0 auto;">
@@ -335,7 +337,7 @@
 								that you heard. We will refer to these spatial locations as annotations.
 							</li>
 							<li>
-								A 2D "top view" display on which you can annotate the horizontal spatial location; 
+								In this stage you will see 4 spatial displays: a 2D "top view" display on which you can annotate the horizontal spatial location; 
 								2D "back view" and "side view" displays on which you can annotate the vertical spatial location; and 
 								a rotatable 3D view which is just for displaying the spatial location annotations you create.
 							</li>
@@ -346,8 +348,8 @@
 						<h3 style="text-align: center; color: blue;"> Annotation Interface Instructions</h3>
 						<img src="/templates/interface/img/4.png" style="width:70%; display: block; margin: auto;">
 						<ul>
-							<li>To add a new source press "Option" or "Alt" + click.</li>
-							<li>To remove a source press "Command" or "Win" + click.</li>
+							<li>To add a new annotation press key Option or Alt and click.</li>
+							<li>To remove a annotation press key Command or Win and click.</li>
 							<li>You can always see the rules in the "Keyboard Rules" button.</li>
 							<li>
 								To annotate the spatial location of each sound, you must select a horizontal spatial location.
@@ -381,6 +383,10 @@
 					<button class="move" id="instruction-right" style="margin-left: 20px;">&#8250;</button>
 				</div>
 			</div>
+		</div>
+		<div style="margin-left: 10px;">
+			<div style="font-size: 14px; color:blue; text-align:center; font-weight:bold;">You May Take Notes Here</div>
+			<textarea id="user_note" style="z-index: 1;"></textarea>
 		</div>
 	</div>
 	<script src="//cdn.rawgit.com/mrdoob/three.js/master/build/three.js"></script>
