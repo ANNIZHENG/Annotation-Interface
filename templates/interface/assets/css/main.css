@@ -171,10 +171,10 @@ body{
 	justify-content: center;
 	width: 25px; 
 	height: 25px;
-	border-radius: 50%;
 	font-size: 17px;
 	font-weight: 900;
 	text-align: center;
+	border-radius: 50%;
 }
 
 .indicator{

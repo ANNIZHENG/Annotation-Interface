@@ -9,10 +9,20 @@ var curr_recording = 0;
 var totalInstructions = 8;
 const audio_path = 'https://assets-audio.s3.amazonaws.com/audio';
 
-if (localStorage.getItem('practice') == undefined) curr_recording = 0
-else if (parseInt(localStorage.getItem('practice')) > totalPractice) curr_recording = 0;
-else curr_recording = localStorage.getItem('practice');
 
+if (localStorage.getItem('practice') == undefined) {
+	curr_recording = 0;
+	localStorage.setItem('practice', curr_recording);
+}
+else if (parseInt(localStorage.getItem('practice')) > totalPractice) {
+	curr_recording = 0;
+}
+else {
+	curr_recording = localStorage.getItem('practice');
+}
+
+
+console.log("curr_recording: ",curr_recording);
 document.getElementById('source').src =  audio_path + '/recording/' + recording_file + '/' + recording_names[curr_recording];
 document.getElementById('audio').load();
 
@@ -114,7 +124,7 @@ document.addEventListener('click', function(e){
 
 		isPlaying = false;
 		document.getElementById('audio').pause();
-		document.getElementById('audio-frame').innerHTML='Play Audio';
+		document.getElementById('audio-frame').innerHTML='Play an Example';
 
 		var audios = document.getElementsByClassName('audio-frame-instruction');
 
@@ -349,6 +359,7 @@ function findUndefinedElevation(){
 function ajax_interaction() {
 	request.open('POST', '/interaction', true);
 	request.setRequestHeader('content-type', 'application/json;charset=UTF-8');
+	practice = 1;
 	var data = JSON.stringify({survey_id,action_type,value,timestamp,practice});
 	request.send(data);
 }
@@ -366,6 +377,7 @@ function ajax_next(){
 	let recording_name = recording_names[curr_recording];
 	let vertical = 2;
 	localStorage.setItem('vertical', vertical);
+	practice = 1;
 	var data = JSON.stringify({survey_id,recording_name,azimuth,elevation,source_count,timestamp,user_note,practice,vertical});
 	request.send(data);
 	localStorage.setItem('recording', recording_names[curr_recording]);

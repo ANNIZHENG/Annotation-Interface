@@ -14,16 +14,15 @@ function ajax_select_recording(){
 	request_recording.onreadystatechange = function() {
 		if (request_recording.readyState == 4){
 			console.log(request_recording.response);
-
 			vertical = JSON.parse(request_recording.response)["vertical"]["0"] == "0" ? 0 : 1;
+			localStorage.setItem('vertical',vertical);
 			let file_name = vertical ? "horizontal_vertical" : "horizontal";
 			recording_name = JSON.parse(request_recording.response)["recording_name"]["0"];
 
 			document.getElementById('source').src = audio_path+'/recording/'+ file_name + "/" + recording_name;
 			document.getElementById('audio').load();
-
 			localStorage.setItem('recording', recording_name);
-			localStorage.setItem('vertical', vertical);
+
 		}
 	}
 	request_recording.send();

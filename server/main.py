@@ -55,7 +55,7 @@ def next():
             exec = '''select id from "Recording" where recording_name = ''' + "'" + recording_name + "' and vertical is null"
         else:
             vertical = bool(data['vertical'])
-            exec = '''select id from "Recording" where recording_name = ''' + "'" + recording_name + "' and vertical = " + str(vertical)
+            exec = '''select id from "Recording" where recording_name = ''' + "'" + recording_name + "' and vertical is " + str(vertical)
 
         recording_id = -1
         result_recording_id = eng.execute(exec)
@@ -89,11 +89,12 @@ def next():
             index += 1
         
         result = eng.execute('''select id from "Annotation" where survey_id = ''' + "'" + survey_id + "' order by id desc limit 1")
+
         for r in result:
             annotation_id = str(dict(r)['id'])
         
-        eng.execute('''update "Interaction" set annotation_id=''' + annotation_id + '''where annotation_id = '''  + "'" + survey_id + "'")
-        eng.execute('''update "Location" set annotation_id=''' + annotation_id + '''where annotation_id = '''  + "'" + survey_id + "'")
+        eng.execute('''update "Interaction" set annotation_id = ''' + "'" + annotation_id + "' where annotation_id = '" + survey_id + "'")
+        eng.execute('''update "Location" set annotation_id = ''' + "'" + annotation_id + "' where annotation_id = '" + survey_id + "'")
 
     return 'success'
 
@@ -102,14 +103,15 @@ def next():
 def select_recording():
     while (True):
         recording = randrange(192) + 1 # 1 - 192
-        result = eng.execute('''select num_annotation, recording_name from "Recording" where id = ''' + str(recording) )
+        result = eng.execute('''select num_annotation, recording_name from "Recording" where id = ''' + str(recording))
+
         for r in result:
             if (int(dict(r)['num_annotation']) < 5):
                 if (recording > 96):
-                    vertical = 0 # horizontal file
-                else:
-                    vertical = 1 # horizontal_vertical file
+                    vertical = 0
 
+                else:
+                    vertical = 1
                 return "{" + '''"recording_name":{"0":''' + '"' + str(dict(r)['recording_name']) + '"' + "}," + '''"vertical":{"0":''' + str(vertical) + "}" + "}"
             else:
                 continue
@@ -122,10 +124,11 @@ def submit_confirmation():
         practice = bool(int(data['practice']))
         if (data['vertical'] == 2):
             vertical = None
-            vertical_exec = "is null"
+            vertical_exec = "null"
         else:
             vertical = bool(data['vertical'])
-            vertical_exec = "= "+str(vertical)
+            vertical_exec = str(vertical)
+        
         recording_name = data['recording_name']
         source_id = data['source_id'].split(',')
         location_id = data['location_id'].split(',')
@@ -133,7 +136,8 @@ def submit_confirmation():
 
         recording_id = -1
         recording_name = data['recording_name']
-        result_recording_id = eng.execute('''select id from "Recording" where recording_name = ''' + "'" + recording_name + "' and vertical " + vertical_exec)
+        result_recording_id = eng.execute('''select id from "Recording" where recording_name = ''' + "'" + recording_name + "' and vertical is " + vertical_exec)
+
         for r in result_recording_id:
             recording_id = int(dict(r)['id'])
 
@@ -146,14 +150,15 @@ def submit_confirmation():
             ses.commit()
 
         result = eng.execute('''select id from "Annotation" where survey_id = ''' + "'" + survey_id + "' order by id desc limit 1")
+
         for r in result:
             annotation_id = str(dict(r)['id'])
         
-        eng.execute('''update "Confirmation" set annotation_id=''' + annotation_id + '''where annotation_id = '''  + "'" + survey_id + "'")
+        eng.execute('''update "Confirmation" set annotation_id = ''' + "'" + annotation_id + "' where annotation_id = '" + survey_id + "'")
 
         if (not practice):
-            eng.execute('''update "Recording" set num_annotation= num_annotation + 1 where id='''+ str(recording_id))
-            
+            eng.execute('''update "Recording" set num_annotation = num_annotation + 1 where id = '''+ str(recording_id))
+        
         return 'success'
 
 
@@ -165,26 +170,28 @@ def confirm_annotation():
 
         if (data['vertical'] == 2):
             vertical = None
-            vertical_exec = "is null"
+            vertical_exec = "null"
         else:
             vertical = bool(data['vertical'])
-            vertical_exec = "= "+str(vertical)
+            vertical_exec = str(vertical)
 
         recording_id = -1
         recording_name = data['recording_name']
-        result_recording_id = eng.execute('''select id from "Recording" where recording_name = ''' + "'" + recording_name + "' and vertical " + vertical_exec)
+        result_recording_id = eng.execute('''select id from "Recording" where recording_name = ''' + "'" + recording_name + "' and vertical is " + vertical_exec)
+
         for r in result_recording_id:
             recording_id = int(dict(r)['id'])
 
         annotation_id = ''
         result_get_recording = eng.execute('''select id from "Annotation" where survey_id = ''' + "'" + survey_id + "' order by id desc limit 1")
+
         for r1 in result_get_recording:
             annotation_id = str(dict(r1)['id'])
     
-        file_name = '''"file_name":{''' # source file_name
+        file_name = '''"file_name":{'''
         source_id = '''"source_id":{'''
         filename_json_index = 0
-        result_file_name = eng.execute( '''with cte as (select "Recording".id as recording_id, "Recording_Joint_Source".source_id as source_id from "Recording" inner join "Recording_Joint_Source" on "Recording".id = "Recording_Joint_Source".recording_id) select "Source".id as source_id, "Source".file_name as file_name from "Source" inner join cte on "Source".id = cte.source_id where recording_id ='''+ str(recording_id) )
+        result_file_name = eng.execute( '''with cte as (select "Recording".id as recording_id, "Recording_Joint_Source".source_id as source_id from "Recording" inner join "Recording_Joint_Source" on "Recording".id = "Recording_Joint_Source".recording_id) select "Source".id as source_id, "Source".file_name as file_name from "Source" inner join cte on "Source".id = cte.source_id where recording_id = '''+ str(recording_id))
 
         for r in result_file_name:
             file_name = file_name + '"' + str(filename_json_index) + '":' + '"' + dict(r)['file_name'] + '",'
