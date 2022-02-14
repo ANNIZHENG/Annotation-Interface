@@ -1,5 +1,7 @@
 # Annotation Interface
 
+#### Please refer to this: https://github.com/ANNIZHENG/Temp-Annotation-Interface
+
 #### Please create a postgresql database beforehand and change the path in server/db_tables.py line 7 (the current database used is from Postgres Heroku)
 
 #### You may check the database directory for postgresql commands for creating Recording, Recording_Joint_Source, Source tables before starting the program
