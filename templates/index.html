@@ -17,7 +17,7 @@
 	<form action="/templates/headphone_check.html" style="padding-left: 20%; padding-right: 20%; font-size: 18px;">
 		<p>
 			You have been invited to take part in a research study to learn more about the number of
-			sources people can identify on a complex sound scene and their localization ability. This study
+			sounds people can identify on a complex sound scene and their localization ability. This study
 			will be conducted by Ana Elisa Mendez, STEINHARDT - Music and Audio Research
 			Laboratory (MARL), Steinhardt School of Culture, Education, and Human Development, New
 			York University, as a part of her Doctoral Dissertation. Her faculty sponsor is Professor Juan
@@ -28,7 +28,7 @@
 			If you agree to be in this study, you will be asked to do the following:
 			<ul>
 				<li>Go through a screening to make sure you're wearing headphones</li>
-				<li>Listen to audio recordings to count the number of sources present</li>
+				<li>Listen to audio recordings to count the number of sounds present</li>
 				<li>Identify the location of each source</li>
 			</ul>
 		</p>
@@ -39,7 +39,7 @@
 		</p>
 		<p>
 			Although you will receive no direct benefits, this research may help the investigator understand
-			the number of sources people can identify on a complex sound scene and their localization
+			the number of sounds people can identify on a complex sound scene and their localization
 			ability. You will receive $2.5 for 10 minutes of participation.
 		</p>
 		<p>
@@ -69,10 +69,38 @@
 		<p> 
 			You have received a copy of this consent document to keep.
 		</p>
-		<button style="height: 40px; font-size: 15px; float: right; cursor: pointer;"> I Have Read and Agreed With the Above Statement </button>
+		<button style="height: 40px; font-size: 15px; float: right; cursor: pointer;" onclick="ajax_interaction()"> I Have Read and Agreed With the Above Statement </button>
 	</form>
 	<script>
+		document.onload = () => { 
+			window.alert("Please wait patiently until the web page is fully loaded.");
+		}
+
 		localStorage.clear();
+		
+		ajax_start();
+
+		var survey_id = undefined;
+		function ajax_start(){
+			var request_start = new XMLHttpRequest();
+			request_start.open('POST', '/annotation_interface');
+			request_start.onreadystatechange = function() {
+				survey_id = request_start.response;
+				localStorage.setItem("survey_id", survey_id);
+			}
+			request_start.send();
+		}
+		function ajax_interaction() {
+			var request = new XMLHttpRequest();
+			request.open('POST', '/interaction', true);
+			request.setRequestHeader('content-type', 'application/json;charset=UTF-8');
+			let action_type = "agree consent form";
+			let value = null;
+			let timestamp = Date.now();
+			let practice = 0;
+			var data = JSON.stringify({survey_id,action_type,value,timestamp,practice});
+			request.send(data);
+		}
 	</script>
 </body>
 </html>

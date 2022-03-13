@@ -16,53 +16,66 @@ Contact Ray Gonzalez raygon@mit.edu or Kevin J. P. Woods kwoods@mit.edu
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript" src="/templates/HeadphoneCheck.js"></script> 
     <style type="text/css">
-      *, *::before, *::after {
+      body {
         box-sizing: border-box;
         font-family: Monaco;
-      }
-
-      body {
         margin: auto;
         margin-top: 7vh;
-        max-width: 70%;
+        max-width: 60%;
         display: flex;
         flex-direction: column;
       }
-
       input[type=radio] {
         margin-right: 4px;
         height:17px;
         width:17px;
       }
-
-      label{
-        display: block;
-      }
-
-      div{
-        margin-bottom: 10px;
-      }
-    
+      label{ display: block;}
+      div{ margin-bottom: 15px; }
     </style>
   </head>
-
   <body onload="HeadphoneCheck.runHeadphoneCheck();">
+    <h1>Headphone Check</h1>
     <div id="hc-container"></div>
     <script>
       $(document).on('hcHeadphoneCheckEnd', function(event, data) {
         var results = data.data;
         var config = data.config;
         var didPass = data.didPass;
-        if (didPass) start();
+        if (didPass) {
+          ajax_interaction_pass(true);
+          start();
+        }
         else {
+          ajax_interaction_pass(false);
           $('<div/>', {
-            html: 'Screening task failed.<br/><br/>Total Correct: ' + results.totalCorrect + '<br/>Please re-do the head phone check tasks'
+            html: 'Screening task failed. Your headphones do not meet the qualifications for the task.'
           }).appendTo($('body'));
         }
       });
-
       function start(){
-        window.location = '/templates/interface/practice.html';
+        localStorage.setItem('headphone',1);
+        window.location = '/templates/stereo_check.html';
+      }
+      function ajax_interaction_pass(pass){
+        let action_type = 'headphone screening: ';
+        if (pass){
+          action_type += 'pass';
+        }
+        else{
+          action_type += 'fail';
+        }
+
+        let survey_id = localStorage.getItem("survey_id");
+        let value = null;
+        let timestamp = Date.now();
+        let practice = 0;
+
+        var request = new XMLHttpRequest();
+        request.open('POST', '/interaction', true);
+        request.setRequestHeader('content-type', 'application/json;charset=UTF-8');
+        var data = JSON.stringify({survey_id,action_type,value,timestamp,practice});
+        request.send(data);
       }
     </script>
   </body>

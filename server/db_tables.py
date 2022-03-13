@@ -3,7 +3,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-db_path = 'postgresql://eqpytyddkgzpje:589827916509690e9baa1abd869d99bd85ac3c9902c361d04c1e560c2befd624@ec2-52-54-38-229.compute-1.amazonaws.com:5432/dap64di8scvd9n'
+# db_path = 'postgresql://eqpytyddkgzpje:589827916509690e9baa1abd869d99bd85ac3c9902c361d04c1e560c2befd624@ec2-52-54-38-229.compute-1.amazonaws.com:5432/dap64di8scvd9n'
+db_path = 'postgresql://aakmjoytyjhbfy:5cfbd31217c6e99b77965b46b3073aab1fb3abd8063f24b76934a568d6704f97@ec2-34-205-209-14.compute-1.amazonaws.com:5432/df3puddh5kr6vv'
+db_path = 'postgresql://anniezheng@localhost/test'
 
 eng = create_engine(db_path)
 Base = declarative_base()
@@ -12,6 +14,11 @@ class Survey(Base):
     __tablename__ = "Survey"
     id = Column(Integer, primary_key=True, autoincrement=True)
     survey_id = Column(String)
+    approved = Column(Boolean)
+    completed = Column(Boolean)
+    recording_id = Column(Integer)
+    horizontal_or_vertical = Column(VARCHAR)
+
     def __init__(self,survey_id):
         self.survey_id = survey_id
 

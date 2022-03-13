@@ -1,25 +1,31 @@
 *, *::before, *::after {
-  box-sizing: border-box;
-  font-family: Monaco;
+	box-sizing: border-box;
+	font-family: Monaco, Consolas;
 }
 
 body{
 	padding:0;
 	margin:0;
 	display: flex;
+	overflow: hidden;
 }
 
-.container, .container-3D {
-	height: 100vh;
-	width: 100%;
+.container-3D{
+	float: left;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
 
 .container{
-	background-color: white;
+	height: 100vh;
+	width: 1000px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
+
+.container{ background-color: white; }
 
 .container-3D{
 	flex-shrink: 1.5;
@@ -31,11 +37,10 @@ body{
 	text-align: center;
 	cursor: pointer;
 	font-size: 15px;
-	width: 170px;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	background-color: #efefef;
-	border: 2px solid black;
+	width: 180px;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	border: 1px solid black;
 }
 
 #modal {
@@ -43,7 +48,7 @@ body{
 	left: 0;
 	top: 0;
 	width: 100%;
-	height: 100%;
+	height: 100vh;
 	background-color: rgba(0,0,0,0.4);
 }
 
@@ -52,7 +57,7 @@ body{
 	margin: 0 auto;
 	overflow: scroll;
 	font-size: 17px;
-	width: 70%;
+	width: 900px;
 	height: 100vh;
 	background-color: white;
 }
@@ -61,71 +66,77 @@ body{
 	float: right;
 	font-size: 40px;
 	font-weight: bold;
-	color: rgba(0,0,0,0.5);
+	color: rgba(0,0,0,0.4);
 	cursor: pointer;
 }
 
 .move {
+	margin-left: 0;
+	margin-right: 0;
 	border: none;
 	font-size: 50px;
-	cursor: pointer;
 	font-weight: bold;
 	padding-left: 5px;
 	padding-right: 5px;
-	background-color: white;
-	color: rgba(0,0,0,0.5);
+	color: rgba(0,0,0,0.4);
+	cursor: pointer;
 }
 
-.move:hover {
-	background-color: rgba(0,0,0,0.3);
-}
+.move:hover { background-color: rgba(0,0,0,0.3); }
 
 #btn-button-next,
 #btn-button-submit,
-#btn-button-again{
+#btn-button-again,
+#btn-button-next-annotation{
+	border: 1px solid black;
 	margin-top: 5px;
-	padding-top: 3px;
-	padding-bottom: 3px;
-	width: 170px;
-	border: 2px solid black;
-	background-color: #efefef;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	font-size: 15px;
+	width: 180px;
 	cursor: pointer;
 }
 
 #btn-button-next:hover,
 #btn-button-submit:hover,
 #btn-button-again:hover,
+#btn-button-next-annotation:hover,
 #message:hover,
 #key-message:hover{
 	background-color:#c7c7c7;
 }
 
-#audio-frame-full, #audio-frame, .audio-frame-instruction{
+#audio-frame-full, #audio-frame{
 	margin-bottom: 20px;
 	font-weight: bold;
 	text-align: center;
 	font-size: 15px;
-	height: 40px;
-	width: 350px;
-	border: 2px solid black;
+	width: 380px;
+	padding-top: 9px;
+	padding-bottom: 9px;
+	border: 1px solid black;
 	background: linear-gradient(to right, #efefef 0%, #ffffff 0%);
 	cursor: pointer;
 }
 
 .audio-frame-instruction{
+	font-weight: bold;
+	text-align: center;
+	font-size: 13px;
+	width: 250px;
+	padding-top: 4px;
+	padding-bottom: 4px;
 	border: 1px solid black;
-	font-size: 11px;
-	width: 200px;
-	height: 25px;
-	display: inline-block;
-	margin: 0;
+	background: linear-gradient(to right, #efefef 0%, #ffffff 0%);
+	cursor: pointer;
 }
 
 #user_note{
 	font-size: 13px; 
-	width: 100%;
-	height: 400px; 
+	width: 200px;
+	height: 400px;
 	background-color:#f0f8ff;
+	border: 1px solid black;
 }
 
 #head, #front, #side, #feedback{
@@ -146,14 +157,22 @@ body{
 	margin-left: 5px;
 }
 
-#azimuth-plus, #azimuth-minus, #elevation-minus, #elevation-plus{
+#azimuth-plus, 
+#azimuth-minus, 
+#elevation-minus, 
+#elevation-plus {
 	font-size: 13px;
 	display: inline-block;
-	padding-left: 5px;
-	padding-right: 5px;
-	padding-top: 1px;
-	padding-bottom: 1px;
+	border: 1px solid black;
 	cursor: pointer;
+}
+
+#azimuth-plus:hover, 
+#azimuth-minus:hover, 
+#elevation-minus:hover, 
+#elevation-plus:hover {
+	border: 1px solid black;
+	background-color:#c7c7c7;
 }
 
 #azimuth-dot, #elevation-dot{

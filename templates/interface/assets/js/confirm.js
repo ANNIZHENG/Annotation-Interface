@@ -1,19 +1,24 @@
+if (localStorage.getItem('stereo') != '1' || localStorage.getItem('headphone') != '1' || localStorage.getItem('survey_id') == undefined || localStorage.getItem('survey_id') == null){
+		window.location = '/templates/interface/incomplete.html';
+}
+
 var file_name = {};
 var azimuth = {};
 var elevation = {};
 var color = {};
+var locations = {};
+var sources = {};
 var user_num_source;
 var actual_num_source;
 var recording_name = '';
 var curr_instruction = 1;
+var practice = -1;
 var modal = document.getElementById("modal");
-var practice = 0; // FALSE
-var totalInstructions = 8;
-const audio_path = 'https://assets-audio.s3.amazonaws.com/audio';
-
+const totalInstructions = 8;
 const colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
 const css_colors = ["#009dff", "#ff7f0e", "#00ff00", "#ff0000", "#9467bd", "#d3d3d3", "#c39b77", "#e377c2", "#bcbd22", "#00ffff"];
-var request = new XMLHttpRequest(); 
+const audio_path = 'https://assets-audio.s3.amazonaws.com/audio'
+const audio_path_practice = '/templates/interface/assets/audio/practice/';
 
 // these are look up tables for annotation dots' size change
 var indicators = {
@@ -55,13 +60,11 @@ var side_indicators = {
 	10: []
 };
 
-
 document.getElementById('message').addEventListener("click",popRules);
 document.getElementById('instruction-left').addEventListener("click",move_instruction_last);
 document.getElementById('instruction-right').addEventListener("click",move_instruction_next);
 document.getElementById('instruction-proceed').addEventListener("click",closeRules);
 document.getElementById('sign').addEventListener("click",closeRules);
-
 
 function popRules(e){ 
 	e.preventDefault();
@@ -74,7 +77,10 @@ function popRules(e){
 }
 
 function closeRules(e){ 
-	e.preventDefault();
+	let videos = document.getElementsByTagName('video');
+	for(let i = 0; i<videos.length; i++){
+		videos[i].pause();
+	}
 	let audios = document.getElementsByClassName('audio-frame-instruction');
 	for (let i = 0; i < audios.length; i++) {
 		audio_id = "audio" + audios[i].id.replace("audio-frame-instruction","");
@@ -86,19 +92,55 @@ function closeRules(e){
 
 function move_instruction_next(e){
 	e.preventDefault();
-	if (curr_instruction == 3){ // pause all audios
+
+	if (curr_instruction == 1) {
+		document.getElementById('instruction-video-1').currentTime = 0;
+		document.getElementById('instruction-video-1').play();
+	}
+	else document.getElementById('instruction-video-1').pause();
+	
+	if (curr_instruction == 3){ // if move out of the second page then pause all audio
 		let audios = document.getElementsByClassName('audio-frame-instruction');
 		for (let i = 0; i < audios.length; i++) {
 			audio_id = "audio" + audios[i].id.replace("audio-frame-instruction","");
 			document.getElementById(audio_id).pause();
 			document.getElementById(audios[i].id ).innerHTML = 'Play an Example';
 		}
+		document.getElementById('instruction-video-2').currentTime = 0;
+		document.getElementById('instruction-video-2').play();
 	}
+	else document.getElementById('instruction-video-2').pause();
+
+	if (curr_instruction == 4) {
+		document.getElementById('instruction-video-3').currentTime = 0;
+		document.getElementById('instruction-video-3').play();
+	}
+	else document.getElementById('instruction-video-3').pause();
+
+	if (curr_instruction == 5) {
+		document.getElementById('instruction-video-4').currentTime = 0;
+		document.getElementById('instruction-video-4').play();
+	}
+	else document.getElementById('instruction-video-4').pause();
+
+	if (curr_instruction == 6) {
+		document.getElementById('instruction-video-5').currentTime = 0;
+		document.getElementById('instruction-video-5').play();
+	}
+	else document.getElementById('instruction-video-5').pause();
+
+	if (curr_instruction == 7) {
+		document.getElementById('instruction-video-6').currentTime = 0;
+		document.getElementById('instruction-video-6').play();
+	}
+	else document.getElementById('instruction-video-6').pause();
+
 	if (curr_instruction < totalInstructions) {
 		document.getElementById('instruction'+curr_instruction).style.display = 'none';
 		document.getElementById('instruction'+(curr_instruction+1)).style.display = '';
 		curr_instruction += 1;
 	}
+
 	if (curr_instruction == totalInstructions) {
 		document.getElementById("instruction-right").style.display = 'none';
 		document.getElementById("instruction-proceed").style.display = '';
@@ -108,14 +150,45 @@ function move_instruction_next(e){
 function move_instruction_last(e){
 	e.preventDefault();
 	if (curr_instruction > 1) {
-		if (curr_instruction == 3){ // pause all audios
+		if (curr_instruction == 2) document.getElementById('instruction-video-1').pause();
+
+		if (curr_instruction == 3){ // pause all audios if move out of page 2
 			let audios = document.getElementsByClassName('audio-frame-instruction');
 			for (let i = 0; i < audios.length; i++) {
 				audio_id = "audio" + audios[i].id.replace("audio-frame-instruction","");
 				document.getElementById(audio_id).pause();
 				document.getElementById(audios[i].id ).innerHTML = 'Play an Example';
 			}
+			document.getElementById('instruction-video-1').currentTime = 0;
+			document.getElementById('instruction-video-1').play();
 		}
+
+		if (curr_instruction == 4) document.getElementById('instruction-video-2').pause();
+
+		if (curr_instruction == 5) {
+			document.getElementById('instruction-video-2').currentTime = 0;
+			document.getElementById('instruction-video-2').play();
+			document.getElementById('instruction-video-3').pause();
+		}
+
+		if (curr_instruction == 6) {
+			document.getElementById('instruction-video-3').currentTime = 0;
+			document.getElementById('instruction-video-3').play();
+			document.getElementById('instruction-video-4').pause();
+		}
+
+		if (curr_instruction == 7) {
+			document.getElementById('instruction-video-4').currentTime = 0;
+			document.getElementById('instruction-video-4').play();
+			document.getElementById('instruction-video-5').pause();
+		}
+
+		if (curr_instruction == 8) {
+			document.getElementById('instruction-video-5').currentTime = 0;
+			document.getElementById('instruction-video-5').play();
+			document.getElementById('instruction-video-6').pause();
+		}
+
 		document.getElementById("instruction-right").style.display = '';
 		document.getElementById("instruction-proceed").style.display = 'none';
 		document.getElementById('instruction'+curr_instruction).style.display = 'none';
@@ -127,14 +200,14 @@ function move_instruction_last(e){
 confirm_annotation();
 
 function confirm_annotation(){
+	var request = new XMLHttpRequest(); 
 	request.open('POST', '/confirm_annotation');
 	let vertical = parseInt(localStorage.getItem('vertical'))
 	recording_name = localStorage.getItem('recording')
 	request.onreadystatechange = function() {
 		if (request.readyState == 4){
-			console.log(request.response);
-			if (parseInt(localStorage.getItem('practice'))) {
-				practice = 1;
+			if (parseInt(localStorage.getItem('practice_boolean'))) {
+				practice = 1; // set global bool variable practice to true
 				document.getElementById('btn-button-again').style.display = '';
 				document.getElementById('btn-button-next').style.display = '';
 			}
@@ -146,7 +219,8 @@ function confirm_annotation(){
 			color = JSON.parse(request.response)["color"];
 			azimuth = JSON.parse(request.response)["azimuth"];
 			elevation = JSON.parse(request.response)["elevation"];
-
+			locations = JSON.parse(request.response)["location_id"];
+			sources = JSON.parse(request.response)["source_id"];
 			user_num_source = parseInt(JSON.parse(request.response)["user_num_source"]["0"]);
 			actual_num_source = parseInt(JSON.parse(request.response)["actual_num_source"]["0"]);
 
@@ -155,7 +229,8 @@ function confirm_annotation(){
  			else if (vertical == 0) recording_file_name = "horizontal";
 			else recording_file_name = "horizontal_vertical";
 
-			document.getElementById('original-audio-source').src = audio_path + "/recording/" + recording_file_name + '/' +localStorage.getItem('recording');
+			if (parseInt(localStorage.getItem('practice_boolean'))) document.getElementById('original-audio-source').src = audio_path_practice + localStorage.getItem('recording');
+			else document.getElementById('original-audio-source').src = audio_path + "/recording/" + recording_file_name + '/' + localStorage.getItem('recording');
 			document.getElementById('audio-full').load();
 
 			for (const [key,value] of Object.entries( JSON.parse(request.response)["file_name"] )) {
@@ -182,7 +257,7 @@ function confirm_annotation(){
 				new_button.style.cursor = "pointer";
 				new_button.style.border = "1px black solid";
 				new_button.innerHTML = "Play Audio";
-				// end of styling
+
 				new_td.appendChild(new_audio);
 				new_td.appendChild(new_button);
 				document.getElementById("class-name").appendChild(new_td);
@@ -191,7 +266,7 @@ function confirm_annotation(){
 			for (const [key,value] of Object.entries(color)) {
 
 				addLocation([azimuth[key], elevation[key], value]);
-				changeSize(value);
+				changeSize(parseInt(key)+1);
 
 				let new_tr =  document.createElement('tr');
 				let new_td_color = document.createElement('td');
@@ -205,7 +280,7 @@ function confirm_annotation(){
 					let new_td = document.createElement('td');
 					let new_checkbox = document.createElement('input');
 					new_checkbox.id = 'checkbox-'+key+'-'+i;
-					new_checkbox.className = 'checkbox-'+key;
+					new_checkbox.className = 'checkbox-'+key+'-'+locations[key];
 					new_checkbox.type = 'checkbox';
 					new_td.appendChild(new_checkbox);
 					new_tr.appendChild(new_td);
@@ -396,53 +471,85 @@ function submit_confirmation(){
 	let source_id = ''
 	let total_confirmation_num = 0;
 	let checkboxes = document.getElementsByTagName('input');
+
+	let confirm_location_id = [];
 	for (let i = 0; i < checkboxes.length; i++) {
 		if (checkboxes[i].checked) {
+			confirm_location_id[parseInt(checkboxes[i].id.substring(checkboxes[i].id.length-1,checkboxes[i].id.length))] = checkboxes[i].className.split('-')[2];
 			total_confirmation_num += 1;
-			break;
 		}
 	}
+
 	if (total_confirmation_num < 1) {
 		window.alert("You must match at least one audio recording to an annotated location");
 		return false;
 	}
-	for (const [key,value] of Object.entries( JSON.parse(request.response)["location_id"])) {
-		total_confirmation_num += 1;
-		location_id += value + ',';
+
+	for (let i=0; i<confirm_location_id.length; i++) {
+		temp = confirm_location_id[i] == undefined ? 'undefined' : confirm_location_id[i];
+		location_id += temp + ',';
 	}
-	for (const [key,value] of Object.entries( JSON.parse(request.response)["source_id"] )) {
+
+	for (const [key,value] of Object.entries( sources )) {
 		source_id += value + ',';
 	}
+
 	localStorage.setItem('full_round', true);
 	location_id = location_id.substring(0,location_id.length-1);
 	source_id = source_id.substring(0,source_id.length-1);
-	request.open('POST', '/submit_confirmation', true);
-	request.setRequestHeader('content-type', 'application/json;charset=UTF-8');
+	timestamp = Date.now();
+
+	var request_submit = new XMLHttpRequest(); 
+	request_submit.open('POST', '/submit_confirmation', true);
+	request_submit.setRequestHeader('content-type', 'application/json;charset=UTF-8');
+
 	let survey_id = localStorage.getItem('survey_id');
 	let vertical = parseInt(localStorage.getItem('vertical'));
-	var data = JSON.stringify({recording_name, location_id, source_id, practice, survey_id, vertical});
-	request.send(data);
+	var data = JSON.stringify({recording_name, location_id, source_id, practice, survey_id, vertical, timestamp});
+
+	request_submit.send(data);
+	request_submit.onreadystatechange = function() {
+		if (request_submit.readyState == 4){
+			if (request_submit.responseText != 'success'){
+				window.alert("Somthing is wrong. Please Refresh.");
+				return;
+			}
+		}
+	}
 	return true;
 }
 
 document.getElementById('btn-button-submit').addEventListener('click', function(){
-	if (submit_confirmation()) window.location = '/templates/interface/submit.html';
+	if (submit_confirmation()) {
+		localStorage.setItem('complete_annotation',1);
+		window.location = '/templates/interface/submit.html';
+	}
 });
 document.getElementById('btn-button-again').addEventListener('click', function(){
-	if (submit_confirmation()) window.location = '/templates/interface/practice.html';
+	if (submit_confirmation()) {
+		let curr_recording = parseInt(localStorage.getItem('practice'))+1;
+		localStorage.setItem('practice', curr_recording);
+		window.location = '/templates/interface/practice.html';
+	}
 });
 document.getElementById('btn-button-next').addEventListener('click', function(){
-	if (submit_confirmation()) window.location = '/templates/interface/annotation.html';
+	if (submit_confirmation()) {
+		localStorage.setItem('complete_practice',1);
+		localStorage.setItem('practice_boolean',0);
+		window.location = '/templates/interface/annotation.html';
+	}
 });
 
 function changeSize(item_index){
 
 	const selected_azimuth = azimuth[(item_index - 1).toString()];
+
 	let size = 18 - 8;
 	let margin_top = -65 + 4;
 	let margin_left = 0 + 4;
 
-	for ( let index = Object.keys(azimuth).length - 1; index > -1; index-- ){
+	for ( let index = Object.keys(color).length - 1; index > -1; index-- ) {
+
 		if ( selected_azimuth != undefined && Math.abs( selected_azimuth - azimuth[index] ) <= 5) {
 			if ( index != (item_index - 1) ){
 				indicators[item_index][index] = true;
@@ -453,13 +560,12 @@ function changeSize(item_index){
 			margin_top = margin_top - 4;
 			margin_left = margin_left - 4;
 
-			document.getElementById('head-item-'+(index + 1)).style.width = size.toString() + 'px';
-			document.getElementById('head-item-'+(index + 1)).style.height = size.toString() + 'px';
-			document.getElementById('head-item-'+(index + 1)).style.marginTop = margin_top.toString() + 'px';
-			document.getElementById('head-item-'+(index + 1)).style.marginLeft = margin_left.toString() + 'px';
-			document.getElementById('head-item-'+(index + 1)).style.marginLeft = margin_left.toString() + 'px';
-			document.getElementById('head-item-'+(index + 1)).style.fontSize = (size - 3).toString() + 'px';
-
+			document.getElementById('head-item-'+color[index]).style.width = size.toString() + 'px';
+			document.getElementById('head-item-'+color[index]).style.height = size.toString() + 'px';
+			document.getElementById('head-item-'+color[index]).style.marginTop = margin_top.toString() + 'px';
+			document.getElementById('head-item-'+color[index]).style.marginLeft = margin_left.toString() + 'px';
+			document.getElementById('head-item-'+color[index]).style.marginLeft = margin_left.toString() + 'px';
+			document.getElementById('head-item-'+color[index]).style.fontSize = (size - 3).toString() + 'px';
 		}
 		else if ( selected_azimuth == undefined || Math.abs( selected_azimuth - azimuth[index] ) > 5 ) {
 			if ( item_index == 1 && indicators[1][index] ) {
@@ -578,15 +684,17 @@ function changeSize(item_index){
 	}
 
 	const selected_elevation = elevation[item_index - 1];
-	const selected_elevation_degree = parseInt(document.getElementById('circularF'+item_index).style.transform.replace('rotate(','').replace('deg)',''));
+	const selected_elevation_degree = parseInt(document.getElementById('circularF'+color[item_index-1]).style.transform.replace('rotate(','').replace('deg)',''));
+
 	size = 18 - 8;
 	margin_top = -65 + 4;
 	margin_left = 0 + 4;
 
-	for ( let index = Object.keys(elevation).length - 1; index > -1; index-- ) {
-		const current_index_degree = document.getElementById('circularF'+(index+1)).style.display != 'none' ? parseInt(document.getElementById('circularF'+(index+1)).style.transform.replace('rotate(','').replace('deg)','')) : undefined ;
+	for ( let index = Object.keys(color).length - 1; index > -1; index-- ) {
 
-		if ( selected_elevation != undefined && Math.abs( selected_elevation_degree - current_index_degree ) <= 3 ) {
+		const current_index_degree = document.getElementById('circularF'+color[index]).style.display != 'none' ? parseInt(document.getElementById('circularF'+color[index]).style.transform.replace('rotate(','').replace('deg)','')) : undefined ;
+
+		if ( selected_elevation != undefined && Math.abs( selected_elevation_degree - current_index_degree ) <= 5 ) {
 			if ( index != (item_index - 1) ){
 				front_indicators[item_index][index] = true;
 				front_indicators[index+1][item_index-1] = true;
@@ -596,14 +704,14 @@ function changeSize(item_index){
 			margin_top = margin_top - 4;
 			margin_left = margin_left - 4;
 
-			document.getElementById('front-item-'+(index + 1)).style.width = size.toString() + 'px';
-			document.getElementById('front-item-'+(index + 1)).style.height = size.toString() + 'px';
-			document.getElementById('front-item-'+(index + 1)).style.marginTop = margin_top.toString() + 'px';
-			document.getElementById('front-item-'+(index + 1)).style.marginLeft = margin_left.toString() + 'px';
-			document.getElementById('front-item-'+(index + 1)).style.fontSize = (size - 3).toString() + 'px';
+			document.getElementById('front-item-'+color[index]).style.width = size.toString() + 'px';
+			document.getElementById('front-item-'+color[index]).style.height = size.toString() + 'px';
+			document.getElementById('front-item-'+color[index]).style.marginTop = margin_top.toString() + 'px';
+			document.getElementById('front-item-'+color[index]).style.marginLeft = margin_left.toString() + 'px';
+			document.getElementById('front-item-'+color[index]).style.fontSize = (size - 3).toString() + 'px';
 
 		}
-		else if ( selected_elevation == undefined || Math.abs( selected_elevation_degree - current_index_degree ) > 3 ) {
+		else if ( selected_elevation == undefined || Math.abs( selected_elevation_degree - current_index_degree ) > 5 ) {
 			if ( item_index == 1 && front_indicators[1][index] ) {
 				front_indicators[1][index] = undefined;
 				front_indicators[index+1][0] = undefined; 
@@ -720,15 +828,15 @@ function changeSize(item_index){
 	}
 
 	const selected_elevation2 = elevation[item_index - 1];
-	const selected_elevation_degree2 = parseInt(document.getElementById('circularS'+item_index).style.transform.replace('rotate(','').replace('deg)',''));
+	const selected_elevation_degree2 = parseInt(document.getElementById('circularS'+color[item_index-1]).style.transform.replace('rotate(','').replace('deg)',''));
 	size = 18 - 8;
 	margin_top = -65 + 4;
 	margin_left = 0 + 4;
 
-	for ( let index = Object.keys(elevation).length - 1; index > -1; index-- ) {
-		const current_index_degree2 = document.getElementById('circularS'+(index+1)).style.display != 'none' ? parseInt(document.getElementById('circularS'+(index+1)).style.transform.replace('rotate(','').replace('deg)','')) : undefined ;
+	for ( let index = Object.keys(color).length - 1; index > -1; index-- ) {
+		const current_index_degree2 = document.getElementById('circularS'+color[index]).style.display != 'none' ? parseInt(document.getElementById('circularS'+color[index]).style.transform.replace('rotate(','').replace('deg)','')) : undefined ;
 
-		if ( selected_elevation2 != undefined && Math.abs( selected_elevation_degree2 - current_index_degree2 ) <= 3 ) {
+		if ( selected_elevation2 != undefined && Math.abs( selected_elevation_degree2 - current_index_degree2 ) <= 5 ) {
 			if ( index != (item_index - 1) ){
 				side_indicators[item_index][index] = true;
 				side_indicators[index+1][item_index-1] = true;
@@ -738,14 +846,14 @@ function changeSize(item_index){
 			margin_top = margin_top - 4;
 			margin_left = margin_left - 4;
 
-			document.getElementById('side-item-'+(index + 1)).style.width = size.toString() + 'px';
-			document.getElementById('side-item-'+(index + 1)).style.height = size.toString() + 'px';
-			document.getElementById('side-item-'+(index + 1)).style.marginTop = margin_top.toString() + 'px';
-			document.getElementById('side-item-'+(index + 1)).style.marginLeft = margin_left.toString() + 'px';
-			document.getElementById('side-item-'+(index + 1)).style.fontSize = (size - 3).toString() + 'px';
+			document.getElementById('side-item-'+color[index]).style.width = size.toString() + 'px';
+			document.getElementById('side-item-'+color[index]).style.height = size.toString() + 'px';
+			document.getElementById('side-item-'+color[index]).style.marginTop = margin_top.toString() + 'px';
+			document.getElementById('side-item-'+color[index]).style.marginLeft = margin_left.toString() + 'px';
+			document.getElementById('side-item-'+color[index]).style.fontSize = (size - 3).toString() + 'px';
 
 		}
-		else if ( selected_elevation2 == undefined || Math.abs( selected_elevation_degree2 - current_index_degree2 ) > 3 ) {
+		else if ( selected_elevation2 == undefined || Math.abs( selected_elevation_degree2 - current_index_degree2 ) > 5 ) {
 			if ( item_index == 1 && side_indicators[1][index] ) {
 				side_indicators[1][index] = undefined;
 				side_indicators[index+1][0] = undefined; 
@@ -862,7 +970,6 @@ function changeSize(item_index){
 	}
 }
 
-
 /* Three.js */
 
 container = document.getElementById('3d-head');
@@ -920,6 +1027,29 @@ var frame = new THREE.Mesh(frameGeometry, frameMaterial);
 var edgesGeometry = new THREE.EdgesGeometry(frameGeometry);
 var wireframe = new THREE.LineSegments(edgesGeometry, new THREE.LineBasicMaterial({color: 0x0000ff})); 
 
+var frontGeometry = new THREE.TorusGeometry(15,0.1,30,100);
+var frontMaterial = new THREE.MeshLambertMaterial({
+	color: 0x808000
+});
+var front = new THREE.Mesh(frontGeometry, frontMaterial);
+front.position.set(0,0,0);
+
+
+var sideGeometry = new THREE.TorusGeometry(15,0.1,30,100);
+var sideMaterial = new THREE.MeshLambertMaterial({
+	color: 0x964b00
+});
+var side = new THREE.Mesh(sideGeometry, sideMaterial);
+side.rotation.y = Math.PI / 2;
+
+
+var headGeometry = new THREE.TorusGeometry(15,0.1,30,100);
+var headMaterial = new THREE.MeshLambertMaterial({
+	color: 0x6a0dad
+});
+var head = new THREE.Mesh(headGeometry, headMaterial);
+head.rotation.x = Math.PI / 2;
+
 var ballGeometry;
 var ballMaterial;
 
@@ -953,6 +1083,9 @@ function displayBall(azimuth, elevation, number){
 }
 
 scene.add(wireframe);
+scene.add(head);
+scene.add(side);
+scene.add(front);
 scene.add(sphere);
 scene.add(ear1);
 scene.add(ear2);
