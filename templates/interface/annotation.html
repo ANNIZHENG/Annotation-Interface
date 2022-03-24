@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Annotation | Annotation Interface</title>
+	<title>Annotation Round | Annotation Interface</title>
 	<link rel="stylesheet" type="text/css" href="/templates/interface/assets/css/main.css">
 	<style>
 	li{ margin-bottom: 7px; }
@@ -21,7 +21,7 @@
 				<source id = "source" type="audio/wav">Your browser does not support audio
 			</audio>
 			<button id="audio-frame">Play Audio</button><br>
-			<label id="question" for="count" style="font-size: 15px; font-weight: bold;">
+			<label for="count" style="font-size: 15px; font-weight: bold;">
 				How many distinct sounds can you hear?
 			</label>
 			<select id="count" name="count" style="visibility: hidden;">
@@ -37,10 +37,10 @@
 				<option id="option9" value=9>9</option>
 				<option id="option10" value=10>10</option>
 			</select>
-			<label for="2d" style="font-size:15px; font-weight:bold;">
+			<label style="font-size:15px; font-weight:bold;">
 				<p id="2d-question"></p>
 			</label>
-			<div id="2d" style="margin-top: 5px;">
+			<div style="margin-top: 5px;">
 				<div id="head-wrapper" style="vertical-align: top; display: none;">
 					<div style="font-weight: bold; color: blue; text-align: center;">Top View</div>
 					<div style="display: flex;">
@@ -137,10 +137,15 @@
 					<div id="instruction2" style="display: none;">
 						<p style="font-size: 17px;">Page 1 / 7</p>
 						<h3 style="text-align: center; color: blue; margin-top: 3vh;">Annotation Interface Instructions</h3>
- 						<video id="instruction-video-1" style="width:70%; display: block; margin: auto;">
-							Your browser does not support video
-							<source src="/templates/interface/img/1.mp4" type="video/mp4">
-						</video>
+						<div style="position: relative;">
+							<video id="instruction-video-1" style="width:80%; display: block; margin: auto;">
+								Your browser does not support video
+								<source src="/templates/interface/img/1.mp4" type="video/mp4">
+							</video>
+							<div style="position: absolute; color: white; top: 370px; left: 100px;">
+								<span class="instruction-video-1-remain"></span>
+							</div>
+						</div>
 						<p>The first stage is to identify the number of distinct sounds.</p>
 						<ul>
 							<li>Press the Play button to listen to the audio recording.</li>
@@ -342,10 +347,15 @@
 					<div id="instruction4" style="display: none;">
 						<p style="font-size: 17px;">Page 3 / 7</p>
 						<h3 style="text-align: center; color: blue;"> Annotation Interface Instructions</h3>
-						<video id="instruction-video-2" style="width:70%; display: block; margin: auto;">
-							Your browser does not support video
-							<source src="/templates/interface/img/2.mp4" type="video/mp4">
-						</video>
+						<div style="position: relative;">
+							<video id="instruction-video-2" style="width:80%; display: block; margin: auto;">
+								Your browser does not support video
+								<source src="/templates/interface/img/2.mp4" type="video/mp4">
+							</video>
+							<div style="position: absolute; color: white; top: 370px; left: 100px;">
+								<span class="instruction-video-2-remain"></span>
+							</div>
+						</div>
 						<ul>
 							<li>
 								After listening to the full audio recording, select the number of distinct sounds 
@@ -360,10 +370,15 @@
 					<div id="instruction5" style="display: none;">
 						<p style="font-size: 17px;">Page 4 / 7</p>
 						<h3 style="text-align: center; color: blue;"> Annotation Interface Instructions</h3>
-						<video id="instruction-video-3" style="width:70%; display: block; margin: auto;">
-							Your browser does not support video
-							<source src="/templates/interface/img/3.mp4" type="video/mp4">
-						</video>
+						<div style="position: relative;">
+							<video id="instruction-video-3" style="width:80%; display: block; margin: auto;">
+								Your browser does not support video
+								<source src="/templates/interface/img/3.mp4" type="video/mp4">
+							</video>
+							<div style="position: absolute; color: white; top: 370px; left: 100px;">
+								<span class="instruction-video-3-remain"></span>
+							</div>
+						</div>
 						<p>The second stage is to localize these sounds.</p>
 						<ul>
 							<li>
@@ -381,10 +396,15 @@
 					<div id="instruction6" style="display: none;">
 						<p style="font-size: 17px;">Page 5 / 7</p>
 						<h3 style="text-align: center; color: blue;"> Annotation Interface Instructions</h3>
-						<video id="instruction-video-4" style="width:70%; display: block; margin: auto;">
-							Your browser does not support video
-							<source src="/templates/interface/img/4.mp4" type="video/mp4">
-						</video>
+						<div style="position: relative;">
+							<video id="instruction-video-4" style="width:80%; display: block; margin: auto;">
+								Your browser does not support video
+								<source src="/templates/interface/img/4.mp4" type="video/mp4">
+							</video>
+							<div style="position: absolute; color: white; top: 370px; left: 100px;">
+								<span class="instruction-video-4-remain"></span>
+							</div>
+						</div>
 						<ul>
 							<li>To add a new annotation press key Option or Alt and click on the desired 2D view.</li>
 							<li>To remove an annotation press key Control or Ctrl and click on the desired annotation.</li>
@@ -397,10 +417,15 @@
 					<div id="instruction7" style="display: none;">
 						<p style="font-size: 17px;">Page 6 / 7</p>
 						<h3 style="text-align: center; color: blue;"> Annotation Interface Instructions</h3>
-						<video id="instruction-video-5" style="width:70%; display: block; margin: auto;">
-							Your browser does not support video
-							<source src="/templates/interface/img/5.mp4" type="video/mp4">
-						</video>
+						<div style="position: relative;">
+							<video id="instruction-video-5" style="width:80%; display: block; margin: auto;">
+								Your browser does not support video
+								<source src="/templates/interface/img/5.mp4" type="video/mp4">
+							</video>
+							<div style="position: absolute; color: white; top: 370px; left: 100px;">
+								<span class="instruction-video-5-remain"></span>
+							</div>
+						</div>
 						<ul>
 							<li>If you need to adjust the location of your annotation, you may click on the desired point and move it, or use the + and - buttons.</li>
 							<li>Click submit once you have completed your annotation.</li>
@@ -409,10 +434,15 @@
 					<div id="instruction8" style="display: none;">
 						<p style="font-size: 17px;">Page 7 / 7</p>
 						<h3 style="text-align: center; color: blue;"> Annotation Interface Instructions</h3>
-						<video id="instruction-video-6" style="width:70%; display: block; margin: auto;">
-							Your browser does not support video
-							<source src="/templates/interface/img/6.mp4" type="video/mp4">
-						</video>
+						<div style="position: relative;">
+							<video id="instruction-video-6" style="width:80%; display: block; margin: auto;">
+								Your browser does not support video
+								<source src="/templates/interface/img/6.mp4" type="video/mp4">
+							</video>
+							<div style="position: absolute; top: 370px; left: 100px;">
+								<span class="instruction-video-6-remain"></span>
+							</div>
+						</div>
 						<ul>
 							<li>In the last stage of this task, match each location you annotated with its corresponding sound.</li>
 							<li>The set of sounds available for matching consists of all of the sounds that were present in the recording.</li>

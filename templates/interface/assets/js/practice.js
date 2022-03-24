@@ -10,19 +10,18 @@ var gaussian = document.querySelector('.gaussian');
 const totalPractice = 4;
 const audio_path = '/templates/interface/assets/audio/practice/';
 const recording_names = ['sources_3_recording_8.wav', 'sources_3_recording_57.wav', 'sources_3_recording_130.wav', 'sources_3_recording_150.wav', 'sources_3_recording_160.wav'];
-const angle_list=[[[0,-45],[0,-30],[0,-15],[0,0],[0,15],[0,30],[0,45],[0,60],[0,75],[30,-30],[30,0],[32,18],[36,44],[60,-50],[62,-16],[60,0],[60,30],[90,-30],[90,0],[90,15],[90,45],[115,-45],[119,-15],[120,0],[120,30],[150,-30],[150,0],[151,15],[155,45],[180,-45],[180,-30],[180,-15],[180,0],[180,15],[180,30],[180,45],[205,-45],[209,-15],[210,0],[210,30],[240,-30],[240,0],[241,15],[245,45],[270,-45],[270,-15],[270,0],[270,30],[300,-30],[300,0],[302,18],[300,42],[330,-50],[328,-18],[330,0],[330,30]],['gaussian_rec_0_azimuth_0_elevation_-45.wav','gaussian_rec_1_azimuth_0_elevation_-30.wav','gaussian_rec_2_azimuth_0_elevation_-15.wav','gaussian_rec_3_azimuth_0_elevation_0.wav','gaussian_rec_4_azimuth_0_elevation_15.wav','gaussian_rec_5_azimuth_0_elevation_30.wav','gaussian_rec_6_azimuth_0_elevation_45.wav','gaussian_rec_7_azimuth_0_elevation_60.wav','gaussian_rec_8_azimuth_0_elevation_75.wav','gaussian_rec_9_azimuth_30_elevation_-30.wav','gaussian_rec_10_azimuth_30_elevation_0.wav','gaussian_rec_11_azimuth_30_elevation_15.wav','gaussian_rec_12_azimuth_30_elevation_45.wav','gaussian_rec_13_azimuth_60_elevation_-45.wav','gaussian_rec_14_azimuth_60_elevation_-15.wav','gaussian_rec_15_azimuth_60_elevation_0.wav','gaussian_rec_16_azimuth_60_elevation_30.wav','gaussian_rec_17_azimuth_90_elevation_-30.wav','gaussian_rec_18_azimuth_90_elevation_0.wav','gaussian_rec_19_azimuth_90_elevation_15.wav','gaussian_rec_20_azimuth_90_elevation_45.wav','gaussian_rec_21_azimuth_120_elevation_-45.wav','gaussian_rec_22_azimuth_120_elevation_-15.wav','gaussian_rec_23_azimuth_120_elevation_0.wav','gaussian_rec_24_azimuth_120_elevation_30.wav','gaussian_rec_25_azimuth_150_elevation_-30.wav','gaussian_rec_26_azimuth_150_elevation_0.wav','gaussian_rec_27_azimuth_150_elevation_15.wav','gaussian_rec_28_azimuth_150_elevation_45.wav','gaussian_rec_29_azimuth_180_elevation_-45.wav','gaussian_rec_30_azimuth_180_elevation_-30.wav','gaussian_rec_31_azimuth_180_elevation_-15.wav','gaussian_rec_32_azimuth_180_elevation_0.wav','gaussian_rec_33_azimuth_180_elevation_15.wav','gaussian_rec_34_azimuth_180_elevation_30.wav','gaussian_rec_35_azimuth_180_elevation_45.wav','gaussian_rec_36_azimuth_210_elevation_-45.wav','gaussian_rec_37_azimuth_210_elevation_-15.wav','gaussian_rec_38_azimuth_210_elevation_0.wav','gaussian_rec_39_azimuth_210_elevation_30.wav','gaussian_rec_40_azimuth_240_elevation_-30.wav','gaussian_rec_41_azimuth_240_elevation_0.wav','gaussian_rec_42_azimuth_240_elevation_15.wav','gaussian_rec_43_azimuth_240_elevation_45.wav','gaussian_rec_44_azimuth_270_elevation_-45.wav','gaussian_rec_45_azimuth_270_elevation_-15.wav','gaussian_rec_46_azimuth_270_elevation_0.wav','gaussian_rec_47_azimuth_270_elevation_30.wav','gaussian_rec_48_azimuth_300_elevation_-30.wav','gaussian_rec_49_azimuth_300_elevation_0.wav','gaussian_rec_50_azimuth_300_elevation_15.wav','gaussian_rec_51_azimuth_300_elevation_45.wav','gaussian_rec_52_azimuth_330_elevation_-45.wav','gaussian_rec_53_azimuth_330_elevation_-15.wav','gaussian_rec_54_azimuth_330_elevation_0.wav','gaussian_rec_55_azimuth_330_elevation_30.wav']];
+const angle_list=[[0,-90],[0,-75],[90,-75],[180,-75],[270,-75],[100,-70],[270,-72],[90,-71],[0,-71],[90,-71],[180,-71],[270,-71],[0,-70],[5,-70],[10,-70],[15,-70],[20,-70],[25,-70],[30,-70],[35,-70],[40,-70],[45,-70],[50,-70],[55,-70],[60,-70],[65,-70],[70,-70],[75,-70],[80,-70],[85,-70],[90,-70],[95,-70],[100,-70],[105,-70],[110,-70],[115,-70],[120,-70],[125,-70],[130,-70],[135,-70],[140,-70],[145,-70],[150,-70],[155,-70],[160,-70],[165,-70],[170,-70],[175,-70],[180,-70],[185,-70],[190,-70],[195,-70],[200,-70],[205,-70],[210,-70],[215,-70],[220,-70],[225,-70],[230,-70],[235,-70],[240,-70],[245,-70],[250,-70],[255,-70],[260,-70],[265,-70],[270,-70],[275,-70],[280,-70],[285,-70],[290,-70],[295,-70],[300,-70],[305,-70],[310,-70],[315,-70],[320,-70],[325,-70],[330,-70],[335,-70],[340,-70],[345,-70],[350,-70],[355,-70],[10,-70],[90,-69],[100,-70],[190,-70],[270,-69],[280,-70],[340,-70],[45,-65],[65,-70],[135,-65],[225,-65],[245,-70],[315,-65],[0,-63],[0,-60],[5,-60],[10,-60],[15,-60],[20,-60],[25,-60],[30,-60],[35,-60],[40,-60],[45,-60],[50,-60],[55,-60],[60,-60],[65,-60],[70,-60],[75,-60],[80,-60],[85,-60],[90,-60],[95,-60],[100,-60],[105,-60],[110,-60],[115,-60],[120,-60],[125,-60],[130,-60],[135,-60],[140,-60],[145,-60],[150,-60],[155,-60],[160,-60],[165,-60],[170,-60],[175,-60],[180,-60],[185,-60],[190,-60],[195,-60],[200,-60],[205,-60],[210,-60],[215,-60],[220,-60],[225,-60],[230,-60],[235,-60],[240,-60],[245,-60],[250,-60],[255,-60],[260,-60],[265,-60],[270,-60],[275,-60],[280,-60],[285,-60],[290,-60],[295,-60],[300,-60],[305,-60],[310,-60],[315,-60],[320,-60],[325,-60],[330,-60],[335,-60],[340,-60],[345,-60],[350,-60],[355,-60],[0,-58],[60,-60],[90,-58],[150,-60],[180,-58],[240,-60],[270,-58],[330,-60],[231,-51],[30,-50],[58,-54],[122,-54],[210,-50],[238,-54],[302,-54],[10,-50],[45,-51],[130,-50],[135,-51],[225,-51],[250,-50],[315,-51],[0,-50],[5,-50],[10,-50],[15,-50],[20,-50],[25,-50],[30,-50],[35,-50],[40,-50],[45,-50],[50,-50],[55,-50],[60,-50],[65,-50],[70,-50],[75,-50],[80,-50],[85,-50],[90,-50],[95,-50],[100,-50],[105,-50],[110,-50],[115,-50],[120,-50],[125,-50],[130,-50],[135,-50],[140,-50],[145,-50],[150,-50],[155,-50],[160,-50],[165,-50],[170,-50],[175,-50],[180,-50],[185,-50],[190,-50],[195,-50],[200,-50],[205,-50],[210,-50],[215,-50],[220,-50],[225,-50],[230,-50],[235,-50],[240,-50],[245,-50],[250,-50],[255,-50],[260,-50],[265,-50],[270,-50],[275,-50],[280,-50],[285,-50],[290,-50],[295,-50],[300,-50],[305,-50],[310,-50],[315,-50],[320,-50],[325,-50],[330,-50],[335,-50],[340,-50],[345,-50],[350,-50],[355,-50],[160,-50],[340,-50],[45,-47],[135,-47],[225,-47],[315,-47],[130,-46],[230,-46],[0,-45],[45,-45],[65,-50],[90,-45],[135,-45],[155,-50],[180,-45],[225,-45],[240,-42],[270,-45],[315,-45],[335,-50],[0,-44],[72,-44],[144,-44],[216,-44],[288,-44],[120,-40],[0,-40],[5,-40],[10,-40],[15,-40],[20,-40],[25,-40],[25,-40],[30,-40],[35,-40],[40,-40],[45,-40],[50,-40],[55,-40],[60,-40],[65,-40],[70,-40],[75,-40],[80,-40],[85,-40],[90,-40],[95,-40],[100,-40],[105,-40],[110,-40],[115,-40],[115,-40],[120,-40],[125,-40],[130,-40],[135,-40],[140,-40],[145,-40],[150,-40],[155,-40],[160,-40],[165,-40],[170,-40],[175,-40],[180,-40],[185,-40],[190,-40],[195,-40],[200,-40],[205,-40],[205,-40],[210,-40],[215,-40],[220,-40],[225,-40],[230,-40],[235,-40],[240,-40],[245,-40],[250,-40],[255,-40],[260,-40],[265,-40],[270,-40],[275,-40],[280,-40],[285,-40],[290,-40],[295,-40],[295,-40],[300,-40],[305,-40],[310,-40],[315,-40],[320,-40],[325,-40],[330,-40],[335,-40],[340,-40],[345,-40],[350,-40],[355,-40],[110,-40],[290,-40],[60,-40],[180,-40],[300,-40],[270,-40],[45,-35],[135,-35],[225,-35],[315,-35],[0,-32],[90,-32],[180,-32],[190,-30],[270,-32],[350,-30],[0,-30],[5,-30],[10,-30],[15,-30],[20,-30],[21,-30],[25,-30],[30,-30],[35,-30],[40,-30],[45,-30],[50,-30],[55,-30],[60,-30],[65,-30],[70,-30],[70,-30],[75,-30],[80,-30],[85,-30],[90,-30],[95,-30],[100,-30],[105,-30],[110,-30],[115,-30],[120,-30],[125,-30],[130,-30],[135,-30],[140,-30],[145,-30],[150,-30],[155,-30],[159,-30],[160,-30],[165,-30],[170,-30],[175,-30],[180,-30],[185,-30],[190,-30],[195,-30],[200,-30],[201,-30],[205,-30],[210,-30],[215,-30],[220,-30],[225,-30],[230,-30],[235,-30],[240,-30],[245,-30],[250,-30],[250,-30],[255,-30],[260,-30],[265,-30],[270,-30],[275,-30],[280,-30],[285,-30],[290,-30],[295,-30],[300,-30],[305,-30],[310,-30],[315,-30],[320,-30],[325,-30],[330,-30],[335,-30],[339,-30],[340,-30],[345,-30],[350,-30],[355,-30],[33,-29],[57,-29],[123,-29],[147,-29],[213,-29],[237,-29],[303,-29],[327,-29],[15,-30],[105,-30],[195,-30],[285,-30],[65,-20],[10,-20],[190,-20],[0,-21],[85,-20],[175,-20],[180,-21],[265,-20],[355,-20],[0,-20],[5,-20],[10,-20],[15,-20],[20,-20],[25,-20],[30,-20],[35,-20],[40,-20],[45,-20],[50,-20],[55,-20],[60,-20],[65,-20],[70,-20],[75,-20],[80,-20],[85,-20],[90,-20],[95,-20],[95,-20],[100,-20],[105,-20],[110,-20],[115,-20],[120,-20],[125,-20],[130,-20],[135,-20],[140,-20],[145,-20],[150,-20],[155,-20],[160,-20],[165,-20],[170,-20],[175,-20],[180,-20],[185,-20],[190,-20],[195,-20],[200,-20],[205,-20],[210,-20],[215,-20],[215,-20],[220,-20],[225,-20],[230,-20],[235,-20],[240,-20],[245,-20],[250,-20],[255,-20],[260,-20],[265,-20],[270,-20],[275,-20],[280,-20],[285,-20],[290,-20],[295,-20],[300,-20],[305,-20],[310,-20],[315,-20],[320,-20],[325,-20],[330,-20],[335,-20],[335,-20],[340,-20],[345,-20],[350,-20],[355,-20],[0,-19],[30,-20],[90,-19],[150,-20],[180,-19],[270,-19],[18,-18],[30,-20],[50,-20],[58,-18],[72,-18],[108,-18],[122,-18],[140,-20],[162,-18],[198,-18],[210,-20],[230,-20],[238,-18],[252,-18],[288,-18],[302,-18],[320,-20],[342,-18],[180,-19],[0,-19],[62,-16],[298,-16],[0,-15],[62,-16],[90,-15],[148,-18],[180,-15],[238,-18],[270,-15],[332,-19],[0,-14],[90,-14],[140,-10],[180,-14],[270,-14],[320,-10],[36,-12],[108,-12],[180,-12],[252,-12],[324,-12],[65,-10],[245,-10],[0,-10],[5,-10],[10,-10],[15,-10],[20,-10],[25,-10],[30,-10],[35,-10],[40,-10],[45,-10],[50,-10],[55,-10],[60,-10],[65,-10],[70,-10],[75,-10],[80,-10],[85,-10],[90,-10],[95,-10],[100,-10],[105,-10],[110,-10],[115,-10],[120,-10],[125,-10],[130,-10],[135,-10],[140,-10],[145,-10],[150,-10],[155,-10],[160,-10],[165,-10],[170,-10],[175,-10],[180,-10],[185,-10],[190,-10],[195,-10],[200,-10],[205,-10],[210,-10],[215,-10],[220,-10],[225,-10],[230,-10],[235,-10],[240,-10],[245,-10],[250,-10],[255,-10],[260,-10],[265,-10],[270,-10],[275,-10],[280,-10],[285,-10],[290,-10],[295,-10],[300,-10],[305,-10],[310,-10],[315,-10],[320,-10],[325,-10],[330,-10],[335,-10],[340,-10],[345,-10],[350,-10],[355,-10],[290,-10],[22,0],[111,0],[202,0],[291,0],[107,-2],[289,0],[15,0],[135,0],[253,-3],[0,0],[5,0],[10,0],[15,0],[17,0],[19,0],[20,0],[22,0],[25,0],[30,0],[32,0],[35,0],[40,0],[45,0],[50,0],[55,0],[58,0],[60,0],[65,0],[69,0],[69,0],[70,0],[71,0],[75,0],[80,0],[85,0],[90,0],[95,0],[100,0],[105,0],[109,0],[110,0],[111,0],[112,0],[115,0],[120,0],[122,0],[125,0],[130,0],[135,0],[140,0],[145,0],[148,0],[150,0],[155,0],[157,0],[160,0],[161,0],[165,0],[170,0],[175,0],[180,0],[185,0],[190,0],[195,0],[199,0],[200,0],[202,0],[205,0],[210,0],[212,0],[215,0],[215,0],[220,0],[225,0],[230,0],[235,0],[238,0],[240,0],[245,0],[249,0],[249,0],[250,0],[251,0],[255,0],[260,0],[265,0],[270,0],[275,0],[280,0],[285,0],[289,0],[290,0],[291,0],[292,0],[295,0],[300,0],[302,0],[305,0],[310,0],[315,0],[320,0],[325,0],[325,0],[328,0],[330,0],[335,0],[337,0],[340,0],[341,0],[343,0],[345,0],[350,0],[355,0],[45,0],[165,0],[287,3],[73,2],[255,0],[69,0],[160,0],[249,0],[340,0],[250,10],[0,10],[5,10],[10,10],[15,10],[20,10],[25,10],[30,10],[35,10],[40,10],[45,10],[50,10],[55,10],[60,10],[65,10],[70,10],[75,10],[80,10],[85,10],[90,10],[95,10],[100,10],[105,10],[110,10],[115,10],[120,10],[125,10],[130,10],[135,10],[140,10],[145,10],[150,10],[155,10],[160,10],[165,10],[170,10],[175,10],[180,10],[185,10],[190,10],[195,10],[200,10],[205,10],[210,10],[215,10],[220,10],[225,10],[230,10],[235,10],[240,10],[245,10],[250,10],[255,10],[260,10],[265,10],[270,10],[275,10],[280,10],[285,10],[290,10],[295,10],[300,10],[305,10],[310,10],[315,10],[320,10],[325,10],[330,10],[335,10],[340,10],[345,10],[350,10],[355,10],[115,10],[295,10],[0,12],[72,12],[144,12],[216,12],[288,12],[40,10],[45,14],[135,14],[220,10],[225,14],[315,14],[0,15],[32,18],[90,15],[118,16],[180,15],[208,19],[270,15],[302,18],[118,16],[242,16],[0,19],[180,19],[18,18],[40,20],[58,18],[72,18],[108,18],[122,18],[130,20],[150,20],[162,18],[198,18],[220,20],[238,18],[252,18],[288,18],[302,18],[310,20],[330,20],[342,18],[0,19],[30,20],[90,19],[150,20],[180,19],[270,19],[0,20],[5,20],[10,20],[15,20],[20,20],[25,20],[30,20],[35,20],[40,20],[45,20],[50,20],[55,20],[60,20],[65,20],[70,20],[75,20],[80,20],[85,20],[85,20],[90,20],[95,20],[100,20],[105,20],[110,20],[115,20],[120,20],[125,20],[130,20],[135,20],[140,20],[145,20],[150,20],[155,20],[160,20],[165,20],[170,20],[175,20],[180,20],[185,20],[190,20],[195,20],[200,20],[205,20],[205,20],[210,20],[215,20],[220,20],[225,20],[230,20],[235,20],[240,20],[245,20],[250,20],[255,20],[260,20],[265,20],[270,20],[275,20],[280,20],[285,20],[290,20],[295,20],[300,20],[305,20],[310,20],[315,20],[320,20],[325,20],[325,20],[330,20],[335,20],[340,20],[345,20],[350,20],[355,20],[0,21],[5,20],[95,20],[180,21],[185,20],[275,20],[170,20],[350,20],[115,20],[75,30],[165,30],[255,30],[345,30],[33,29],[57,29],[123,29],[147,29],[213,29],[237,29],[303,29],[327,29],[0,30],[5,30],[10,30],[15,30],[20,30],[21,30],[25,30],[30,30],[35,30],[40,30],[45,30],[50,30],[55,30],[60,30],[65,30],[70,30],[75,30],[80,30],[85,30],[90,30],[95,30],[100,30],[105,30],[110,30],[110,30],[115,30],[120,30],[125,30],[130,30],[135,30],[140,30],[145,30],[150,30],[155,30],[159,30],[160,30],[165,30],[170,30],[175,30],[180,30],[185,30],[190,30],[195,30],[200,30],[201,30],[205,30],[210,30],[215,30],[220,30],[225,30],[230,30],[235,30],[240,30],[245,30],[250,30],[255,30],[260,30],[265,30],[270,30],[275,30],[280,30],[285,30],[290,30],[290,30],[295,30],[300,30],[305,30],[310,30],[315,30],[320,30],[325,30],[330,30],[335,30],[339,30],[340,30],[345,30],[350,30],[355,30],[0,32],[90,32],[180,32],[190,30],[270,32],[350,30],[45,35],[135,35],[225,35],[315,35],[270,32],[0,40],[120,40],[240,40],[70,40],[250,40],[0,40],[5,40],[10,40],[15,40],[20,40],[25,40],[30,40],[35,40],[40,40],[45,40],[50,40],[55,40],[60,40],[65,40],[65,40],[70,40],[75,40],[80,40],[85,40],[90,40],[95,40],[100,40],[105,40],[110,40],[115,40],[120,40],[125,40],[130,40],[135,40],[140,40],[145,40],[150,40],[155,40],[155,40],[160,40],[165,40],[170,40],[175,40],[180,40],[185,40],[190,40],[195,40],[200,40],[205,40],[210,40],[215,40],[220,40],[225,40],[230,40],[235,40],[240,40],[245,40],[245,40],[250,40],[255,40],[260,40],[265,40],[270,40],[275,40],[280,40],[285,40],[290,40],[295,40],[300,40],[305,40],[310,40],[315,40],[320,40],[325,40],[330,40],[335,40],[335,40],[340,40],[345,40],[350,40],[355,40],[60,40],[36,44],[108,44],[180,44],[252,44],[324,44],[0,45],[25,40],[45,45],[90,45],[115,40],[135,45],[180,45],[205,40],[225,45],[270,45],[300,42],[315,45],[50,46],[310,46],[45,47],[135,47],[225,47],[315,47],[20,50],[200,50],[0,50],[5,50],[10,50],[15,50],[20,50],[25,50],[30,50],[35,50],[40,50],[45,50],[50,50],[55,50],[60,50],[65,50],[70,50],[75,50],[80,50],[85,50],[90,50],[95,50],[100,50],[105,50],[110,50],[115,50],[120,50],[125,50],[130,50],[135,50],[140,50],[145,50],[150,50],[155,50],[160,50],[165,50],[170,50],[175,50],[180,50],[185,50],[190,50],[195,50],[200,50],[205,50],[210,50],[215,50],[220,50],[225,50],[230,50],[235,50],[240,50],[245,50],[250,50],[255,50],[260,50],[265,50],[270,50],[275,50],[280,50],[285,50],[290,50],[295,50],[300,50],[305,50],[310,50],[315,50],[320,50],[325,50],[330,50],[335,50],[340,50],[345,50],[350,50],[355,50],[0,51],[50,50],[90,51],[170,50],[180,51],[270,51],[290,50],[58,54],[122,54],[150,50],[238,54],[302,54],[330,50],[309,51],[0,58],[30,60],[90,58],[120,60],[180,58],[210,60],[270,58],[300,60],[0,60],[5,60],[10,60],[15,60],[20,60],[25,60],[30,60],[35,60],[40,60],[45,60],[50,60],[55,60],[60,60],[65,60],[70,60],[75,60],[80,60],[85,60],[90,60],[95,60],[100,60],[105,60],[110,60],[115,60],[120,60],[125,60],[130,60],[135,60],[140,60],[145,60],[150,60],[155,60],[160,60],[165,60],[170,60],[175,60],[180,60],[185,60],[190,60],[195,60],[200,60],[205,60],[210,60],[215,60],[220,60],[225,60],[230,60],[235,60],[240,60],[245,60],[250,60],[255,60],[260,60],[265,60],[270,60],[275,60],[280,60],[285,60],[290,60],[295,60],[300,60],[305,60],[310,60],[315,60],[320,60],[325,60],[330,60],[335,60],[340,60],[345,60],[350,60],[355,60],[180,63],[45,65],[115,60],[135,65],[225,65],[295,60],[315,65],[200,70],[80,70],[90,69],[170,70],[260,70],[270,69],[350,70],[0,70],[5,70],[10,70],[15,70],[20,70],[25,70],[30,70],[35,70],[40,70],[45,70],[50,70],[55,70],[60,70],[65,70],[70,70],[75,70],[80,70],[85,70],[90,70],[95,70],[100,70],[105,70],[110,70],[115,70],[120,70],[125,70],[130,70],[135,70],[140,70],[145,70],[150,70],[155,70],[160,70],[165,70],[170,70],[175,70],[180,70],[185,70],[190,70],[195,70],[200,70],[205,70],[210,70],[215,70],[220,70],[225,70],[230,70],[235,70],[240,70],[245,70],[250,70],[255,70],[260,70],[265,70],[270,70],[275,70],[280,70],[285,70],[290,70],[295,70],[300,70],[305,70],[310,70],[315,70],[320,70],[325,70],[330,70],[335,70],[340,70],[345,70],[350,70],[355,70],[0,71],[90,71],[180,71],[270,71],[90,71],[80,70],[270,72],[0,75],[90,75],[180,75],[270,75],[0,80],[5,80],[10,80],[15,80],[20,80],[25,80],[30,80],[35,80],[40,80],[45,80],[50,80],[55,80],[60,80],[65,80],[70,80],[75,80],[80,80],[85,80],[90,80],[95,80],[100,80],[105,80],[110,80],[115,80],[120,80],[125,80],[130,80],[135,80],[140,80],[145,80],[150,80],[155,80],[160,80],[165,80],[170,80],[175,80],[180,80],[185,80],[190,80],[195,80],[200,80],[205,80],[210,80],[215,80],[220,80],[225,80],[230,80],[235,80],[240,80],[245,80],[250,80],[255,80],[260,80],[265,80],[270,80],[275,80],[280,80],[285,80],[290,80],[295,80],[300,80],[305,80],[310,80],[315,80],[320,80],[325,80],[330,80],[335,80],[340,80],[345,80],[350,80],[355,80],[0,90]];
 
 survey_id = localStorage.getItem('survey_id');
 
 // check if the user goes through the whole instruction
-var read_all_rules = false;
-read_all_rules = true; //! Waiting to Be Change Back
+var read_all_rules = true;
+document.getElementById("sign").style.visibility = '';
 
 // To confirm that it is the practice round
 localStorage.setItem('practice_boolean', 1);
 
-if (localStorage.getItem('practice') == undefined 
-|| localStorage.getItem('practice') == null) {
+if (localStorage.getItem('practice') == undefined || localStorage.getItem('practice') == null) {
 	curr_recording = 0;
 	localStorage.setItem('practice', 0);
 	localStorage.setItem('read_all_rules', 0);
@@ -52,6 +51,7 @@ const colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc3
 var current_colors_index = 0;
 
 // prevent deletion and mousemove happen at the same time
+// suppress is to suppress the dragging event (for the benefit of deletion)
 var suppress = false;
 
 // prevent moving and clicking happening at the same time
@@ -162,39 +162,68 @@ document.addEventListener('click', function(e) {
 
 document.querySelector('body').addEventListener("mouseup", () => { // for the case when the user deletes nothing
 	delete_annotation = false;
+	suppress = false;
 	document.querySelector('body').style.cursor = 'default';
 });
 
 document.addEventListener('contextmenu', event => event.preventDefault());
-
 document.getElementById('key-message').addEventListener("click",popKeyRules);
 document.getElementById('message').addEventListener("click",popRules);
 document.getElementById('instruction-right').addEventListener("click",move_instruction_next);
 document.getElementById('instruction-left').addEventListener("click",move_instruction_last);
 document.getElementById('instruction-proceed').addEventListener("click",closeRules);
 document.getElementById('sign').addEventListener("click",closeRules);
-
 document.getElementById('audio-frame').addEventListener("click",addPlaying);
 document.getElementById('audio').addEventListener("ended",displaySelection);
 document.getElementById('audio').addEventListener("timeupdate",audioTracker);
-
 document.getElementById('count').addEventListener("change",addSourceCount);
-
 document.getElementById('azimuth-plus').addEventListener("click",move_azimuth_plus);
 document.getElementById('elevation-plus').addEventListener("click",move_elevation_plus);
 document.getElementById('azimuth-minus').addEventListener("click",move_azimuth_minus);
 document.getElementById('elevation-minus').addEventListener("click",move_elevation_minus);
+window.addEventListener('load', scaleWindow);
+window.addEventListener('resize', scaleWindow);
+
+function scaleWindow() {
+	const body = document.querySelector('body');
+	body.style.transform = 'scale(1)';
+
+	if (window.innerWidth < 950 || window.innerHeight < 800) {
+		let percentage_height = Math.floor(window.innerWidth / 900 * 100) / 100;
+		let percentage_width = Math.floor(window.innerHeight / 760 * 100) / 100;
+
+		if (percentage_height < percentage_width) body.style.transform = 'scale(' + percentage_height + ')';
+		else body.style.transform = 'scale(' + percentage_width + ')';
+	}
+}
 
 function find_gaussian(true_angles, min, store_index){
-    for (let i=0; i<angle_list[0].length; i++){
-        let dis = angular_distance(true_angles,angle_list[0][i]);
+    for (let i=0; i<angle_list.length; i++){
+        let dis = angular_distance(true_angles,angle_list[i]);
         if ( dis < min ) {
             min = dis;
             store_index = i;
         }
     }
-	gaussian = new Audio("https://assets-audio.s3.amazonaws.com/audio/gaussian/"+angle_list[1][store_index]);
+	gaussian = new Audio("https://assets-audio.s3.amazonaws.com/audio/gaussian/gaussian_rec_" + store_index + ".wav");
 	gaussian.play();
+	let audio = document.getElementById('audio');
+	var noise_down;
+	var noise_up;
+	gaussian.addEventListener('playing', () => {
+		clearInterval(noise_up);
+		noise_down = setInterval(function () {
+			if (audio.volume > 0.7) audio.volume -= 0.1;
+			else clearInterval(noise_down);
+		},50);
+	});
+	gaussian.addEventListener('pause', () => {
+		clearInterval(noise_down);
+		noise_up = setInterval(function () {
+			if (audio.volume < 1) audio.volume += 0.1;
+			else clearInterval(noise_up);
+		},50);
+	});
 	return store_index;
 }
 
@@ -256,6 +285,19 @@ function closeRules(e){
 function move_instruction_next(e){
 	e.preventDefault();
 
+	let instruction_video_1 = document.getElementById('instruction-video-1');
+	let instruction_video_1_remain = document.querySelector('.instruction-video-1-remain');
+	let instruction_video_2 = document.getElementById('instruction-video-2');
+	let instruction_video_2_remain = document.querySelector('.instruction-video-2-remain');
+	let instruction_video_3 = document.getElementById('instruction-video-3');
+	let instruction_video_3_remain = document.querySelector('.instruction-video-3-remain');
+	let instruction_video_4 = document.getElementById('instruction-video-4');
+	let instruction_video_4_remain = document.querySelector('.instruction-video-4-remain');
+	let instruction_video_5 = document.getElementById('instruction-video-5');
+	let instruction_video_5_remain = document.querySelector('.instruction-video-5-remain');
+	let instruction_video_6 = document.getElementById('instruction-video-6');
+	let instruction_video_6_remain = document.querySelector('.instruction-video-6-remain');
+
 	if (curr_instruction == 1) {
 		if (!read_all_rules){
 			action_type = "enter instruction page 1";
@@ -263,11 +305,17 @@ function move_instruction_next(e){
 			timestamp = Date.now();
 			ajax_interaction();
 		}
-		document.getElementById('instruction-video-1').currentTime = 0;
-		document.getElementById('instruction-video-1').play();
+
+		instruction_video_1.currentTime = 0;
+
+		instruction_video_1.addEventListener('timeupdate', () => {
+			instruction_video_1_remain.innerHTML = (Math.round(instruction_video_1.currentTime * 100) / 100).toFixed(2) + "  /  " + (Math.round(instruction_video_1.duration * 100) / 100).toFixed(2);
+		});
+
+		instruction_video_1.play();
 	}
 	else if (curr_instruction == 2) {
-		if ( !read_all_rules && (document.getElementById('instruction-video-1').currentTime != document.getElementById('instruction-video-1').duration) ) {
+		if ( !read_all_rules && instruction_video_1.currentTime != instruction_video_1.duration ) {
 			window.alert("Please finish watching the current video first");
 			return;
 		}
@@ -277,7 +325,9 @@ function move_instruction_next(e){
 			timestamp = Date.now();
 			ajax_interaction();
 		}
-		document.getElementById('instruction-video-1').pause();
+
+		instruction_video_1.pause();
+
 	}
 
 	if (curr_instruction == 3){
@@ -293,12 +343,18 @@ function move_instruction_next(e){
 			timestamp = Date.now();
 			ajax_interaction();
 		}
-		document.getElementById('instruction-video-2').currentTime = 0;
-		document.getElementById('instruction-video-2').play();
+		
+		instruction_video_2.currentTime = 0;
+
+		instruction_video_2.addEventListener('timeupdate', () => {
+			instruction_video_2_remain.innerHTML = (Math.round(instruction_video_2.currentTime * 100) / 100).toFixed(2) + "  /  " + (Math.round(instruction_video_2.duration * 100) / 100).toFixed(2);
+		});
+
+		instruction_video_2.play();
 	}
 
 	if (curr_instruction == 4) {
-		if ( !read_all_rules && (document.getElementById('instruction-video-2').currentTime != document.getElementById('instruction-video-2').duration) ) {
+		if ( !read_all_rules && (instruction_video_2.currentTime != instruction_video_2.duration) ) {
 			window.alert("Please finish watching the current video first");
 			return;
 		}
@@ -308,13 +364,20 @@ function move_instruction_next(e){
 			timestamp = Date.now();
 			ajax_interaction();
 		}
-		document.getElementById('instruction-video-2').pause();
-		document.getElementById('instruction-video-3').currentTime = 0;
-		document.getElementById('instruction-video-3').play();
+
+		instruction_video_2.pause();
+
+		instruction_video_3.currentTime = 0;
+
+		instruction_video_3.addEventListener('timeupdate', () => {
+			instruction_video_3_remain.innerHTML = (Math.round(instruction_video_3.currentTime * 100) / 100).toFixed(2) + "  /  " + (Math.round(instruction_video_3.duration * 100) / 100).toFixed(2);
+		});
+
+		instruction_video_3.play();
 	}
 
 	if (curr_instruction == 5) {
-		if ( !read_all_rules && (document.getElementById('instruction-video-3').currentTime != document.getElementById('instruction-video-3').duration) ) {
+		if ( !read_all_rules && (instruction_video_3.currentTime != instruction_video_3.duration) ) {
 			window.alert("Please finish watching the current video first");
 			return;
 		}
@@ -324,13 +387,20 @@ function move_instruction_next(e){
 			timestamp = Date.now();
 			ajax_interaction();
 		}
-		document.getElementById('instruction-video-3').pause();
-		document.getElementById('instruction-video-4').currentTime = 0;
-		document.getElementById('instruction-video-4').play();
+
+		instruction_video_3.pause();
+
+		instruction_video_4.currentTime = 0;
+
+		instruction_video_4.addEventListener('timeupdate', () => {
+			instruction_video_4_remain.innerHTML = (Math.round(instruction_video_4.currentTime * 100) / 100).toFixed(2) + "  /  " + (Math.round(instruction_video_4.duration * 100) / 100).toFixed(2);
+		});
+
+		instruction_video_4.play();
 	}
 
 	if (curr_instruction == 6) {
-		if (!read_all_rules && (document.getElementById('instruction-video-4').currentTime != document.getElementById('instruction-video-4').duration) ) {
+		if (!read_all_rules && (instruction_video_4.currentTime != instruction_video_4.duration) ) {
 			window.alert("Please finish watching the current video first");
 			return;
 		}
@@ -340,13 +410,20 @@ function move_instruction_next(e){
 			timestamp = Date.now();
 			ajax_interaction();
 		}
-		document.getElementById('instruction-video-4').pause();
-		document.getElementById('instruction-video-5').currentTime = 0;
-		document.getElementById('instruction-video-5').play();
+
+		instruction_video_4.pause();
+
+		instruction_video_5.currentTime = 0;
+
+		instruction_video_5.addEventListener('timeupdate', () => {
+			instruction_video_5_remain.innerHTML = (Math.round(instruction_video_5.currentTime * 100) / 100).toFixed(2) + "  /  " + (Math.round(instruction_video_5.duration * 100) / 100).toFixed(2);
+		});
+
+		instruction_video_5.play();
 	}
 
 	if (curr_instruction == 7) {
-		if (!read_all_rules &&  (document.getElementById('instruction-video-5').currentTime != document.getElementById('instruction-video-5').duration) ) {
+		if (!read_all_rules &&  (instruction_video_5.currentTime != instruction_video_5.duration) ) {
 			window.alert("Please finish watching the current video first");
 			return;
 		}
@@ -356,9 +433,16 @@ function move_instruction_next(e){
 			timestamp = Date.now();
 			ajax_interaction();
 		}
-		document.getElementById('instruction-video-5').pause();
-		document.getElementById('instruction-video-6').currentTime = 0;
-		document.getElementById('instruction-video-6').play();
+
+		instruction_video_5.pause();
+
+		instruction_video_6.currentTime = 0;
+
+		instruction_video_6.addEventListener('timeupdate', () => {
+			instruction_video_6_remain.innerHTML = (Math.round(instruction_video_6.currentTime * 100) / 100).toFixed(2) + "  /  " + (Math.round(instruction_video_6.duration * 100) / 100).toFixed(2);
+		});
+
+		instruction_video_6.play();
 	}
 
 	if (curr_instruction < totalInstructions) {
@@ -472,6 +556,7 @@ function move_instruction_last(e){
 }
 
 function addSourceCount(){
+	document.querySelector(".container").style.height = "100%";
 	document.getElementById('2d-question').innerHTML = "Please identify the location of each sound";
 	document.getElementById('feedback').style.visibility = '';
 	document.getElementById('feedback').style.display = 'inline-block';
@@ -514,7 +599,6 @@ function addPlaying(e){
 function displaySelection(){ 
 	isPlaying = false;
 	document.getElementById('audio-frame').innerHTML = 'Play Audio';
-	// document.getElementById('count').style.display = '';
 	document.getElementById('count').style.visibility = '';
 }
 
@@ -655,9 +739,12 @@ function displayBoth(hasFront, index, temp_azimuth, degree){
 			document.getElementById('circularS'+index).style.display = 'none';
 			document.getElementById('circularF'+index).style.transform = 'rotate('+degree+'deg)';
 		}
-		else{
+		else{ // When Both Items Should Be Displayed
+
+			// Adjust Side Items
 			document.getElementById('side-item-'+index).style.display = '';
 			document.getElementById('circularS'+index).style.display = '';
+
 			if (temp_azimuth > 270 || temp_azimuth < 90){
 				if (degree > 180) { document.getElementById('circularS'+index).style.transform = 'rotate('+(360-degree)+'deg)'; }
 				else { document.getElementById('circularS'+index).style.transform = 'rotate('+degree+'deg)'; }
@@ -665,6 +752,19 @@ function displayBoth(hasFront, index, temp_azimuth, degree){
 			else if (temp_azimuth < 270 && temp_azimuth > 90){
 				if (degree < 180) { document.getElementById('circularS'+index).style.transform = 'rotate('+(360-degree)+'deg)'; }
 				else { document.getElementById('circularS'+index).style.transform = 'rotate('+degree+'deg)'; }
+			}
+
+			// Adjust Front Items
+			document.getElementById('front-item-'+index).style.display = '';
+			document.getElementById('circularF'+index).style.display = '';
+
+			if (temp_azimuth < 180){
+				if (degree > 180){ document.getElementById('circularF'+index).style.transform = 'rotate('+(360-degree)+'deg)'; }
+				else{ document.getElementById('circularF'+index).style.transform = 'rotate('+degree+'deg)';  }
+			}
+			else if (temp_azimuth > 180){
+				if (degree < 180){ document.getElementById('circularF'+index).style.transform = 'rotate('+(360-degree)+'deg)';  }
+				else{ document.getElementById('circularF'+index).style.transform = 'rotate('+degree+'deg)'; }
 			}
 		}
 	}
@@ -695,9 +795,12 @@ function displayBoth(hasFront, index, temp_azimuth, degree){
 			document.getElementById('circularF'+index).style.display = '';
 			document.getElementById('circularF'+index).style.transform = 'rotate('+degree+'deg)';
 		}
-		else{
+		else{ // When Both Items Should Be Displayed
+
+			// Adjust Front Items
 			document.getElementById('front-item-'+index).style.display = '';
 			document.getElementById('circularF'+index).style.display = '';
+
 			if (temp_azimuth < 180){
 				if (degree > 180){ document.getElementById('circularF'+index).style.transform = 'rotate('+(360-degree)+'deg)'; }
 				else{ document.getElementById('circularF'+index).style.transform = 'rotate('+degree+'deg)';  }
@@ -705,6 +808,19 @@ function displayBoth(hasFront, index, temp_azimuth, degree){
 			else if (temp_azimuth > 180){
 				if (degree < 180){ document.getElementById('circularF'+index).style.transform = 'rotate('+(360-degree)+'deg)';  }
 				else{ document.getElementById('circularF'+index).style.transform = 'rotate('+degree+'deg)'; }
+			}
+
+			// Adjust Side Items
+			document.getElementById('side-item-'+index).style.display = '';
+			document.getElementById('circularS'+index).style.display = '';
+
+			if (temp_azimuth > 270 || temp_azimuth < 90){
+				if (degree > 180) { document.getElementById('circularS'+index).style.transform = 'rotate('+(360-degree)+'deg)'; }
+				else { document.getElementById('circularS'+index).style.transform = 'rotate('+degree+'deg)'; }
+			}
+			else if (temp_azimuth < 270 && temp_azimuth > 90){
+				if (degree < 180) { document.getElementById('circularS'+index).style.transform = 'rotate('+(360-degree)+'deg)'; }
+				else { document.getElementById('circularS'+index).style.transform = 'rotate('+degree+'deg)'; }
 			}
 		}
 	}
@@ -1170,8 +1286,7 @@ function move_azimuth_plus(e){
 	current_elevation = (elevation[current_colors_index] == undefined ? 0 : elevation[current_colors_index]);
 	displayBall((azimuth[current_colors_index]-180), current_elevation, (current_colors_index+1));
 
-	// TODO: Play Audio
-	if (elevation[current_colors_index]) find_gaussian([azimuth[current_colors_index], elevation[current_colors_index]], Number.MAX_VALUE, -1);
+	if (elevation[current_colors_index] != null) find_gaussian([azimuth[current_colors_index], elevation[current_colors_index]], Number.MAX_VALUE, -1);
 
 	value = temp_azimuth;
 	timestamp = Date.now();
@@ -1213,8 +1328,7 @@ function move_azimuth_minus(e){
 	current_elevation = (elevation[current_colors_index] == undefined ? 0 : elevation[current_colors_index]);
 	displayBall((azimuth[current_colors_index]-180), current_elevation, (current_colors_index+1));
 
-	// TODO: Play Audio
-	if (elevation[current_colors_index]) find_gaussian([azimuth[current_colors_index], elevation[current_colors_index]], Number.MAX_VALUE, -1);
+	if (elevation[current_colors_index] != null) find_gaussian([azimuth[current_colors_index], elevation[current_colors_index]], Number.MAX_VALUE, -1);
 
 	value = temp_azimuth;
 	timestamp = Date.now();
@@ -1269,8 +1383,7 @@ function move_elevation_plus(e){
 
 	changeSize(current_colors_index+1);
 
-	// TODO: Play Audio
-	if (azimuth[current_colors_index]) find_gaussian([azimuth[current_colors_index], elevation[current_colors_index]], Number.MAX_VALUE, -1);
+	if (azimuth[current_colors_index] != null) find_gaussian([azimuth[current_colors_index], elevation[current_colors_index]], Number.MAX_VALUE, -1);
 
 	value = new_elevation;
 	timestamp = Date.now();
@@ -1327,8 +1440,7 @@ function move_elevation_minus(e){
 
 	changeSize(current_colors_index+1);
 
-	// TODO: Play Audio
-	if (azimuth[current_colors_index]) find_gaussian([azimuth[current_colors_index], elevation[current_colors_index]], Number.MAX_VALUE, -1);
+	if (azimuth[current_colors_index] != null) find_gaussian([azimuth[current_colors_index], elevation[current_colors_index]], Number.MAX_VALUE, -1);
 
 	value = new_elevation;
 	timestamp = Date.now();
@@ -1367,8 +1479,7 @@ function dragElement(index,indicator,add_index){
 		document.onmousemove = mouse;
 		document.onmouseup = function(){
 			if(not_moving){
-				// TODO: Play Audio
-				if (azimuth[add_index]) find_gaussian([azimuth[add_index], elevation[add_index]], Number.MAX_VALUE, -1);
+				if (azimuth[add_index] != null) find_gaussian([azimuth[add_index], elevation[add_index]], Number.MAX_VALUE, -1);
 
 				// prevent undesired behaviors
 				document.onmousedown = null;
@@ -1425,15 +1536,13 @@ function dragElement(index,indicator,add_index){
 
 			changeSize(index);
 
-			// TODO: Play Audio
-			if (azimuth[add_index]) find_gaussian([azimuth[add_index], elevation[add_index]], Number.MAX_VALUE, -1);
+			if (azimuth[add_index] != null) find_gaussian([azimuth[add_index], elevation[add_index]], Number.MAX_VALUE, -1);
 
 			value = curr_elevation;
 			timestamp = Date.now();
 			action_type = "elevation";
 			ajax_interaction();
 
-			suppress = true;
 			not_moving = true;
 
 			// prevent undesired behaviors
@@ -1455,8 +1564,7 @@ function dragElement(index,indicator,add_index){
 		document.onmousemove = mouse;
 		document.onmouseup = function(e){
 			if (not_moving){
-				// TODO: Play Audio
-				if (azimuth[add_index]) find_gaussian([azimuth[add_index], elevation[add_index]], Number.MAX_VALUE, -1);
+				if (azimuth[add_index] != null) find_gaussian([azimuth[add_index], elevation[add_index]], Number.MAX_VALUE, -1);
 
 				// prevent undesired behaviors
 				document.onmousedown = null;
@@ -1513,15 +1621,13 @@ function dragElement(index,indicator,add_index){
 
 			changeSize(index);
 
-			// TODO: Play Audio
-			if (azimuth[add_index]) find_gaussian([azimuth[add_index], elevation[add_index]], Number.MAX_VALUE, -1);
+			if (azimuth[add_index] != null) find_gaussian([azimuth[add_index], elevation[add_index]], Number.MAX_VALUE, -1);
 
 			value = curr_elevation;
 			timestamp = Date.now();
 			action_type = "elevation";
 			ajax_interaction();
 
-			suppress = true;
 			not_moving = true;
 
 			// prevent undesired behaviors
@@ -1543,8 +1649,7 @@ function dragElement(index,indicator,add_index){
    		document.onmousemove = mouse;
 		document.onmouseup = function(e) {
 			if (not_moving){
-				// TODO: Play Audio
-				if (elevation[add_index]) find_gaussian([azimuth[add_index], elevation[add_index]], Number.MAX_VALUE, -1);
+				if (elevation[add_index] != null) find_gaussian([azimuth[add_index], elevation[add_index]], Number.MAX_VALUE, -1);
 
 				// prevent undesired behaviors
 				document.onmousedown = null;
@@ -1557,16 +1662,13 @@ function dragElement(index,indicator,add_index){
 
 			if (document.getElementById('front-item-'+index).style.display != 'none'){
 				degree = parseInt(document.getElementById('circularF'+index).style.transform.replace('rotate(','').replace('deg)',''));
-
 				if ((temp_azimuth < 180 && degree > 180) || (temp_azimuth > 180 && degree < 180)){ degree = 360 - degree; }
 				displayBoth(true, index, temp_azimuth, degree);
 			}
 
 			if (document.getElementById('side-item-'+index).style.display != 'none'){
 				degree = parseInt(document.getElementById('circularS'+index).style.transform.replace('rotate(','').replace('deg)',''));
-
-				if ( ((temp_azimuth > 270 || temp_azimuth < 90) && degree>180)
-					|| ((temp_azimuth < 270 && temp_azimuth > 90) && degree<180) ){ degree = 360 - degree; }
+				if ( ((temp_azimuth > 270 || temp_azimuth < 90) && degree > 180) || ((temp_azimuth < 270 && temp_azimuth > 90) && degree < 180) ){ degree = 360 - degree; }
 				displayBoth(false, index, temp_azimuth, degree);
 			}
 
@@ -1576,15 +1678,13 @@ function dragElement(index,indicator,add_index){
 
 			changeSize(index);
 
-			// TODO: Play Audio
-			if (elevation[add_index]) find_gaussian([azimuth[add_index], elevation[add_index]], Number.MAX_VALUE, -1);
+			if (elevation[add_index] != null) find_gaussian([azimuth[add_index], elevation[add_index]], Number.MAX_VALUE, -1);
 
 			value = curr_azimuth;
 			timestamp = Date.now();
 			action_type = "elevation";
 			ajax_interaction();
 
-			suppress = true;
 			not_moving = true;
 
 			// prevent undesired behaviors
@@ -1729,7 +1829,8 @@ function keyboardEvents(e){
 	if (e.altKey){
 		e.preventDefault();
 
-		delete_annotation = false; // disable deleting events
+		// disable deleting events
+		delete_annotation = false;
 
         document.querySelector('body').style.cursor = 'cell';
 
@@ -1737,6 +1838,9 @@ function keyboardEvents(e){
 
 		var azimuth_item_index = findUndefinedAzimuth();
 		var elevation_item_index = findUndefinedElevation();
+
+		// disable drag events
+		suppress = true;
 
 		document.addEventListener('click', function(e){
 			e.preventDefault();
@@ -1785,8 +1889,7 @@ function keyboardEvents(e){
 
 				if ( document.getElementById('front-item-'+azimuth_item_index).style.display != 'none' ){
 					original_front = parseInt(document.getElementById('circularF'+azimuth_item_index).style.transform.replace('rotate(','').replace('deg)',''));
-					if ( (original_front < 180 && curr_azimuth > 180)
-					|| (original_front > 180 && curr_azimuth < 180) ) {
+					if ( (original_front < 180 && curr_azimuth > 180) || (original_front > 180 && curr_azimuth < 180) ) {
 						window.alert("The annotation for the horizontal location is inconsistent with the annotation for the vertical location"); 
 						document.querySelector('body').style.cursor = 'default'; 
 						key_perform = false;
@@ -1842,10 +1945,10 @@ function keyboardEvents(e){
 					}
 
 				}
-				else if ( document.getElementById('side-item-'+azimuth_item_index).style.display != 'none' ){
+				
+				if ( document.getElementById('side-item-'+azimuth_item_index).style.display != 'none' ){
 					original_side = parseInt(document.getElementById('circularS'+azimuth_item_index).style.transform.replace('rotate(','').replace('deg)',''));
-					if ( ((curr_azimuth < 90 || curr_azimuth > 270) && (original_side > 180))
-					|| ((curr_azimuth > 90 && curr_azimuth < 270) && (original_side < 180)) ) {
+					if ( ((curr_azimuth < 90 || curr_azimuth > 270) && (original_side > 180)) || ((curr_azimuth > 90 && curr_azimuth < 270) && (original_side < 180)) ) {
 						window.alert("The annotation for the horizontal location is inconsistent with the annotation for the vertical location");
 						document.querySelector('body').style.cursor = 'default'; 
 						key_perform = false;
@@ -1859,8 +1962,7 @@ function keyboardEvents(e){
 
 					degree = parseInt(document.getElementById('circularS'+azimuth_item_index).style.transform.replace('rotate(','').replace('deg)',''));
 
-					if ( ((curr_azimuth > 270 || curr_azimuth < 90) && degree>180)
-						|| ((curr_azimuth < 270 && curr_azimuth > 90) && degree<180) ){
+					if ( ((curr_azimuth > 270 || curr_azimuth < 90) && degree>180) || ((curr_azimuth < 270 && curr_azimuth > 90) && degree<180) ){
 							document.getElementById('circularS'+azimuth_item_index).style.transform = 'rotate('+(360-degree)+'deg)'; 
 					}
 
@@ -1919,8 +2021,7 @@ function keyboardEvents(e){
 				document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 				document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 
-				// TODO: Play Audio
-				if (elevation[azimuth_item_index-1]) find_gaussian([curr_azimuth, elevation[azimuth_item_index-1]], Number.MAX_VALUE, -1);
+				if (elevation[azimuth_item_index-1] != null) find_gaussian([azimuth[azimuth_item_index-1], elevation[azimuth_item_index-1]], Number.MAX_VALUE, -1);
 
 				key_perform = false;
 				enable_head = false;
@@ -2056,8 +2157,7 @@ function keyboardEvents(e){
 				document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 				document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 
-				// TODO: Play Audio
-				if (azimuth[elevation_item_index-1]) find_gaussian([azimuth[elevation_item_index-1], curr_elevation], Number.MAX_VALUE, -1);
+				if (azimuth[elevation_item_index-1] != null) find_gaussian([azimuth[elevation_item_index-1], elevation[elevation_item_index-1]], Number.MAX_VALUE, -1);
 
 				enable_front = false; 
 
@@ -2195,8 +2295,7 @@ function keyboardEvents(e){
 				document.getElementById('azimuth-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 				document.getElementById('elevation-dot').style.backgroundColor = '#'+color_hex.substring(color_hex.length-6,color_hex.length);
 
-				// TODO: Play Audio
-				if (azimuth[elevation_item_index-1]) find_gaussian([azimuth[elevation_item_index-1], curr_elevation], Number.MAX_VALUE, -1);
+				if (azimuth[elevation_item_index-1] != null) find_gaussian([azimuth[elevation_item_index-1], elevation[elevation_item_index-1]], Number.MAX_VALUE, -1);
 
 				enable_side = false;
 
@@ -2281,7 +2380,6 @@ document.getElementById('head-item-1').addEventListener("mousedown",function(e){
 		document.onkeydown = null;
 	}
 	else if (document.querySelector('body').style.cursor == 'default') {
-		// if (elevation[0] && azimuth[0]) find_gaussian([azimuth[0], elevation[0]], Number.MAX_VALUE, -1);
 		document.getElementById('p-azimuth').innerHTML = (azimuth[0] == undefined ? 0 : azimuth[0]) + " degrees";
 		document.getElementById('p-elevation').innerHTML = (elevation[0] == undefined ? 0 : elevation[0]) + " degrees";
 		color_hex = '000000'+colors[0].toString(16);
