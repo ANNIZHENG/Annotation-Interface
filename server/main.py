@@ -8,6 +8,9 @@ from random import randrange
 app = Flask(__name__,static_folder="../templates",template_folder="..")
 
 
+# home() directs user to the starter frontend page (the consent form page)
+# it also checks if enough annotations are collected
+
 @app.route('/')
 def home():
     result = eng.execute('''select num_annotation from "Recording" order by num_annotation asc limit 1''')
@@ -18,6 +21,8 @@ def home():
         else:
             return render_template('/templates/index.html')
 
+# start() receives AJAX request from the frontend to give each user a survey id
+# if that user agrees the consent form
 
 @app.route('/annotation_interface', methods=['GET', 'POST'])
 def start():
@@ -27,6 +32,8 @@ def start():
     ses.commit()
     return str(survey_id)
 
+# interaction() receives AJAX request from the frontend to record the user interaction
+# e.g. "agree consent", "play audio", "azimuth", "elevation"
 
 @app.route('/interaction', methods=['GET', 'POST'])
 def interaction():
@@ -42,6 +49,10 @@ def interaction():
         ses.commit()
     return 'success'
 
+# interaction() receives AJAX request from the frontend to record the annotated azimuths and elevations
+# to the Location Table and Annotation table
+# and record "submit annotation" action to the Interaction Table
+# This method is triggered when the "SUBMIT" button is clicked, which directs one to the Confirmation page
 
 @app.route('/next', methods=['GET', 'POST'])
 def next():
@@ -98,11 +109,14 @@ def next():
 
     return 'success'
 
+# select_recording() receives AJAX request from the frontend to randomly select a recording
+# from either horizontal or horizontal_vertical folder for the Annotation page
+# This method is triggered when Annotation page is loaded
 
 @app.route('/select_recording', methods=['GET', 'POST'])
 def select_recording():
     while (True):
-        recording = randrange(192) + 1 # 1 - 192
+        recording = randrange(192) + 1
         result = eng.execute('''select num_annotation, recording_name from "Recording" where id = ''' + str(recording))
 
         for r in result:
@@ -115,6 +129,10 @@ def select_recording():
             else:
                 break
 
+# select_recording() receives AJAX request from the frontend to update the Confirmation table
+# It also updates the recording id, the folder name, and the completed status of the Survey table
+# which indicates what recording have the user done, and if the user completes the task
+# This method is triggered when the "SUBMIT" button is clicked on Confirmation page
 
 @app.route('/submit_confirmation', methods=['GET', 'POST'])
 def submit_confirmation():
@@ -179,6 +197,8 @@ def submit_confirmation():
 
         return 'success'
 
+# select_recording() receives AJAX request from the frontend to retrieve color / sub-audios (of the full audio) / full audio
+# and the location of the annotations and send them back to the frontend for Confirmation page set up
 
 @app.route('/confirm_annotation', methods=['GET', 'POST'])
 def confirm_annotation():
