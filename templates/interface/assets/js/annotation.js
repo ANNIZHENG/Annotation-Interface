@@ -1,11 +1,11 @@
-// if (localStorage.getItem('stereo') != '1' || localStorage.getItem('headphone') != '1' || localStorage.getItem('survey_id') == undefined || localStorage.getItem('survey_id') == null){
-// 	window.location = '/templates/interface/incomplete.html';
-// }
+if (localStorage.getItem('stereo') != '1' || localStorage.getItem('headphone') != '1' || localStorage.getItem('survey_id') == undefined || localStorage.getItem('survey_id') == null){
+	window.location = '/templates/interface/incomplete.html';
+}
 
-// if (parseInt(localStorage.getItem('complete_practice')) != 1){
-// 	window.location = '/templates/interface/practice.html';
-// 	window.alert("You must complete the Practice Round before entering the Annotation Interface");
-// }
+if (parseInt(localStorage.getItem('complete_practice')) != 1){
+	window.location = '/templates/interface/practice.html';
+	window.alert("You must complete the Practice Round before entering the Annotation Interface");
+}
 
 var survey_id = localStorage.getItem('survey_id');
 var practice = 0;
@@ -187,6 +187,7 @@ function scaleWindow() {
 
 function find_gaussian(true_angles, min, store_index){
     for (let i=0; i<angle_list.length; i++){
+		if (Math.floor(true_angles[0]- angle_list[i][0]) > 50 || Math.floor(true_angles[1]- angle_list[i][1]) > 50) continue;
         let dis = angular_distance(true_angles,angle_list[i]);
         if ( dis < min ) {
             min = dis;

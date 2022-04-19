@@ -1,6 +1,6 @@
-// if (localStorage.getItem('stereo') != '1' || localStorage.getItem('headphone') != '1' || localStorage.getItem('survey_id') == undefined|| localStorage.getItem('survey_id') == null){
-// 	window.location = '/templates/interface/incomplete.html';
-// }
+if (localStorage.getItem('stereo') != '1' || localStorage.getItem('headphone') != '1' || localStorage.getItem('survey_id') == undefined|| localStorage.getItem('survey_id') == null){
+	window.location = '/templates/interface/incomplete.html';
+}
 
 var survey_id = '';
 var curr_recording = 0;
@@ -199,6 +199,7 @@ function scaleWindow() {
 
 function find_gaussian(true_angles, min, store_index){
     for (let i=0; i<angle_list.length; i++){
+		if (Math.floor(true_angles[0]- angle_list[i][0]) > 50 || Math.floor(true_angles[1]- angle_list[i][1]) > 50) continue;
         let dis = angular_distance(true_angles,angle_list[i]);
         if ( dis < min ) {
             min = dis;
