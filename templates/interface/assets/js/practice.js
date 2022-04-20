@@ -260,7 +260,9 @@ almost no buttons or images are hidden
 window.addEventListener('load', scaleWindow);
 window.addEventListener('resize', scaleWindow);
 
-/* scale the display of the page to the size that almost no buttons or images are hidden */
+/* 
+scale the display of the page to the size that almost no buttons or images are hidden 
+*/
 function scaleWindow() {
 	const body = document.querySelector('body');
 	body.style.transform = 'scale(1)';
@@ -968,6 +970,11 @@ function displayBoth(hasFront, index, temp_azimuth, degree){
 	}
 }
 
+/*
+This method is used to change the annotation dot side when two or more dots are closed to each other
+When the distance between two or more dots is 5 degree (of 360 degree), then the size of the dots
+will change with the bottom dots having a larger size than the top dots
+*/
 function changeSize(item_index){
 
 	const selected_azimuth = azimuth[item_index - 1];

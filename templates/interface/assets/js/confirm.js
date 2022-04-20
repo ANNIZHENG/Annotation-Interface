@@ -1,3 +1,6 @@
+/* 
+This if statement checks if the user did the screening tests and agrees the consent form 
+*/
 if (localStorage.getItem('stereo') != '1' || localStorage.getItem('headphone') != '1' || localStorage.getItem('survey_id') == undefined || localStorage.getItem('survey_id') == null){
 		window.location = '/templates/interface/incomplete.html';
 }
@@ -60,14 +63,41 @@ var side_indicators = {
 	10: []
 };
 
+/*
+The listener pops up the general instructions of this interface
+*/
 document.getElementById('message').addEventListener("click",popRules);
+/*
+While the general instructions is displayed, 
+this listener controls flips to the last instruction
+*/
 document.getElementById('instruction-left').addEventListener("click",move_instruction_last);
+/*
+While the general instructions is displayed, 
+this listener controls flips to the next instruction
+*/
 document.getElementById('instruction-right').addEventListener("click",move_instruction_next);
+/*
+While the general instructions is displayed, and the last page is reached
+this listener closes the general instructions
+*/
 document.getElementById('instruction-proceed').addEventListener("click",closeRules);
+/*
+The listener closes the general instructions window
+This listener can only be triggered after the user reads all of the instructions
+or that user is in confirmation or annotation page
+*/
 document.getElementById('sign').addEventListener("click",closeRules);
+/*
+The two event listeners below scale the display of the page to the size that
+almost no buttons or images are hidden
+*/
 window.addEventListener('load', scaleWindow);
 window.addEventListener('resize', scaleWindow);
 
+/* 
+scale the display of the page to the size that almost no buttons or images are hidden 
+*/
 function scaleWindow() {
 	const body = document.querySelector('body');
 	body.style.transform = 'scale(1)';
@@ -81,6 +111,9 @@ function scaleWindow() {
 	}
 }
 
+/*
+pop General Instructions
+*/
 function popRules(e){ 
 	e.preventDefault();
 	modal.style.display = "block";
@@ -91,6 +124,9 @@ function popRules(e){
 	curr_instruction = 1;
 }
 
+/*
+close general instructions
+*/
 function closeRules(e){ 
 	let videos = document.getElementsByTagName('video');
 	for(let i = 0; i<videos.length; i++){
@@ -105,6 +141,11 @@ function closeRules(e){
 	modal.style.display = "none";
 }
 
+/*
+Flip to the next page of the general instructions
+Instruction videos are played when that page is reached (except for page 2 which contains sample audios)
+When the user is leaving page 2, its played audio will stop
+*/
 function move_instruction_next(e){
 	e.preventDefault();
 
@@ -207,6 +248,11 @@ function move_instruction_next(e){
 	}
 }
 
+/*
+Flip to the last page of the general instructions
+Instruction videos are played when that page is reached (except for page 2 which contains sample audios)
+When the user is leaving page 2, its played audio will stop
+*/
 function move_instruction_last(e){
 	e.preventDefault();
 	if (curr_instruction > 1) {
@@ -259,6 +305,10 @@ function move_instruction_last(e){
 
 confirm_annotation();
 
+/*
+sends AJAX request to the backend to retrieve the annotated location, sub-audios, full audios
+and the colors of each annotation dot from the database and display them to the Confirmation page
+*/
 function confirm_annotation(){
 	var request = new XMLHttpRequest(); 
 	request.open('POST', '/confirm_annotation');
@@ -355,6 +405,10 @@ function confirm_annotation(){
 	request.send(data);
 }
 
+/* 
+The listener updates the audio progress bar and plays the audio when the user 
+clicks the "Play" button in the instructions window
+*/
 document.addEventListener('click', function(e){
 
 	if (e.target.id.substring(0,23) == "audio-frame-instruction") {
@@ -442,6 +496,12 @@ document.addEventListener('click', function(e){
 	}
 });
 
+/*
+This method used the location info retrieved from the database (azimuth and elevation) and
+used them to position annotation dot for display
+This method also detects if the annotation dot should be displayed in both
+side (Back side and Side side) of the 2D images for elevation annotation
+*/
 function addLocation(coordinates) {
 	let item_index = coordinates[2];
 
@@ -526,6 +586,10 @@ function addLocation(coordinates) {
 	displayBall(coordinates[0]-180, coordinates[1], item_index);
 }
 
+/*
+This method sends an AJAX request to the backend to store the matching between the annotation dots and the sub-audio files
+The matching is determined by the matching between the sequence of the annotation dots with the sequence of the checks
+*/
 function submit_confirmation(){
 	let location_id = '';
 	let source_id = ''
@@ -579,12 +643,18 @@ function submit_confirmation(){
 	return true;
 }
 
+/*
+This event listener is triggerd when a user completes the actual annotation
+*/
 document.getElementById('btn-button-submit').addEventListener('click', function(){
 	if (submit_confirmation()) {
 		localStorage.setItem('complete_annotation',1);
 		window.location = '/templates/interface/submit.html';
 	}
 });
+/*
+This event listener is triggerd when a user completes one practice round and would like to practice again
+*/
 document.getElementById('btn-button-again').addEventListener('click', function(){
 	if (submit_confirmation()) {
 		let curr_recording = parseInt(localStorage.getItem('practice'))+1;
@@ -592,6 +662,10 @@ document.getElementById('btn-button-again').addEventListener('click', function()
 		window.location = '/templates/interface/practice.html';
 	}
 });
+/*
+This event listener is triggerd when a user completes one practice round and would like to 
+enter the actual annotation interface
+*/
 document.getElementById('btn-button-next').addEventListener('click', function(){
 	if (submit_confirmation()) {
 		localStorage.setItem('complete_practice',1);
@@ -600,6 +674,11 @@ document.getElementById('btn-button-next').addEventListener('click', function(){
 	}
 });
 
+/*
+This method is used to change the annotation dot side when two or more dots are closed to each other
+When the distance between two or more dots is 5 degree (of 360 degree), then the size of the dots
+will change with the bottom dots having a larger size than the top dots
+*/
 function changeSize(item_index){
 
 	const selected_azimuth = azimuth[(item_index - 1).toString()];
