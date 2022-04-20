@@ -241,7 +241,9 @@ almost no buttons or images are hidden
 window.addEventListener('load', scaleWindow);
 window.addEventListener('resize', scaleWindow);
 
-/* scale the display of the page to the size that almost no buttons or images are hidden*/
+/* 
+scale the display of the page to the size that almost no buttons or images are hidden 
+*/
 function scaleWindow() {
 	const body = document.querySelector('body');
 	body.style.transform = 'scale(1)';
