@@ -2351,6 +2351,9 @@ function keyboardEvents(e){
 	return;
 }
 
+/*
+Finds the smallest index for storing azimuth or elevation in the "azimuth" or "elevation" array
+*/
 function findDefinedAnnotation(flag){
 	let index = 0
 	let store_index = -1;
