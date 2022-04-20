@@ -201,7 +201,7 @@ or that user is in confirmation or annotation page
 */
 document.getElementById('sign').addEventListener("click",closeRules);
 /*
-Sends ajax to the frontend to the Interaction table for "play audio" action
+Sends ajax to the backend to the Interaction table for "play audio" action
 Changes the "play audio" button to "pause audio" or vice versa
 */
 document.getElementById('audio-frame').addEventListener("click",addPlaying);
@@ -241,6 +241,7 @@ almost no buttons or images are hidden
 window.addEventListener('load', scaleWindow);
 window.addEventListener('resize', scaleWindow);
 
+/* scale the display of the page to the size that almost no buttons or images are hidden*/
 function scaleWindow() {
 	const body = document.querySelector('body');
 	body.style.transform = 'scale(1)';
@@ -254,6 +255,9 @@ function scaleWindow() {
 	}
 }
 
+/*
+This method works with the angular distance method to retrieve and play the nearest positioned gaussian audio file
+*/
 function find_gaussian(true_angles, min, store_index){
     for (let i=0; i<angle_list.length; i++){
 		if (Math.floor(true_angles[0]- angle_list[i][0]) > 50 || Math.floor(true_angles[1]- angle_list[i][1]) > 50) continue;
@@ -285,6 +289,10 @@ function find_gaussian(true_angles, min, store_index){
 	return store_index;
 }
 
+/*
+@params two angles, each indicating the azimuth and elevation in an array
+finds the nearest angular distance between two points
+*/
 function angular_distance(true_angles, estimated_angles) {
     let array = [true_angles[0], 90 - true_angles[1]];
     let value = [estimated_angles[0], 90 - estimated_angles[1]];
@@ -295,11 +303,17 @@ function angular_distance(true_angles, estimated_angles) {
     return distance;
 }
 
+/*
+pop Keyboard Rule
+*/
 function popKeyRules(e){
 	e.preventDefault();
 	window.alert("Press [Option] or [Alt] key to add an annotation once you see the cursor turning to '+'. Press the [Control] or [Ctrl] key to delete an annotation once you see the cursor turning to '-'. Deleting an annotation means to delete both its annotated horizontal location and vertical location.")
 }
 
+/*
+pop General Instructions
+*/
 function popRules(e){ 
 	e.preventDefault();
 	modal.style.display = "block";
@@ -310,6 +324,9 @@ function popRules(e){
 	curr_instruction = 1;
 }
 
+/*
+close general instructions
+*/
 function closeRules(e){ 
 	e.preventDefault();
 	let videos = document.getElementsByTagName('video');
@@ -325,6 +342,11 @@ function closeRules(e){
 	modal.style.display = "none";
 }
 
+/*
+Flip to the next page of the general instructions
+Instruction videos are played when that page is reached (except for page 2 which contains sample audios)
+When the user is leaving page 2, its played audio will stop
+*/
 function move_instruction_next(e){
 	e.preventDefault();
 
@@ -427,6 +449,11 @@ function move_instruction_next(e){
 	}
 }
 
+/*
+Flip to the last page of the general instructions
+Instruction videos are played when that page is reached (except for page 2 which contains sample audios)
+When the user is leaving page 2, its played audio will stop
+*/
 function move_instruction_last(e){
 	e.preventDefault();
 	if (curr_instruction > 1) {
@@ -481,6 +508,10 @@ function move_instruction_last(e){
 	}
 }
 
+/*
+Record user's selected sound sources number from the dropdown menu
+and displays 3 2D images and questions that ask the user to annotate those sounds
+*/
 function addSourceCount(){
 	document.querySelector(".container").style.height = "100%";
 	document.getElementById('2d-question').innerHTML = "Please identify the location of each sound:";
@@ -498,11 +529,17 @@ function addSourceCount(){
 	ajax_interaction();
 }
 
+/*
+update the styling of audio progress bar
+*/
 function audioTracker(){
 	let track = document.getElementById('audio').currentTime / document.getElementById('audio').duration * 100;
 	document.getElementById('audio-frame').style.background = 'linear-gradient(to right, #efefef '+track+'%, #ffffff 0%)';
 }
 
+/*
+record user's interaction with audio play button
+*/
 function addPlaying(e){
 	e.preventDefault();
 	if (!isPlaying){
@@ -522,13 +559,18 @@ function addPlaying(e){
 	}
 }
 
+/*
+display drop down menu
+*/
 function displaySelection(){ 
 	isPlaying = false;
 	document.getElementById('audio-frame').innerHTML='Play Audio';
-	// document.getElementById('count').setAttribute('style','');
 	document.getElementById('count').style.visibility = '';
 }
 
+/*
+Warnings associated with annotation
+*/
 function askProceed(){
 	if (document.getElementById('count').value == undefined){ window.alert("You must select a number of distinct sounds"); return false; }
 	if (findUndefinedAzimuth() == -3 && findUndefinedElevation() == -3) { window.alert("You must annotate at least one spatial location"); return false; }
@@ -541,6 +583,9 @@ function askProceed(){
 	return true;
 }
 
+/*
+sends AJAX request to the backend to record user interaction
+*/
 function ajax_interaction() {
 	var request_interaction = new XMLHttpRequest();
 	request_interaction.open('POST', '/interaction', true);
@@ -557,6 +602,11 @@ function ajax_interaction() {
 	}
 }
 
+/*
+This method is triggered after the user clicks the "SUBMIT" button
+It directs user to the confirmation page while sends AJAX to the backend to
+record user's annotation
+*/
 function ajax_next(){
 	if (!askProceed()){
 		event.preventDefault();
@@ -583,6 +633,10 @@ function ajax_next(){
 	window.location = '/templates/interface/confirm.html';
 }
 
+/*
+This method is used to detect if the annotation dot should be displayed in both
+side (Back side and Side side) of the 2D images for elevation annotation
+*/
 function displayBoth(hasFront, index, temp_azimuth, degree){
 	if (hasFront){
 		if (temp_azimuth < 22.5 || temp_azimuth > 337.5){ 
@@ -698,6 +752,11 @@ function displayBoth(hasFront, index, temp_azimuth, degree){
 	}
 }
 
+/*
+This method is used to change the annotation dot side when two or more dots are closed to each other
+When the distance between two or more dots is 5 degree (of 360 degree), then the size of the dots
+will change with the bottom dots having a larger size than the top dots
+*/
 function changeSize(item_index){
 
 	const selected_azimuth = azimuth[item_index - 1];
@@ -1127,6 +1186,10 @@ function changeSize(item_index){
 	}
 }
 
+/*
+This method is triggered when the user clicks the "+" sign
+It controls the selected azimuth dot of the 2D image and moves it up
+*/
 function move_azimuth_plus(e){
 	e.preventDefault();
 
@@ -1168,6 +1231,10 @@ function move_azimuth_plus(e){
 	ajax_interaction();
 }
 
+/*
+This method is triggered when the user clicks the "-" sign
+It controls the selected azimuth dot of the 2D image and moves it down
+*/
 function move_azimuth_minus(e){
 	e.preventDefault();
 
@@ -1210,6 +1277,10 @@ function move_azimuth_minus(e){
 	ajax_interaction();
 }
 
+/*
+This method is triggered when the user clicks the "+" sign
+It controls the selected elevation dot of the 2D image and moves it up
+*/
 function move_elevation_plus(e){
 	e.preventDefault();
 
@@ -1265,6 +1336,10 @@ function move_elevation_plus(e){
 	ajax_interaction();
 }
 
+/*
+This method is triggered when the user clicks the "-" sign
+It controls the selected elevation dot of the 2D image and moves it down
+*/
 function move_elevation_minus(e){
 	e.preventDefault();
 	if (document.getElementById('front-item-'+(current_colors_index+1)).style.display == 'none' && document.getElementById('side-item-'+(current_colors_index+1)).style.display == 'none' ){ 
@@ -1322,6 +1397,12 @@ function move_elevation_minus(e){
 	ajax_interaction();
 }
 
+/*
+This method allows user to drag and moves the annotated dot
+It also updates the degree info of the annotated dot
+Keep in mind that not all dots are allowed to be dragged (i.e. if the position of an elevation dot
+	does not match with that of the azimuth dot, a warning will pop up)
+*/
 function dragElement(index,indicator,add_index){
 	var item, itemF, itemS;
 
@@ -1613,6 +1694,9 @@ function dragElement(index,indicator,add_index){
 	}
 }
 
+/*
+This method calculates the azimuth of an annotation
+*/
 function calculateAzimuth(x,y,cx,cy){
 	var newx, newy;
 	if ( x>cx && y<cy ){
@@ -1641,6 +1725,11 @@ function calculateAzimuth(x,y,cx,cy){
 	}
 }
 
+/*
+This method manipulates the array that is used to store the annotated azimuth information
+It lets the other method know what is the smallest index to insert a new azimuth (which tells
+	the interface what color or what annotation dot should the user use)
+*/
 function findUndefinedAzimuth(){
 	var index = 0;
 	var lock = 0;
@@ -1666,6 +1755,11 @@ function findUndefinedAzimuth(){
 	else return azimuth_item_index; // when user hit submit but annotate less annotation(s)
 }
 
+/*
+This method manipulates the array that is used to store the annotated elevation information
+It lets the other method know what is the smallest index to insert a new elevation (which tells
+	the interface what color or what annotation dot should the user use)
+*/
 function findUndefinedElevation(){
 	var index = 0;
 	var elevation_item_index = 0;
@@ -1692,6 +1786,10 @@ function findUndefinedElevation(){
 	else return elevation_item_index;
 }
 
+/*
+This method measures the distance between mouse clicked position and the 2D images
+It is used to determine if the user clicks to the blue circle of the 2D images
+*/
 function calculateRadius(mouseX, mouseY, frameX, frameY){
 	x = frameX - mouseX;
 	y = frameY - mouseY;
@@ -1700,6 +1798,10 @@ function calculateRadius(mouseX, mouseY, frameX, frameY){
 	else return false;
 }
 
+/*
+This method pops up a warning when the user clicks the 3D display
+since the display is not for annotation
+*/
 function calculate3dClick(mouseX, mouseY, frameX, frameY){
 	x = frameX - mouseX;
 	y = frameY - mouseY;
@@ -1716,6 +1818,11 @@ var add_third = false;
 
 document.addEventListener("keydown", keyboardEvents);
 
+/*
+This method holds a collection of event listeners for adding annotation dot in the three 2D images
+and triggering the deletion event
+It changes the cursor shape and updates the arrays for storing azimuth and elevation
+*/
 function keyboardEvents(e){
 
 	if(e.ctrlKey){
@@ -2242,7 +2349,6 @@ function keyboardEvents(e){
 	return;
 }
 
-
 function findDefinedAnnotation(flag){
 	let index = 0
 	let store_index = -1;
@@ -2262,8 +2368,12 @@ function findDefinedAnnotation(flag){
 	return (store_index == -1 ? -1 : store_index);
 }
 
-// Item Events
-
+/*
+The below event listeners are triggered when the annotation dot is clicked or dragged
+If the dot is clicked when a deletion event is triggered, that dot will be deleted
+If the dot is clicked when no event is triggered, its information will be displayed
+If the dot is dragged, it will move according to the track of the mouse
+*/
 document.getElementById('head-item-1').addEventListener("mousedown",function(e){
 	e.preventDefault(); // Prevent dragging text event of the current draggable
 
