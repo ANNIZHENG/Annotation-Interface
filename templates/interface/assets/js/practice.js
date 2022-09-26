@@ -19,7 +19,7 @@ survey_id = localStorage.getItem('survey_id');
 
 // check if the user goes through the whole instruction
 var read_all_rules = true;
-document.getElementById("sign").style.visibility = '';
+// document.getElementById("sign").style.visibility = '';
 
 // To confirm that it is the practice round
 localStorage.setItem('practice_boolean', 1);
