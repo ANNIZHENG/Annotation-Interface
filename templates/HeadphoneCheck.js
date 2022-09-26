@@ -141,7 +141,7 @@ Contact Ray Gonzalez raygon@mit.edu or Kevin J. P. Woods kwoods@mit.edu
     }).appendTo($('#hc-container'));
     $('<div/>', {
       class: 'hc-instruction',
-      html: '<div> Simply judge WHICH SOUND WAS SOFTEST (quietest) -- 1, 2, or 3? </div>'
+      html: '<div> Simply judge WHICH SOUND WAS QUIETEST -- 1, 2, or 3? </div>'
     }).appendTo($('#hc-container'));
     $('<div/>', {
       class: 'hc-instruction',
@@ -230,7 +230,7 @@ Contact Ray Gonzalez raygon@mit.edu or Kevin J. P. Woods kwoods@mit.edu
     // render boilerplate instruction text
     $('<div/>', {
       class: 'hc-calibration-instruction',
-      html: '<div> You must pass <b>two(2)</b> screenings to enter the task:<br>1. a Headphone Check and<br>2. a Stereo Sound Check</div>'
+      html: '<div> You must pass <b>two</b> screenings to enter the task:<br>1. a Headphone Check and<br>2. a Stereo Sound Check</div>'
     }).appendTo($('#hc-container'));
     $('<div/>', {
       class: 'hc-calibration-instruction',
@@ -330,7 +330,7 @@ Contact Ray Gonzalez raygon@mit.edu or Kevin J. P. Woods kwoods@mit.edu
       }))
     .appendTo($('#' + divID));
 
-    //add in the radio buttons for selecting which sound was softest
+    //add in the radio buttons for selecting which sound was quietest
     $('<div/>', {
       id: 'hc-radio-buttonset-' + stimID,
       class: 'hc-buttonset-vertical',
@@ -338,9 +338,9 @@ Contact Ray Gonzalez raygon@mit.edu or Kevin J. P. Woods kwoods@mit.edu
 
     //give the label info for the buttons
     var radioButtonInfo = [
-                            {'id': '1', 'name': 'FIRST sound was SOFTEST'},
-                            {'id': '2', 'name': 'SECOND sound was SOFTEST'},
-                            {'id': '3', 'name': 'THIRD sound was SOFTEST'},
+                            {'id': '1', 'name': 'FIRST sound was QUIETEST'},
+                            {'id': '2', 'name': 'SECOND sound was QUIETEST'},
+                            {'id': '3', 'name': 'THIRD sound was QUIETEST'},
                           ];
 
     $.each(radioButtonInfo, function() {
