@@ -16,7 +16,7 @@ def home():
     result = eng.execute('''select num_annotation from "Recording" order by num_annotation asc limit 1''')
     for r in result:
         least_annotation = int(dict(r)['num_annotation'])
-        if (least_annotation == 3):
+        if (least_annotation >= 3):
             return render_template('/templates/interface/finish.html')
         else:
             return render_template('/templates/index.html')
@@ -116,9 +116,9 @@ def next():
 @app.route('/select_recording', methods=['GET', 'POST'])
 def select_recording():
     while (True):
+        # id of recordings that are available to be annotated
         all_ids = [1,2,3,4,5,6,7,8,9,12,14,15,17,18,19,20,23,24,25,28,31,32,33,34,35,36,37,38,39,40,41,42,43,44,47,50,51,52,53,55,58,59,62,63,64,66,67,70,71,73,74,79,80,82,84,87,88,92,95,97,98,99,100,101,102,103,104,105,108,110,112,113,114,115,116,118,119,120,121,124,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,143,144,146,147,148,149,151,154,155,158,159,160,162,166,167,169,170,175,176,178,180,182,183,184,188,191,2000,2002,2003,2004,2005,2006,2007,2009,2011,2012,2013,2014,2015,2016,2018,2019,2020,2021,2022,2023,2024,2025,2026,2028,2029,2030,2032,2033,2034,2035,2036,2037,2038,2039,2040,2041,2042,2043,2044,2045,2046,2047,2048,2049,2032,2033,2034,2035,2036,2037,2038,2039,2040,2041,2042,2043,2044,2045,2046,2047,2048,2049,2032,2033,2034,2035,2036,2037,2038,2039,2040,2041,2042,2043,2044,2045,2046,2047,2048,2049,2050,2051,2052,2053,2054,2055,2056,2057,2058,2059,2060,2061,2062,2063,2064,2065,2066,2067,2068,2069,2070,2071,2072,2073,2074,2075,2076,2077,2078,2079,2080,2081,2082,2083,2084,2085,2086,2087,2088,2089,2090,2091,2092,2093,2094,2095,2096,2097,2098,2099]
 
-        ## previous code: recording = randrange(192) + 1 ## this is just a note for me
         recording = all_ids[randrange(len(all_ids))]
         
         result = eng.execute('''select num_annotation, recording_name from "Recording" where id = ''' + str(recording))
@@ -132,7 +132,7 @@ def select_recording():
                 elif (recording >= 2000 and recording <= 2049):
                     vertical = 1
                 else:
-                    vertical = 0 # including the practice and recording > 2031
+                    vertical = 0
                 return "{" + '''"recording_name":{"0":''' + '"' + str(dict(r)['recording_name']) + '"' + "}," + '''"vertical":{"0":''' + str(vertical) + "}" + "}"
             else:
                 break
