@@ -129,7 +129,7 @@ def select_recording():
                     vertical = 1
                 elif (recording >= 97 and recording <= 192):
                     vertical = 0
-                elif (recording >= 2000 and recording <= 2031):
+                elif (recording >= 2000 and recording <= 2049):
                     vertical = 1
                 else:
                     vertical = 0 # including the practice and recording > 2031
