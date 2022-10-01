@@ -313,6 +313,9 @@ function confirm_annotation(){
 	var request = new XMLHttpRequest(); 
 	request.open('POST', '/confirm_annotation');
 	let vertical = parseInt(localStorage.getItem('vertical'))
+
+	console.log(recording_name, source_id, vertical)
+
 	recording_name = localStorage.getItem('recording')
 	request.onreadystatechange = function() {
 		if (request.readyState == 4){
@@ -617,6 +620,8 @@ function submit_confirmation(){
 	for (const [key,value] of Object.entries( sources )) {
 		source_id += value + ',';
 	}
+
+	console.log(recording_name, source_id, vertical)
 
 	localStorage.setItem('full_round', true);
 	location_id = location_id.substring(0,location_id.length-1);
