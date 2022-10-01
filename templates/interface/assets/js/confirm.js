@@ -314,8 +314,6 @@ function confirm_annotation(){
 	request.open('POST', '/confirm_annotation');
 	let vertical = parseInt(localStorage.getItem('vertical'))
 
-	console.log(recording_name, source_id, vertical)
-
 	recording_name = localStorage.getItem('recording')
 	request.onreadystatechange = function() {
 		if (request.readyState == 4){
@@ -621,8 +619,6 @@ function submit_confirmation(){
 		source_id += value + ',';
 	}
 
-	console.log(recording_name, source_id, vertical)
-
 	localStorage.setItem('full_round', true);
 	location_id = location_id.substring(0,location_id.length-1);
 	source_id = source_id.substring(0,source_id.length-1);
@@ -634,6 +630,7 @@ function submit_confirmation(){
 
 	let survey_id = localStorage.getItem('survey_id');
 	let vertical = parseInt(localStorage.getItem('vertical'));
+	console.log(recording_name, source_id, vertical)
 	var data = JSON.stringify({recording_name, location_id, source_id, practice, survey_id, vertical, timestamp});
 
 	request_submit.send(data);
