@@ -168,7 +168,6 @@ def submit_confirmation():
             vertical_exec = str(vertical)
             practice = False
         
-        recording_id = -1
         recording_name = data['recording_name']
         result_recording_id = eng.execute('''select id from "Recording" where recording_name = ''' + "'" + recording_name + "' and vertical is " + vertical_exec)
 
