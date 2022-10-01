@@ -630,7 +630,6 @@ function submit_confirmation(){
 
 	let survey_id = localStorage.getItem('survey_id');
 	let vertical = parseInt(localStorage.getItem('vertical'));
-	console.log(recording_name, source_id, vertical)
 	var data = JSON.stringify({recording_name, location_id, source_id, practice, survey_id, vertical, timestamp});
 
 	request_submit.send(data);
