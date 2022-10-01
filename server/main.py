@@ -61,7 +61,7 @@ def next():
         recording_name = data['recording_name']
         survey_id = data['survey_id']
 
-        if (data['vertical'] == 2):
+        if (data['vertical'] == 2): # practice round
             vertical = None
             exec = '''select id from "Recording" where recording_name = ''' + "'" + recording_name + "' and vertical is null"
         else:
@@ -146,19 +146,28 @@ def select_recording():
 def submit_confirmation():
     if (request.method == 'POST'):
         data = request.json
-        practice = bool(int(data['practice']))
-        if (data['vertical'] == 2):
-            vertical = None
-            vertical_exec = "null"
-        else:
-            vertical = bool(data['vertical'])
-            vertical_exec = str(vertical)
-        
+        # practice = bool(int(data['practice']))
+        # if (data['vertical'] == 2):
+        #     vertical = None
+        #     vertical_exec = "null"
+        # else:
+        #     vertical = bool(data['vertical'])
+        #     vertical_exec = str(vertical)
+
         recording_name = data['recording_name']
         source_id = data['source_id'].split(',')
         location_id = data['location_id'].split(',')
         survey_id = str(data['survey_id'])
 
+        if (data['source_id'] == 193 or data['source_id'] == 194 or data['source_id'] == 195 or data['source_id'] == 196 or data['source_id'] == 197):
+            vertical = None
+            vertical_exec = "null"
+            practice = True
+        else:
+            vertical = bool(data['vertical'])
+            vertical_exec = str(vertical)
+            practice = False
+        
         recording_id = -1
         recording_name = data['recording_name']
         result_recording_id = eng.execute('''select id from "Recording" where recording_name = ''' + "'" + recording_name + "' and vertical is " + vertical_exec)
