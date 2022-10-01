@@ -213,7 +213,7 @@ def submit_confirmation():
                 place_folder = "horizontal"
             
             eng.execute('''update "Survey" set recording_id = ''' + str(recording_id) + " where survey_id = '" + survey_id + "' and recording_id is null")
-            eng.execute('''update "Survey" set horizontal_or_vertical = ''' + "'" + place_folder + "'" + ''' where survey_id = ''' + "'" + survey_id + "' and recording_id < 193")
+            eng.execute('''update "Survey" set horizontal_or_vertical = ''' + "'" + place_folder + "'" + ''' where survey_id = ''' + "'" + survey_id + "' and recording_id < 193 or recording_id > 197")
 
         return 'success'
 
