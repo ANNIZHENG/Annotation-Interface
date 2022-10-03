@@ -636,7 +636,7 @@ function submit_confirmation(){
 	request_submit.onreadystatechange = function() {
 		if (request_submit.readyState == 4){
 			if (request_submit.responseText != 'success'){
-				window.alert("Somthing is wrong. Please Refresh.");
+				window.alert("Something is wrong. Please REFERSH THIS PAGE or RESTART THE TASK.");
 				return;
 			}
 		}

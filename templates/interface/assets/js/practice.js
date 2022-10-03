@@ -811,7 +811,7 @@ function ajax_interaction() {
 	request_interaction.onreadystatechange = function() {
 		if (request_interaction.readyState == 4){
 			if (request_interaction.responseText != 'success'){
-				window.alert("Somthing is wrong. Please Refresh.");
+				window.alert("Something is wrong. Please REFERSH THIS PAGE or RESTART THE TASK.");
 				return;
 			}
 		}
@@ -843,7 +843,7 @@ function ajax_next(){
 	request_next.onreadystatechange = function() {
 		if (request_next.readyState == 4){
 			if (request_next.responseText != 'success'){
-				window.alert("Somthing is wrong. Please Refresh.");
+				window.alert("Something is wrong. Please REFERSH THIS PAGE or RESTART THE TASK.");
 				return;
 			}
 		}
