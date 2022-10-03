@@ -17,9 +17,11 @@ class Survey(Base):
     completed = Column(Boolean)
     recording_id = Column(Integer)
     horizontal_or_vertical = Column(VARCHAR)
+    timestamp = Column(TIMESTAMP)
 
-    def __init__(self,survey_id):
+    def __init__(self,survey_id, timestamp):
         self.survey_id = survey_id
+        self.timestamp = timestamp
 
 
 class Annotation(Base):

@@ -27,7 +27,9 @@ def home():
 @app.route('/annotation_interface', methods=['GET', 'POST'])
 def start():
     survey_id = uuid.uuid4()
-    entry = Survey(survey_id)
+    data = request.json
+    timestamp = datetime.fromtimestamp(data['timestamp'] / 1000)
+    entry = Survey(survey_id, timestamp)
     ses.add(entry)
     ses.commit()
     return str(survey_id)

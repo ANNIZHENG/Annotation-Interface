@@ -84,11 +84,14 @@
 		function ajax_start(){
 			var request_start = new XMLHttpRequest();
 			request_start.open('POST', '/annotation_interface');
+			request_start.setRequestHeader('content-type', 'application/json;charset=UTF-8');
+			let timestamp = Date.now();
+			let data = JSON.stringify({timestamp});
+			request_start.send(data);
 			request_start.onreadystatechange = function() {
 				survey_id = request_start.response;
 				localStorage.setItem("survey_id", survey_id);
 			}
-			request_start.send();
 		}
 		function ajax_interaction() {
 			var request = new XMLHttpRequest();
@@ -98,7 +101,7 @@
 			let value = null;
 			let timestamp = Date.now();
 			let practice = 0;
-			var data = JSON.stringify({survey_id,action_type,value,timestamp,practice});
+			let data = JSON.stringify({survey_id,action_type,value,timestamp,practice});
 			request.send(data);
 		}
 	</script>
