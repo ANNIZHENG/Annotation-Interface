@@ -94,6 +94,7 @@
 			}
 		}
 		function ajax_interaction() {
+			localStorage.setItem("agree_consent_form", 1);
 			var request = new XMLHttpRequest();
 			request.open('POST', '/interaction', true);
 			request.setRequestHeader('content-type', 'application/json;charset=UTF-8');

@@ -1,7 +1,7 @@
 /* 
 This if statement checks if the user did the screening tests and agrees the consent form 
 */
-if (localStorage.getItem('stereo') != '1' || localStorage.getItem('headphone') != '1' || localStorage.getItem('survey_id') == undefined || localStorage.getItem('survey_id') == null){
+if (localStorage.getItem('agree_consent_form') != '1' || localStorage.getItem('stereo') != '1' || localStorage.getItem('headphone') != '1' || localStorage.getItem('survey_id') == undefined || localStorage.getItem('survey_id') == null){
 		window.location = '/templates/interface/incomplete.html';
 }
 
