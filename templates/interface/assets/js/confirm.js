@@ -20,7 +20,7 @@ var modal = document.getElementById("modal");
 const totalInstructions = 8;
 const colors = [0x009dff, 0xff7f0e, 0x00ff00, 0xff0000, 0x9467bd, 0xd3d3d3, 0xc39b77, 0xe377c2, 0xbcbd22, 0x00ffff];
 const css_colors = ["#009dff", "#ff7f0e", "#00ff00", "#ff0000", "#9467bd", "#d3d3d3", "#c39b77", "#e377c2", "#bcbd22", "#00ffff"];
-const audio_path = 'https://assets-audio.s3.amazonaws.com/audio'
+const audio_path = 'https://assets-audio2.s3.amazonaws.com/audio'
 const audio_path_practice = '/templates/interface/assets/audio/practice/';
 
 // these are look up tables for annotation dots' size change
