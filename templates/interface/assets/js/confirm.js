@@ -635,8 +635,9 @@ function submit_confirmation(){
 	request_submit.send(data);
 	request_submit.onreadystatechange = function() {
 		if (request_submit.readyState == 4){
-			if (request_submit.responseText != 'success'){
-				window.alert("Something is wrong. Please REFERSH THIS PAGE or RESTART THE TASK.");
+			if (request_submit.responseText != 'success' && practice != 1){
+				// this is triggered only when the actual data are not saved
+				window.alert("Something is wrong with saving your data. Please REFERSH THIS PAGE or RESTART THE TASK.");
 				return;
 			}
 		}
