@@ -25,8 +25,7 @@ const angle_list=[[0,-90],[0,-75],[90,-75],[180,-75],[270,-75],[100,-70],[270,-7
 /* 
 Creates an AJAX request to the front end to randomly select a recording for the user to annotate 
 */
-console.log(localStorage.getItem('recording'));
-if (localStorage.getItem('recording') == null) ajax_select_recording();
+if (localStorage.getItem('vertical') == null) ajax_select_recording();
 else {
 	vertical = localStorage.getItem('vertical');
 	let file_name = vertical ? "horizontal_vertical" : "horizontal";
