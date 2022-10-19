@@ -25,7 +25,7 @@ const angle_list=[[0,-90],[0,-75],[90,-75],[180,-75],[270,-75],[100,-70],[270,-7
 /* 
 Creates an AJAX request to the front end to randomly select a recording for the user to annotate 
 */
-ajax_select_recording();
+if (localStorage.getItem('recording') == null || localStorage.getItem('recording') == "") ajax_select_recording();
 function ajax_select_recording(){
 	var request_recording = new XMLHttpRequest(); 
 	request_recording.open('POST', '/select_recording');
