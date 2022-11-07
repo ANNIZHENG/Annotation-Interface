@@ -287,7 +287,7 @@ function find_gaussian(true_angles, min, store_index){
             store_index = i;
         }
     }
-	gaussian = new Audio("https://assets-audio.s3.amazonaws.com/audio/gaussian/gaussian_rec_" + store_index + ".wav");
+	gaussian = new Audio("https://assets-audio2.s3.amazonaws.com/audio/gaussian/gaussian_rec_" + store_index + ".wav");
 	gaussian.play();
 	let audio = document.getElementById('audio');
 	var noise_down;
