@@ -161,7 +161,10 @@ def submit_confirmation():
         location_id = data['location_id'].split(',')
         survey_id = str(data['survey_id'])
 
-        practice = False # to set up the variable first
+        # set up the variable first
+        vertical = None
+        vertical_exec = "null"
+        practice = True
         if (recording_name == 'sources_3_recording_19.wav' or recording_name == 'sources_3_recording_130.wav' or recording_name == 'sources_3_recording_160.wav' or recording_name == 'sources_3_recording_57.wav' or recording_name == 'sources_3_recording_150.wav'):
             vertical = None
             vertical_exec = "null"
