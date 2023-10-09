@@ -1,5 +1,7 @@
 # Annotation Interface
 
+## Please note that I closed the AWS account for storing audio files
+
 Please create a postgresql database beforehand and change the path in server/db_tables.py line 7 to the current database path
 
 Headphone Check program link: https://github.com/mcdermottLab/HeadphoneCheck
