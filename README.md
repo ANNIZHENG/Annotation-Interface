@@ -6,7 +6,7 @@ Please create a postgresql database <b>beforehand</b> and change the path in ser
 
 Link to the [Headphone Check Code](https://github.com/mcdermottLab/HeadphoneCheck)
 
-You may run the program in your local environment with the following terminal commands:
+Terminal Commands for setting up virtual environemnt to run the program:
 
 ```
 virtualenv env
