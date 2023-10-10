@@ -2,11 +2,11 @@
 
 ## Note: I closed the AWS account for storing audio files
 
-Please create a postgresql database beforehand and change the path in server/db_tables.py line 7 to the current database path
+Please create a postgresql database <b>beforehand</b> and change the path in server/db_tables.py line 7 to the current database path
 
-Headphone Check program link: https://github.com/mcdermottLab/HeadphoneCheck
+Link to [Headphone Check Code](https://github.com/mcdermottLab/HeadphoneCheck)
 
-You may run the program in your local environment with the following terminal commands (Mac):
+You may run the program in your local environment with the following terminal commands:
 
 ```
 virtualenv env
