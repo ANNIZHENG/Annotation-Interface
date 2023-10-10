@@ -4,7 +4,7 @@
 
 Please create a postgresql database <b>beforehand</b> and change the path in server/db_tables.py line 7 to the current database path
 
-Link to [Headphone Check Code](https://github.com/mcdermottLab/HeadphoneCheck)
+Link to the [Headphone Check Code](https://github.com/mcdermottLab/HeadphoneCheck)
 
 You may run the program in your local environment with the following terminal commands:
 
